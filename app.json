@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Missão no Huambo",
+    "slug": "missao-no-huambo",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "org.missaonohuambo.app"
+    },
+    "android": {
+      "package": "org.missaonohuambo.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#181818"
+      }
+    },
+    "plugins": [
+      "expo-asset",
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "8df64736-c42f-45cb-b1e7-1b00d1ce33f5"
+      }
+    }
+  }
+}
