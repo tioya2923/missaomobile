@@ -1,11 +1,13 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS, FONTS } from '../constants/theme';
+import LogoLob from './LogoLob';
 
 const TABS = [
   { key: 'Calendario', label: 'Calendário' },
   { key: 'Canticos',   label: 'Cânticos'   },
   { key: 'Catecismo',  label: 'Catecismo'  },
+  { key: 'Eu',         label: 'Eu'         },
   { key: 'Pesquisa',   label: 'Pesquisa'   },
 ];
 
@@ -28,11 +30,7 @@ export default function NavBar({ activeTab, canGoBack, onBack, onNavigate }: Pro
           </TouchableOpacity>
         ) : null}
         <TouchableOpacity onPress={() => onNavigate('Calendario')} activeOpacity={0.8}>
-          <Image
-            source={require('../../assets/logo-missao.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+          <LogoLob variant="navbar" />
         </TouchableOpacity>
       </View>
 
@@ -79,9 +77,12 @@ const styles = StyleSheet.create({
     lineHeight: 34,
     fontWeight: '300',
   },
-  logo: {
-    height: 34,
-    width: 190,
+  brandText: {
+    color: '#ffffff',
+    fontSize: 22,
+    fontWeight: '700',
+    fontFamily: FONTS.serif,
+    letterSpacing: 7,
   },
   navRow: {
     flexDirection: 'row',

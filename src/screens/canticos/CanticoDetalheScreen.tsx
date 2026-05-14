@@ -35,7 +35,7 @@ export default function CanticoDetalheScreen({ route, navigation }: CanticosScre
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.titulo}>{cantico?.titulo}</Text>
+        <Text style={styles.titulo}>{titulo}</Text>
         <View style={styles.separator} />
         <Text style={styles.letra}>{cantico?.letra}</Text>
       </View>

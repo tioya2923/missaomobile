@@ -44,14 +44,15 @@ export default function CanticosListaScreen({ route, navigation }: CanticosScree
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.container}>
       <View style={styles.group}>
-        {canticos.map(item => (
+        {canticos.map((item, index) => (
           <ListItem
             key={String(item.id)}
+            prefix={`${index + 1}.`}
             title={item.titulo}
             onPress={() => navigation.navigate('CanticoDetalhe', {
               idioma,
               slug: item.slug,
-              titulo: item.titulo,
+              titulo: `${index + 1}. ${item.titulo}`,
             })}
           />
         ))}

@@ -1,10 +1,16 @@
 {
   "expo": {
-    "name": "Missão no Huambo",
+    "name": "L'Ombembwa",
     "slug": "missao-no-huambo",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#181818"
+    },
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "org.missaonohuambo.app"
@@ -12,12 +18,15 @@
     "android": {
       "package": "org.missaonohuambo.app",
       "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#181818"
       }
     },
     "plugins": [
       "expo-asset",
-      "expo-font"
+      "expo-font",
+      "expo-local-authentication",
+      "expo-notifications"
     ],
     "extra": {
       "eas": {

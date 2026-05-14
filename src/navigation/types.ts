@@ -6,6 +6,7 @@ export type RootTabParamList = {
   Calendario: undefined;
   Canticos: undefined;
   Catecismo: undefined;
+  Eu: undefined;
   Pesquisa: undefined;
   Mais: undefined;
 };

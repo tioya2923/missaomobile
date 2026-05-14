@@ -48,6 +48,7 @@ export default function CatecismoTitulosScreen({ route, navigation }: CatecismoS
           <ListItem
             key={String(item.id)}
             title={item.titulo}
+            titleBold
             onPress={() => navigation.navigate('CatecismoTexto', {
               idioma,
               id: item.id,

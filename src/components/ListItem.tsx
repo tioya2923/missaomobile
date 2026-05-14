@@ -3,15 +3,20 @@ import { COLORS, FONTS } from '../constants/theme';
 
 interface Props {
   title: string;
+  prefix?: string;
+  titleBold?: boolean;
   subtitle?: string;
   onPress: () => void;
 }
 
-export default function ListItem({ title, subtitle, onPress }: Props) {
+export default function ListItem({ title, prefix, titleBold, subtitle, onPress }: Props) {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
       <View style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, titleBold && styles.titleBold]}>
+          {prefix ? <Text style={styles.prefix}>{prefix} </Text> : null}
+          {title}
+        </Text>
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
       </View>
       <Text style={styles.chevron}>›</Text>
@@ -34,6 +39,12 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: COLORS.text,
     fontFamily: FONTS.serif,
+  },
+  titleBold: {
+    fontWeight: '700',
+  },
+  prefix: {
+    fontWeight: '700',
   },
   subtitle: {
     fontSize: 13,
