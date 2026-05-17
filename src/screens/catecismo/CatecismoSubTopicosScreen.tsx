@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { getCatecismoTopicos, type CatecismoTopico } from '../../api/catecismo';
+import { getCatecismoSubTopicos, type CatecismoTopico } from '../../api/catecismo';
 import ErrorView from '../../components/ErrorView';
 import ListItem from '../../components/ListItem';
 import LoadingView from '../../components/LoadingView';
 import { COLORS } from '../../constants/theme';
 import type { CatecismoScreenProps } from '../../navigation/types';
 
-export default function CatecismoTopicosScreen({ route, navigation }: CatecismoScreenProps<'CatecismoTopicos'>) {
-  const { idioma } = route.params;
-  const [topicos, setTopicos] = useState<CatecismoTopico[]>([]);
+export default function CatecismoSubTopicosScreen({ route, navigation }: CatecismoScreenProps<'CatecismoSubTopicos'>) {
+  const { idioma, topicoId, topicoTitulo } = route.params;
+  const [subtopicos, setSubtopicos] = useState<CatecismoTopico[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -17,46 +17,34 @@ export default function CatecismoTopicosScreen({ route, navigation }: CatecismoS
     try {
       setLoading(true);
       setError(null);
-      setTopicos(await getCatecismoTopicos(idioma));
+      setSubtopicos(await getCatecismoSubTopicos(topicoId));
     } catch {
-      setError('Não foi possível carregar os tópicos.');
+      setError('Não foi possível carregar os capítulos.');
     } finally {
       setLoading(false);
     }
-  }, [idioma]);
+  }, [topicoId]);
 
   useEffect(() => {
-    navigation.setOptions({ title: idioma === 'pt' ? 'Catecismo — Português' : 'Catecismo — Umbundu' });
+    navigation.setOptions({ title: topicoTitulo });
     load();
-  }, [idioma, load, navigation]);
+  }, [load, navigation, topicoTitulo]);
 
   if (loading) return <LoadingView />;
   if (error) return <ErrorView message={error} onRetry={load} />;
 
-  const handlePress = (item: CatecismoTopico) => {
-    if (idioma === 'pt' && item.slug === 'compendio-do-catecismo') {
-      navigation.navigate('CatecismoSubTopicos', {
-        idioma,
-        topicoId: item.id,
-        topicoTitulo: item.titulo,
-      });
-    } else {
-      navigation.navigate('CatecismoTitulos', {
-        idioma,
-        topicoId: item.id,
-        topicoTitulo: item.titulo,
-      });
-    }
-  };
-
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.container}>
       <View style={styles.group}>
-        {topicos.map(item => (
+        {subtopicos.map(item => (
           <ListItem
             key={String(item.id)}
             title={item.titulo}
-            onPress={() => handlePress(item)}
+            onPress={() => navigation.navigate('CatecismoSubTopicoDetalhe', {
+              idioma,
+              subTopicoId: item.id,
+              subTopicoTitulo: item.titulo,
+            })}
           />
         ))}
       </View>

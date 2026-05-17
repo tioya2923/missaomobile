@@ -1,5 +1,4 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 
 // --- Tab raiz ---
 export type RootTabParamList = {
@@ -23,6 +22,11 @@ export type CanticosStackParamList = {
 export type CatecismoStackParamList = {
   CatecismoIdioma: undefined;
   CatecismoTopicos: { idioma: 'pt' | 'ub' };
+  // Nível intermédio: subtópicos do Compêndio
+  CatecismoSubTopicos: { idioma: 'pt' | 'ub'; topicoId: number; topicoTitulo: string };
+  // Detalhe: todas as Q&A de um subtópico numa só página
+  CatecismoSubTopicoDetalhe: { idioma: 'pt' | 'ub'; subTopicoId: number; subTopicoTitulo: string };
+  // Orações: lista de títulos → texto individual
   CatecismoTitulos: { idioma: 'pt' | 'ub'; topicoId: number; topicoTitulo: string };
   CatecismoTexto: { idioma: 'pt' | 'ub'; id: number; titulo: string };
 };

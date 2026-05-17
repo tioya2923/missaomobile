@@ -10,10 +10,10 @@ const Stack = createNativeStackNavigator<MaisStackParamList>();
 export default function MaisNavigator() {
   return (
     <Stack.Navigator
-      screenOptions={({ navigation, back }) => ({
+      screenOptions={({ navigation }) => ({
         header: () => (
           <NavBar
-            canGoBack={!!back}
+            canGoBack={navigation.canGoBack()}
             onBack={() => navigation.goBack()}
             onNavigate={(tab) => navigation.getParent()?.navigate(tab)}
           />

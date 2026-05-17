@@ -11,11 +11,11 @@ const Stack = createNativeStackNavigator<CanticosStackParamList>();
 export default function CanticosNavigator() {
   return (
     <Stack.Navigator
-      screenOptions={({ navigation, back }) => ({
+      screenOptions={({ navigation }) => ({
         header: () => (
           <NavBar
             activeTab="Canticos"
-            canGoBack={!!back}
+            canGoBack={navigation.canGoBack()}
             onBack={() => navigation.goBack()}
             onNavigate={(tab) => navigation.getParent()?.navigate(tab)}
           />
