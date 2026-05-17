@@ -3,7 +3,7 @@ import { COLORS, FONTS } from '../../constants/theme';
 import type { CatecismoScreenProps } from '../../navigation/types';
 
 export default function CatecismoIdiomaScreen({ navigation }: CatecismoScreenProps<'CatecismoIdioma'>) {
-  const navegar = (idioma: 'pt' | 'ub') =>
+  const navegar = (idioma: 'pt' | 'ub' | 'lat') =>
     navigation.navigate('CatecismoTopicos', { idioma });
 
   return (
@@ -15,6 +15,9 @@ export default function CatecismoIdiomaScreen({ navigation }: CatecismoScreenPro
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn} onPress={() => navegar('ub')}>
           <Text style={styles.btnText}>Umbundu</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btn} onPress={() => navegar('lat')}>
+          <Text style={styles.btnText}>Latim</Text>
         </TouchableOpacity>
       </View>
     </View>

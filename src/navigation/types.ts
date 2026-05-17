@@ -13,22 +13,22 @@ export type RootTabParamList = {
 // --- Stack: Cânticos ---
 export type CanticosStackParamList = {
   CanticosIdioma: undefined;
-  CanticosTopicos: { idioma: 'pt' | 'ub' };
-  CanticosLista: { idioma: 'pt' | 'ub'; topicoSlug: string; topicoNome: string };
-  CanticoDetalhe: { idioma: 'pt' | 'ub'; slug: string; titulo: string };
+  CanticosTopicos: { idioma: 'pt' | 'ub' | 'lat' };
+  CanticosLista: { idioma: 'pt' | 'ub' | 'lat'; topicoSlug: string; topicoNome: string };
+  CanticoDetalhe: { idioma: 'pt' | 'ub' | 'lat'; slug: string; titulo: string };
 };
 
 // --- Stack: Catecismo ---
 export type CatecismoStackParamList = {
   CatecismoIdioma: undefined;
-  CatecismoTopicos: { idioma: 'pt' | 'ub' };
+  CatecismoTopicos: { idioma: 'pt' | 'ub' | 'lat' };
   // Nível intermédio: subtópicos do Compêndio
-  CatecismoSubTopicos: { idioma: 'pt' | 'ub'; topicoId: number; topicoTitulo: string };
+  CatecismoSubTopicos: { idioma: 'pt' | 'ub' | 'lat'; topicoId: number; topicoTitulo: string };
   // Detalhe: todas as Q&A de um subtópico numa só página
-  CatecismoSubTopicoDetalhe: { idioma: 'pt' | 'ub'; subTopicoId: number; subTopicoTitulo: string };
-  // Orações: lista de títulos → texto individual
-  CatecismoTitulos: { idioma: 'pt' | 'ub'; topicoId: number; topicoTitulo: string };
-  CatecismoTexto: { idioma: 'pt' | 'ub'; id: number; titulo: string };
+  CatecismoSubTopicoDetalhe: { idioma: 'pt' | 'ub' | 'lat'; subTopicoId: number; subTopicoTitulo: string };
+  // Orações / Latim: lista de títulos → texto individual
+  CatecismoTitulos: { idioma: 'pt' | 'ub' | 'lat'; topicoId: number; topicoTitulo: string };
+  CatecismoTexto: { idioma: 'pt' | 'ub' | 'lat'; id: number; titulo: string };
 };
 
 // --- Stack: Mais ---

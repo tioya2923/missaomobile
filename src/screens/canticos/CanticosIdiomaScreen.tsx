@@ -3,7 +3,7 @@ import { COLORS, FONTS } from '../../constants/theme';
 import type { CanticosScreenProps } from '../../navigation/types';
 
 export default function CanticosIdiomaScreen({ navigation }: CanticosScreenProps<'CanticosIdioma'>) {
-  const navegar = (idioma: 'pt' | 'ub') =>
+  const navegar = (idioma: 'pt' | 'ub' | 'lat') =>
     navigation.navigate('CanticosTopicos', { idioma });
 
   return (
@@ -15,6 +15,9 @@ export default function CanticosIdiomaScreen({ navigation }: CanticosScreenProps
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn} onPress={() => navegar('ub')}>
           <Text style={styles.btnText}>Umbundu</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btn} onPress={() => navegar('lat')}>
+          <Text style={styles.btnText}>Latim</Text>
         </TouchableOpacity>
       </View>
     </View>

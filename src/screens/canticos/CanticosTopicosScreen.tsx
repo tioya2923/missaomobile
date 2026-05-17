@@ -26,7 +26,8 @@ export default function CanticosTopicosScreen({ route, navigation }: CanticosScr
   }, [idioma]);
 
   useEffect(() => {
-    navigation.setOptions({ title: idioma === 'pt' ? 'Cânticos — Português' : 'Cânticos — Umbundu' });
+    const titulos = { pt: 'Cânticos — Português', ub: 'Cânticos — Umbundu', lat: 'Cânticos — Latim' };
+    navigation.setOptions({ title: titulos[idioma] });
     load();
   }, [idioma, load, navigation]);
 
