@@ -1,2 +1,2 @@
-// Altere para apontar ao seu ambiente de desenvolvimento se necessário
-export const API_BASE_URL = 'https://api.missaonohuambo.org';
+export const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_BASE_URL ?? 'https://backendmissaohuambo.onrender.com';

@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../constants/api';
 const client = axios.create({
   baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
-  timeout: 10_000,
+  timeout: 30_000,
 });
 
 client.interceptors.request.use(async (config) => {
