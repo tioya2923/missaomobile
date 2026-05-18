@@ -9,7 +9,6 @@ export default function CanticosIdiomaScreen({ navigation }: CanticosScreenProps
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.label}>Escolha o idioma</Text>
         <TouchableOpacity style={styles.btn} onPress={() => navegar('pt')}>
           <Text style={styles.btnText}>Português</Text>
         </TouchableOpacity>
@@ -45,14 +44,6 @@ const styles = StyleSheet.create({
     elevation: 3,
     gap: 14,
     alignItems: 'center',
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: COLORS.text,
-    fontFamily: FONTS.serif,
-    marginBottom: 8,
-    textAlign: 'center',
   },
   btn: {
     width: '100%',
