@@ -6,6 +6,9 @@ import {
 import { getEventosSemana, type Evento } from '../api/calendario';
 import { COLORS, FONTS } from '../constants/theme';
 
+// ── Dias da semana ───────────────────────────────────────────────────────────
+const DIAS_SEMANA = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+
 // ── Cores litúrgicas ─────────────────────────────────────────────────────────
 const COR_MAP: Record<string, { bg: string; border: string; text: string }> = {
   branco:   { bg: '#ffffff', border: '#b0b0b0', text: '#333333' },
@@ -42,10 +45,19 @@ function startOfDay(d: Date): Date {
 function addDays(d: Date, n: number): Date {
   const r = new Date(d); r.setDate(r.getDate() + n); return r;
 }
+function startOfWeek(d: Date): Date {
+  const r = startOfDay(d); r.setDate(r.getDate() - r.getDay()); return r;
+}
 function isSameDay(a: Date, b: Date): boolean {
   return a.getFullYear() === b.getFullYear()
     && a.getMonth() === b.getMonth()
     && a.getDate() === b.getDate();
+}
+function fmtLocal(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
 }
 function weekLabel(inicio: Date): string {
   const fim = addDays(inicio, 6);
@@ -95,7 +107,7 @@ function PickerModal<T extends string | number>({
 export default function CalendarioScreen() {
   const today = startOfDay(new Date());
 
-  const [semanaInicio, setSemanaInicio] = useState<Date>(today);
+  const [semanaInicio, setSemanaInicio] = useState<Date>(startOfWeek(today));
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -119,10 +131,10 @@ export default function CalendarioScreen() {
 
   useEffect(() => { load(semanaInicio); }, [semanaInicio, load]);
 
-  const irParaData = () => setSemanaInicio(startOfDay(new Date(selAno, selMes, 1)));
+  const irParaData = () => setSemanaInicio(startOfWeek(startOfDay(new Date(selAno, selMes, 1))));
   const navSemana = (n: number) => setSemanaInicio(prev => addDays(prev, n));
   const hoje = () => {
-    setSemanaInicio(today);
+    setSemanaInicio(startOfWeek(today));
     setSelMes(today.getMonth());
     setSelAno(today.getFullYear());
   };
@@ -183,7 +195,7 @@ export default function CalendarioScreen() {
       ) : (
         <ScrollView contentContainerStyle={styles.list}>
           {dias.map(dia => {
-            const evs = eventos.filter(e => isSameDay(new Date(e.data), dia));
+            const evs = eventos.filter(e => e.data?.slice(0, 10) === fmtLocal(dia));
             return (
               <DiaCard
                 key={dia.toISOString()}
@@ -219,7 +231,20 @@ export default function CalendarioScreen() {
 
 // ── Card de evento ────────────────────────────────────────────────────────────
 function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isToday: boolean }) {
-  if (eventos.length === 0) return null;
+  const nomeDia = DIAS_SEMANA[dia.getDay()];
+
+  if (eventos.length === 0) {
+    return (
+      <View style={[styles.card, { borderColor: COLORS.border }, isToday && styles.cardToday]}>
+        <View style={styles.cardTop}>
+          <Text style={[styles.cardTitulo, { color: COLORS.textSecondary }]}>{nomeDia}</Text>
+          <View style={[styles.badge, { backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border }]}>
+            <Text style={[styles.badgeText, { color: COLORS.textSecondary }]}>{dia.getDate()}</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <>
