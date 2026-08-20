@@ -9,16 +9,14 @@ export default function LogoLob({ variant = 'navbar' }: Props) {
   if (variant === 'lockscreen') {
     return (
       <View style={styles.lockWrap}>
-        <Text style={styles.lockCross}>✝</Text>
-        <Text style={styles.lockText}>L'OMBEMBWA</Text>
+        <Text style={styles.lockText}>NDATAVA</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.navWrap}>
-      <Text style={styles.navCross}>✝</Text>
-      <Text style={styles.navText}>L'OMBEMBWA</Text>
+      <Text style={styles.navText}>NDATAVA</Text>
     </View>
   );
 }
@@ -35,13 +33,6 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,255,255,0.18)',
     paddingHorizontal: 14,
     paddingVertical: 5,
-  },
-  navCross: {
-    color: '#c9a84c',
-    fontSize: 11,
-    fontWeight: '700',
-    lineHeight: 14,
-    marginTop: 1,
   },
   navText: {
     color: '#ffffff',
@@ -65,12 +56,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 14,
     elevation: 10,
-  },
-  lockCross: {
-    color: '#c9a84c',
-    fontSize: 16,
-    fontWeight: '700',
-    lineHeight: 20,
   },
   lockText: {
     color: '#ffffff',

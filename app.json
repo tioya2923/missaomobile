@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "L'Ombembwa",
-    "slug": "missao-no-huambo",
+    "name": "Ndatava",
+    "slug": "ndatava",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -13,10 +13,10 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "org.missaonohuambo.app"
+      "bundleIdentifier": "org.ndatava.app"
     },
     "android": {
-      "package": "org.missaonohuambo.app",
+      "package": "org.ndatava.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#181818"
@@ -39,11 +39,6 @@
           "microphonePermission": false
         }
       ]
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "8df64736-c42f-45cb-b1e7-1b00d1ce33f5"
-      }
-    }
+    ]
   }
 }

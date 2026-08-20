@@ -7,6 +7,8 @@ export default function MaisMenuScreen({ navigation }: MaisScreenProps<'MaisMenu
   return (
     <View style={styles.container}>
       <View style={styles.group}>
+        <ListItem title="Loja" onPress={() => navigation.navigate('Loja')} />
+        <ListItem title="Apoiar" onPress={() => navigation.navigate('Apoiar')} />
         <ListItem title="Sobre" onPress={() => navigation.navigate('Sobre')} />
         <ListItem title="Contacto" onPress={() => navigation.navigate('Contacto')} />
       </View>

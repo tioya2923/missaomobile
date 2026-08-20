@@ -7,7 +7,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONTS } from '../constants/theme';
 
-const ACT_KEY = '@lombembwa_actividades';
+const ACT_KEY = '@ndatava_actividades';
 
 type Modo = 'som' | 'vibrar' | 'som_vibrar' | 'silencio';
 

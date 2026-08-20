@@ -3,8 +3,10 @@ import {
   ActivityIndicator, FlatList, Modal, ScrollView, StyleSheet,
   Text, TouchableOpacity, View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { getEventosSemana, type Evento } from '../api/calendario';
 import { COLORS, FONTS } from '../constants/theme';
+import type { RootScreenProps } from '../navigation/types';
 
 // ── Dias da semana ───────────────────────────────────────────────────────────
 const DIAS_SEMANA = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
@@ -104,7 +106,7 @@ function PickerModal<T extends string | number>({
 }
 
 // ── Ecrã principal ────────────────────────────────────────────────────────────
-export default function CalendarioScreen() {
+export default function CalendarioScreen({ navigation }: RootScreenProps<'Calendario'>) {
   const today = startOfDay(new Date());
 
   const [semanaInicio, setSemanaInicio] = useState<Date>(startOfWeek(today));
@@ -207,6 +209,26 @@ export default function CalendarioScreen() {
           })}
         </ScrollView>
       )}
+
+      {/* ── Acessos rápidos: Loja e Apoiar — fixos, acima do rodapé ── */}
+      <View style={styles.acessosRow}>
+        <TouchableOpacity
+          style={styles.acessoBtn}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('Mais', { screen: 'Loja' })}
+        >
+          <Ionicons name="cart-outline" size={18} color="#fff" />
+          <Text style={styles.acessoTxt}>Loja</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.acessoBtn, styles.acessoBtnApoiar]}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('Mais', { screen: 'Apoiar' })}
+        >
+          <Ionicons name="heart-outline" size={18} color={COLORS.navbar} />
+          <Text style={[styles.acessoTxt, styles.acessoTxtApoiar]}>Apoiar</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Modais */}
       <PickerModal
@@ -334,6 +356,23 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.serif, fontWeight: '700', fontSize: 13,
     color: COLORS.textSecondary, textAlign: 'center',
   },
+
+  /* Acessos rápidos: Loja / Apoiar — barra fixa acima do rodapé */
+  acessosRow: {
+    flexDirection: 'row', gap: 10,
+    paddingHorizontal: 12, paddingVertical: 10,
+    backgroundColor: COLORS.surface,
+    borderTopWidth: 1, borderTopColor: COLORS.border,
+  },
+  acessoBtn: {
+    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7,
+    backgroundColor: COLORS.navbar, borderRadius: 8, paddingVertical: 11,
+  },
+  acessoBtnApoiar: {
+    backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.navbar,
+  },
+  acessoTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 14 },
+  acessoTxtApoiar: { color: COLORS.navbar },
 
   /* Lista */
   list: { padding: 12, gap: 12 },

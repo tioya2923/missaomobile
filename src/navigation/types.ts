@@ -1,4 +1,6 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NavigatorScreenParams } from '@react-navigation/native';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 
 // --- Tab raiz ---
 export type RootTabParamList = {
@@ -7,7 +9,7 @@ export type RootTabParamList = {
   Catecismo: undefined;
   Eu: undefined;
   Pesquisa: undefined;
-  Mais: undefined;
+  Mais: NavigatorScreenParams<MaisStackParamList> | undefined;
 };
 
 // --- Stack: Cânticos ---
@@ -36,9 +38,17 @@ export type MaisStackParamList = {
   MaisMenu: undefined;
   Sobre: undefined;
   Contacto: undefined;
+  Apoiar: undefined;
+  Loja: undefined;
+  LojaProduto: { produto: import('../api/loja').Produto };
+  LojaCarrinho: undefined;
+  LojaConfirmacao: { encomendaId: number; total: number };
 };
 
 // Helpers de tipagem para props dos ecrãs
+export type RootScreenProps<T extends keyof RootTabParamList> =
+  BottomTabScreenProps<RootTabParamList, T>;
+
 export type CanticosScreenProps<T extends keyof CanticosStackParamList> =
   NativeStackScreenProps<CanticosStackParamList, T>;
 

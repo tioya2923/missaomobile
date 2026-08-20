@@ -12,8 +12,8 @@ import { COLORS, FONTS } from '../constants/theme';
 import LogoLob from '../components/LogoLob';
 import MinhasActividadesScreen from './MinhasActividadesScreen';
 
-const STORAGE_KEY  = '@lombembwa_perfil';
-const SECURITY_KEY = '@lombembwa_seguranca';
+const STORAGE_KEY  = '@ndatava_perfil';
+const SECURITY_KEY = '@ndatava_seguranca';
 const PIN_LEN      = 4;
 
 type DataCampo     = { dia: string; mes: string; ano: string };
@@ -121,7 +121,7 @@ export default function EuScreen() {
   const autenticarComSistema = async () => {
     try {
       const res = await LocalAuth.authenticateAsync({
-        promptMessage:         "Aceder ao seu perfil L'Ombembwa",
+        promptMessage:         "Aceder ao seu perfil Ndatava",
         fallbackLabel:         'Usar código do telemóvel',
         disableDeviceFallback: false,
         cancelLabel:           'Cancelar',
@@ -413,7 +413,7 @@ export default function EuScreen() {
 
       {/* Nome */}
       <Text style={styles.hubNome} numberOfLines={2}>
-        {perfil.nome.trim() || "L'Ombembwa"}
+        {perfil.nome.trim() || "Ndatava"}
       </Text>
 
       {/* Opções */}
