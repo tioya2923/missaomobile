@@ -25,8 +25,20 @@
     "plugins": [
       "expo-asset",
       "expo-font",
-      "expo-local-authentication",
-      "expo-notifications"
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "A aplicação usa o Face ID para proteger o acesso ao seu perfil."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "A aplicação precisa de acesso à galeria para escolher a sua foto de perfil.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ]
     ],
     "extra": {
       "eas": {

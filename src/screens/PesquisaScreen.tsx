@@ -42,6 +42,12 @@ export default function PesquisaScreen() {
       params: { idioma, id, titulo },
     });
 
+  const irTopico = (idioma: 'pt' | 'ub', topicoSlug: string, topicoNome: string) =>
+    navigation.navigate('Canticos', {
+      screen: 'CanticosLista',
+      params: { idioma, topicoSlug, topicoNome },
+    });
+
   const irCalendario = () => navigation.navigate('Calendario');
 
   return (
@@ -88,6 +94,26 @@ export default function PesquisaScreen() {
                 key={item.id}
                 label={item.titulo}
                 onPress={() => irCantico('ub', item.slug, item.titulo)}
+              />
+            ))}
+          </Section>
+
+          <Section title="Tópicos — Cânticos (Português)">
+            {results!.topicos.map(item => (
+              <ResultItem
+                key={item.id}
+                label={item.nome}
+                onPress={() => irTopico('pt', item.slug, item.nome)}
+              />
+            ))}
+          </Section>
+
+          <Section title="Tópicos — Cânticos (Umbundu)">
+            {results!.topicosUmb.map(item => (
+              <ResultItem
+                key={item.id}
+                label={item.nome}
+                onPress={() => irTopico('ub', item.slug, item.nome)}
               />
             ))}
           </Section>
