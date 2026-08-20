@@ -41,8 +41,9 @@ export type MaisStackParamList = {
   Apoiar: undefined;
   Loja: undefined;
   LojaProduto: { produto: import('../api/loja').Produto };
+  LojaDetalhe: { lojaId: number; lojaNome: string };
   LojaCarrinho: undefined;
-  LojaConfirmacao: { encomendaId: number; total: number };
+  LojaConfirmacao: { encomendas: import('../api/loja').EncomendaCriada[] };
 };
 
 // Helpers de tipagem para props dos ecrãs

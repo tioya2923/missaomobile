@@ -6,6 +6,7 @@ import MaisMenuScreen from '../screens/MaisMenuScreen';
 import SobreScreen from '../screens/SobreScreen';
 import LojaScreen from '../screens/loja/LojaScreen';
 import LojaProdutoScreen from '../screens/loja/LojaProdutoScreen';
+import LojaDetalheScreen from '../screens/loja/LojaDetalheScreen';
 import LojaCarrinhoScreen from '../screens/loja/LojaCarrinhoScreen';
 import LojaConfirmacaoScreen from '../screens/loja/LojaConfirmacaoScreen';
 import type { MaisStackParamList } from './types';
@@ -31,6 +32,7 @@ export default function MaisNavigator() {
       <Stack.Screen name="Apoiar"          component={ApoiarScreen}          options={{ title: 'Apoiar' }} />
       <Stack.Screen name="Loja"            component={LojaScreen}            options={{ title: 'Loja' }} />
       <Stack.Screen name="LojaProduto"     component={LojaProdutoScreen}     options={{ title: 'Produto' }} />
+      <Stack.Screen name="LojaDetalhe"     component={LojaDetalheScreen}     options={{ title: 'Loja' }} />
       <Stack.Screen name="LojaCarrinho"    component={LojaCarrinhoScreen}    options={{ title: 'Carrinho' }} />
       <Stack.Screen name="LojaConfirmacao" component={LojaConfirmacaoScreen} options={{ title: 'Encomenda' }} />
     </Stack.Navigator>

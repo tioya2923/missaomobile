@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import {
-  Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
+  KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,27 +9,31 @@ import { criarEncomenda } from '../../api/loja';
 import { COLORS, FONTS } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
 
+// Nota: usa-se um aviso inline (erro) em vez de Alert.alert porque o React
+// Native não tem uma implementação fiável do Alert na Web.
 export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'LojaCarrinho'>) {
-  const { itens, total, atualizarQuantidade, removerItem, limpar } = useCarrinho();
+  const { itens, grupos, total, atualizarQuantidade, removerItem, limpar } = useCarrinho();
 
   const [nome, setNome] = useState('');
   const [contacto, setContacto] = useState('');
   const [morada, setMorada] = useState('');
   const [observacoes, setObservacoes] = useState('');
   const [aEnviar, setAEnviar] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
 
   const finalizarEncomenda = async () => {
     if (!nome.trim() || !contacto.trim()) {
-      Alert.alert('Dados em falta', 'Indique o seu nome e um contacto (telefone ou email).');
+      setErro('Indique o seu nome e um contacto (telefone ou email).');
       return;
     }
     if (itens.length === 0) {
-      Alert.alert('Carrinho vazio', 'Adicione pelo menos um artigo antes de finalizar.');
+      setErro('Adicione pelo menos um artigo antes de finalizar.');
       return;
     }
+    setErro(null);
     setAEnviar(true);
     try {
-      const encomenda = await criarEncomenda({
+      const encomendas = await criarEncomenda({
         nomeCliente: nome.trim(),
         contacto: contacto.trim(),
         morada: morada.trim() || undefined,
@@ -37,9 +41,9 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
         itens: itens.map(i => ({ produtoId: i.produtoId, quantidade: i.quantidade })),
       });
       limpar();
-      navigation.replace('LojaConfirmacao', { encomendaId: encomenda.id, total: encomenda.total });
+      navigation.replace('LojaConfirmacao', { encomendas });
     } catch {
-      Alert.alert('Erro', 'Não foi possível enviar a encomenda. Verifique a ligação e tente novamente.');
+      setErro('Não foi possível enviar a encomenda. Verifique a ligação e tente novamente.');
     } finally {
       setAEnviar(false);
     }
@@ -60,39 +64,54 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <View style={styles.card}>
-          <Text style={styles.cardTitulo}>O seu carrinho</Text>
-          <View style={styles.separator} />
-          {itens.map(item => (
-            <View key={item.produtoId} style={styles.item}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.itemNome}>{item.nome}</Text>
-                <Text style={styles.itemPreco}>{item.preco.toFixed(2)} Kz</Text>
-              </View>
-              <View style={styles.stepper}>
-                <TouchableOpacity
-                  style={styles.stepperBtn}
-                  onPress={() => atualizarQuantidade(item.produtoId, item.quantidade - 1)}
-                >
-                  <Ionicons name="remove" size={16} color={COLORS.text} />
-                </TouchableOpacity>
-                <Text style={styles.stepperValor}>{item.quantidade}</Text>
-                <TouchableOpacity
-                  style={styles.stepperBtn}
-                  onPress={() => atualizarQuantidade(item.produtoId, item.quantidade + 1)}
-                >
-                  <Ionicons name="add" size={16} color={COLORS.text} />
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity onPress={() => removerItem(item.produtoId)} style={{ marginLeft: 10 }}>
-                <Ionicons name="trash-outline" size={20} color={COLORS.error} />
-              </TouchableOpacity>
+        {grupos.map(grupo => (
+          <View key={grupo.lojaId} style={styles.card}>
+            <View style={styles.lojaHeader}>
+              <Ionicons name="storefront-outline" size={15} color={COLORS.primary} />
+              <Text style={styles.lojaHeaderTxt}>{grupo.lojaNome}</Text>
             </View>
-          ))}
+            <View style={styles.separator} />
+            {grupo.itens.map(item => (
+              <View key={item.produtoId} style={styles.item}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.itemNome}>{item.nome}</Text>
+                  <Text style={styles.itemPreco}>{item.preco.toFixed(2)} Kz</Text>
+                </View>
+                <View style={styles.stepper}>
+                  <TouchableOpacity
+                    style={styles.stepperBtn}
+                    onPress={() => atualizarQuantidade(item.produtoId, item.quantidade - 1)}
+                  >
+                    <Ionicons name="remove" size={16} color={COLORS.text} />
+                  </TouchableOpacity>
+                  <Text style={styles.stepperValor}>{item.quantidade}</Text>
+                  <TouchableOpacity
+                    style={styles.stepperBtn}
+                    onPress={() => atualizarQuantidade(item.produtoId, item.quantidade + 1)}
+                  >
+                    <Ionicons name="add" size={16} color={COLORS.text} />
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity onPress={() => removerItem(item.produtoId)} style={{ marginLeft: 10 }}>
+                  <Ionicons name="trash-outline" size={20} color={COLORS.error} />
+                </TouchableOpacity>
+              </View>
+            ))}
+            <View style={styles.subtotalRow}>
+              <Text style={styles.subtotalLabel}>Subtotal desta loja</Text>
+              <Text style={styles.subtotalValor}>{grupo.subtotal.toFixed(2)} Kz</Text>
+            </View>
+          </View>
+        ))}
+
+        <View style={styles.card}>
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total</Text>
+            <Text style={styles.totalLabel}>Total ({grupos.length} loja{grupos.length !== 1 ? 's' : ''})</Text>
             <Text style={styles.totalValor}>{total.toFixed(2)} Kz</Text>
           </View>
+          <Text style={styles.avisoSplit}>
+            O seu pedido será dividido automaticamente numa encomenda por cada loja.
+          </Text>
         </View>
 
         <View style={styles.card}>
@@ -118,6 +137,13 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
             multiline
           />
         </View>
+
+        {erro && (
+          <View style={styles.erroBox}>
+            <Ionicons name="alert-circle" size={16} color="#c0392b" />
+            <Text style={styles.erroTxt}>{erro}</Text>
+          </View>
+        )}
 
         <TouchableOpacity
           style={[styles.btnFinalizar, aEnviar && { opacity: 0.6 }]}
@@ -145,6 +171,13 @@ const styles = StyleSheet.create({
   cardTitulo: { fontSize: 13, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.5 },
   separator: { height: 1, backgroundColor: COLORS.border, marginTop: 12, marginBottom: 4 },
 
+  lojaHeader: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  lojaHeaderTxt: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
+  subtotalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10, marginTop: 2 },
+  subtotalLabel: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.serif },
+  subtotalValor: { fontSize: 14, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
+  avisoSplit: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', marginTop: 8, lineHeight: 17 },
+
   item: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: COLORS.border },
   itemNome: { fontSize: 15, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif },
   itemPreco: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 2 },
@@ -163,6 +196,12 @@ const styles = StyleSheet.create({
     fontSize: 15, fontFamily: FONTS.serif, color: COLORS.text,
   },
   inputMultilinha: { minHeight: 70, textAlignVertical: 'top' },
+
+  erroBox: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    backgroundColor: '#c0392b15', borderRadius: 8, padding: 12, marginBottom: 12,
+  },
+  erroTxt: { flex: 1, color: '#c0392b', fontFamily: FONTS.serif, fontSize: 13 },
 
   btnFinalizar: { backgroundColor: COLORS.navbar, borderRadius: 10, paddingVertical: 15, alignItems: 'center' },
   btnFinalizarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 16 },

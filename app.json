@@ -38,6 +38,12 @@
           "cameraPermission": false,
           "microphonePermission": false
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "A aplicação usa a sua localização para mostrar as lojas e os artigos mais próximos de si."
+        }
       ]
     ]
   }

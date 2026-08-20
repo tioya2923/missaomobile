@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCarrinho } from '../../context/useCarrinho';
+import CarrinhoFixo from '../../components/loja/CarrinhoFixo';
 import { COLORS, FONTS } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
 
@@ -9,20 +10,15 @@ export default function LojaProdutoScreen({ route, navigation }: MaisScreenProps
   const { produto } = route.params;
   const { adicionar } = useCarrinho();
   const [quantidade, setQuantidade] = useState(1);
+  const precoEfetivo = produto.precoPromocional ?? produto.preco;
 
   const adicionarAoCarrinho = () => {
     adicionar(produto, quantidade);
-    Alert.alert(
-      'Adicionado ao carrinho',
-      `${quantidade}× ${produto.nome}`,
-      [
-        { text: 'Continuar a comprar', style: 'cancel' },
-        { text: 'Ver carrinho', onPress: () => navigation.navigate('LojaCarrinho') },
-      ]
-    );
+    setQuantidade(1);
   };
 
   return (
+    <View style={{ flex: 1, backgroundColor: COLORS.background }}>
     <ScrollView contentContainerStyle={styles.container}>
       {produto.imagemUrl ? (
         <Image source={{ uri: produto.imagemUrl }} style={styles.imagem} />
@@ -33,9 +29,35 @@ export default function LojaProdutoScreen({ route, navigation }: MaisScreenProps
       )}
 
       <View style={styles.card}>
+        {produto.emDestaque && (
+          <View style={styles.destaqueBadge}>
+            <Ionicons name="star" size={12} color="#fff" />
+            <Text style={styles.destaqueBadgeTxt}>Em destaque</Text>
+          </View>
+        )}
         {produto.categoria ? <Text style={styles.categoria}>{produto.categoria}</Text> : null}
         <Text style={styles.nome}>{produto.nome}</Text>
-        <Text style={styles.preco}>{produto.preco.toFixed(2)} Kz</Text>
+        {produto.precoPromocional != null ? (
+          <View style={styles.precoPromoRow}>
+            <Text style={styles.precoRiscado}>{produto.preco.toFixed(2)} Kz</Text>
+            <Text style={styles.precoPromo}>{produto.precoPromocional.toFixed(2)} Kz</Text>
+          </View>
+        ) : (
+          <Text style={styles.preco}>{produto.preco.toFixed(2)} Kz</Text>
+        )}
+
+        <TouchableOpacity
+          style={styles.lojaBtn}
+          activeOpacity={0.7}
+          onPress={() => navigation.navigate('LojaDetalhe', { lojaId: produto.loja.id, lojaNome: produto.loja.nome })}
+        >
+          <Ionicons name="storefront-outline" size={15} color={COLORS.primary} />
+          <Text style={styles.lojaBtnTxt}>{produto.loja.nome}</Text>
+          {produto.distanciaKm != null && (
+            <Text style={styles.lojaDistancia}>· {produto.distanciaKm.toFixed(1)} km</Text>
+          )}
+          <Ionicons name="chevron-forward" size={14} color={COLORS.textSecondary} />
+        </TouchableOpacity>
 
         {produto.descricao ? (
           <>
@@ -70,11 +92,17 @@ export default function LojaProdutoScreen({ route, navigation }: MaisScreenProps
         <TouchableOpacity style={styles.btnAdicionar} onPress={adicionarAoCarrinho} activeOpacity={0.85}>
           <Ionicons name="cart-outline" size={18} color="#fff" />
           <Text style={styles.btnAdicionarTxt}>
-            Adicionar — {(produto.preco * quantidade).toFixed(2)} Kz
+            Adicionar — {(precoEfetivo * quantidade).toFixed(2)} Kz
           </Text>
         </TouchableOpacity>
       </View>
+
+      {/* Espaço para a barra fixa do carrinho não tapar o botão de adicionar */}
+      <View style={{ height: 70 }} />
     </ScrollView>
+
+    <CarrinhoFixo onPress={() => navigation.navigate('LojaCarrinho')} />
+    </View>
   );
 }
 
@@ -87,12 +115,27 @@ const styles = StyleSheet.create({
     margin: 16, marginTop: -24, backgroundColor: COLORS.surface, borderRadius: 14, padding: 20,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 10, elevation: 3,
   },
+  destaqueBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: 5, alignSelf: 'flex-start',
+    backgroundColor: '#c0392b', borderRadius: 6, paddingVertical: 4, paddingHorizontal: 8, marginBottom: 8,
+  },
+  destaqueBadgeTxt: { color: '#fff', fontSize: 11, fontWeight: '700', fontFamily: FONTS.serif, textTransform: 'uppercase' },
   categoria: {
     fontSize: 11, color: COLORS.textSecondary, fontFamily: FONTS.serif,
     textTransform: 'uppercase', letterSpacing: 0.5,
   },
   nome: { fontSize: 20, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, marginTop: 4 },
   preco: { fontSize: 22, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.serif, marginTop: 6 },
+  precoPromoRow: { flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 6 },
+  precoRiscado: { fontSize: 15, color: COLORS.textSecondary, fontFamily: FONTS.serif, textDecorationLine: 'line-through' },
+  precoPromo: { fontSize: 22, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.serif },
+  lojaBtn: {
+    flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10,
+    backgroundColor: `${COLORS.primary}12`, alignSelf: 'flex-start',
+    borderRadius: 8, paddingVertical: 7, paddingHorizontal: 10,
+  },
+  lojaBtnTxt: { fontSize: 12.5, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.serif },
+  lojaDistancia: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.serif },
   separator: { height: 1, backgroundColor: COLORS.border, marginVertical: 16 },
   descricao: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.serif, lineHeight: 23 },
 
