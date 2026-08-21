@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCarrinho } from '../../context/useCarrinho';
+import { formatarPreco } from '../../constants/moeda';
 import CarrinhoFixo from '../../components/loja/CarrinhoFixo';
 import { COLORS, FONTS } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
@@ -39,11 +40,11 @@ export default function LojaProdutoScreen({ route, navigation }: MaisScreenProps
         <Text style={styles.nome}>{produto.nome}</Text>
         {produto.precoPromocional != null ? (
           <View style={styles.precoPromoRow}>
-            <Text style={styles.precoRiscado}>{produto.preco.toFixed(2)} Kz</Text>
-            <Text style={styles.precoPromo}>{produto.precoPromocional.toFixed(2)} Kz</Text>
+            <Text style={styles.precoRiscado}>{formatarPreco(produto.preco, produto.loja.moeda)}</Text>
+            <Text style={styles.precoPromo}>{formatarPreco(produto.precoPromocional, produto.loja.moeda)}</Text>
           </View>
         ) : (
-          <Text style={styles.preco}>{produto.preco.toFixed(2)} Kz</Text>
+          <Text style={styles.preco}>{formatarPreco(produto.preco, produto.loja.moeda)}</Text>
         )}
 
         <TouchableOpacity
@@ -92,7 +93,7 @@ export default function LojaProdutoScreen({ route, navigation }: MaisScreenProps
         <TouchableOpacity style={styles.btnAdicionar} onPress={adicionarAoCarrinho} activeOpacity={0.85}>
           <Ionicons name="cart-outline" size={18} color="#fff" />
           <Text style={styles.btnAdicionarTxt}>
-            Adicionar — {(precoEfetivo * quantidade).toFixed(2)} Kz
+            Adicionar — {formatarPreco(precoEfetivo * quantidade, produto.loja.moeda)}
           </Text>
         </TouchableOpacity>
       </View>

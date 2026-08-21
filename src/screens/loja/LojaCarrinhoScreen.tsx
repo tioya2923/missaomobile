@@ -6,13 +6,14 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useCarrinho } from '../../context/useCarrinho';
 import { criarEncomenda } from '../../api/loja';
+import { formatarPreco } from '../../constants/moeda';
 import { COLORS, FONTS } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
 
 // Nota: usa-se um aviso inline (erro) em vez de Alert.alert porque o React
 // Native não tem uma implementação fiável do Alert na Web.
 export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'LojaCarrinho'>) {
-  const { itens, grupos, total, atualizarQuantidade, removerItem, limpar } = useCarrinho();
+  const { itens, grupos, totaisPorMoeda, atualizarQuantidade, removerItem, limpar } = useCarrinho();
 
   const [nome, setNome] = useState('');
   const [contacto, setContacto] = useState('');
@@ -75,7 +76,7 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
               <View key={item.produtoId} style={styles.item}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.itemNome}>{item.nome}</Text>
-                  <Text style={styles.itemPreco}>{item.preco.toFixed(2)} Kz</Text>
+                  <Text style={styles.itemPreco}>{formatarPreco(item.preco, item.moeda)}</Text>
                 </View>
                 <View style={styles.stepper}>
                   <TouchableOpacity
@@ -99,16 +100,25 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
             ))}
             <View style={styles.subtotalRow}>
               <Text style={styles.subtotalLabel}>Subtotal desta loja</Text>
-              <Text style={styles.subtotalValor}>{grupo.subtotal.toFixed(2)} Kz</Text>
+              <Text style={styles.subtotalValor}>{formatarPreco(grupo.subtotal, grupo.moeda)}</Text>
             </View>
           </View>
         ))}
 
         <View style={styles.card}>
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total ({grupos.length} loja{grupos.length !== 1 ? 's' : ''})</Text>
-            <Text style={styles.totalValor}>{total.toFixed(2)} Kz</Text>
-          </View>
+          <Text style={styles.totalLabel}>Total ({grupos.length} loja{grupos.length !== 1 ? 's' : ''})</Text>
+          {totaisPorMoeda.map(t => (
+            <View key={t.moeda} style={styles.totalRow}>
+              <Text style={styles.totalMoedaLabel}>{t.moeda}</Text>
+              <Text style={styles.totalValor}>{formatarPreco(t.total, t.moeda)}</Text>
+            </View>
+          ))}
+          {totaisPorMoeda.length > 1 && (
+            <Text style={styles.avisoMoedas}>
+              As suas lojas vendem em moedas diferentes — cada uma é cobrada separadamente,
+              na sua própria moeda.
+            </Text>
+          )}
           <Text style={styles.avisoSplit}>
             O seu pedido será dividido automaticamente numa encomenda por cada loja.
           </Text>
@@ -186,9 +196,11 @@ const styles = StyleSheet.create({
   stepperBtn: { width: 28, height: 28, borderRadius: 6, borderWidth: 1, borderColor: COLORS.borderDark, alignItems: 'center', justifyContent: 'center' },
   stepperValor: { fontSize: 14, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, minWidth: 22, textAlign: 'center' },
 
-  totalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 14, marginTop: 4 },
-  totalLabel: { fontSize: 16, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
+  totalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 8 },
+  totalLabel: { fontSize: 13, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.4 },
+  totalMoedaLabel: { fontSize: 16, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
   totalValor: { fontSize: 18, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.serif },
+  avisoMoedas: { fontSize: 12, color: '#b45309', fontFamily: FONTS.serif, fontStyle: 'italic', marginTop: 10, lineHeight: 17 },
 
   label: { fontSize: 12.5, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 12, marginBottom: 6, textTransform: 'uppercase' },
   input: {

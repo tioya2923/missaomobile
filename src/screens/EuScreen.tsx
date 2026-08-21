@@ -3,12 +3,13 @@ import * as ImagePicker from 'expo-image-picker';
 import * as LocalAuth from 'expo-local-authentication';
 import { useCallback, useEffect, useRef, useState, RefObject } from 'react';
 import {
-  Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
+  Alert, Image, KeyboardAvoidingView, Linking, Platform, ScrollView, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { COLORS, FONTS } from '../constants/theme';
+import { WEB_BASE_URL } from '../constants/api';
 import LogoLob from '../components/LogoLob';
 import MinhasActividadesScreen from './MinhasActividadesScreen';
 
@@ -432,6 +433,18 @@ export default function EuScreen() {
           </View>
           <Text style={styles.hubCardTxt}>As Minhas Actividades</Text>
           <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.hubCard}
+          onPress={()=>Linking.openURL(`${WEB_BASE_URL}/loja/login`)}
+          activeOpacity={0.8}
+        >
+          <View style={styles.hubIcone}>
+            <Ionicons name="storefront-outline" size={26} color={COLORS.navbar}/>
+          </View>
+          <Text style={styles.hubCardTxt}>Vender no Ndatava</Text>
+          <Ionicons name="open-outline" size={18} color={COLORS.textSecondary}/>
         </TouchableOpacity>
       </View>
 

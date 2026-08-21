@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { labelMetodoPagamento, iconeMetodoPagamento } from '../../constants/metodosPagamento';
+import { formatarPreco } from '../../constants/moeda';
 import { COLORS, FONTS } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
 
@@ -19,7 +20,15 @@ export default function LojaConfirmacaoScreen({ route, navigation }: MaisScreenP
   const { encomendas } = route.params;
   const [copiadoChave, setCopiadoChave] = useState<string | null>(null);
 
-  const total = encomendas.reduce((s, e) => s + e.total, 0);
+  // As lojas do carrinho podem vender em moedas diferentes — soma-se por moeda,
+  // nunca todas juntas como se fossem a mesma unidade.
+  const totaisPorMoeda = encomendas.reduce<Record<string, number>>((acc, e) => {
+    acc[e.moeda] = (acc[e.moeda] ?? 0) + e.total;
+    return acc;
+  }, {});
+  const totalTexto = Object.entries(totaisPorMoeda)
+    .map(([moeda, valor]) => formatarPreco(valor, moeda))
+    .join(' + ');
 
   const copiar = async (chave: string, valor: string) => {
     await Clipboard.setStringAsync(valor);
@@ -27,10 +36,10 @@ export default function LojaConfirmacaoScreen({ route, navigation }: MaisScreenP
     setTimeout(() => setCopiadoChave(c => (c === chave ? null : c)), 2000);
   };
 
-  const enviarPorWhatsApp = (telefone: string, id: number, total: number) => {
+  const enviarPorWhatsApp = (telefone: string, id: number, total: number, moeda: string) => {
     const numero = paraFormatoWhatsApp(telefone);
     const texto = encodeURIComponent(
-      `Olá! Aqui está o comprovativo de pagamento da encomenda #${id} (Total: ${total.toFixed(2)} Kz).`
+      `Olá! Aqui está o comprovativo de pagamento da encomenda #${id} (Total: ${formatarPreco(total, moeda)}).`
     );
     Linking.openURL(`https://wa.me/${numero}?text=${texto}`);
   };
@@ -46,7 +55,7 @@ export default function LojaConfirmacaoScreen({ route, navigation }: MaisScreenP
           {encomendas.length > 1
             ? `O seu pedido foi dividido em ${encomendas.length} encomendas, uma por cada loja.\n`
             : ''}
-          Total a pagar: <Text style={{ fontWeight: '700' }}>{total.toFixed(2)} Kz</Text>
+          Total a pagar: <Text style={{ fontWeight: '700' }}>{totalTexto}</Text>
         </Text>
       </View>
 
@@ -58,14 +67,14 @@ export default function LojaConfirmacaoScreen({ route, navigation }: MaisScreenP
           </View>
           <Text style={styles.cardTexto}>
             Referência: <Text style={{ fontWeight: '700' }}>#{enc.id}</Text>{'  ·  '}
-            Total: <Text style={{ fontWeight: '700' }}>{enc.total.toFixed(2)} Kz</Text>
+            Total: <Text style={{ fontWeight: '700' }}>{formatarPreco(enc.total, enc.moeda)}</Text>
           </Text>
           <View style={styles.separator} />
 
           {enc.itens.map((item, i) => (
             <View key={i} style={styles.itemRow}>
               <Text style={styles.itemTxt}>{item.quantidade}× {item.produtoNome}</Text>
-              <Text style={styles.itemValor}>{(item.precoUnitario * item.quantidade).toFixed(2)} Kz</Text>
+              <Text style={styles.itemValor}>{formatarPreco(item.precoUnitario * item.quantidade, enc.moeda)}</Text>
             </View>
           ))}
 
@@ -109,7 +118,7 @@ export default function LojaConfirmacaoScreen({ route, navigation }: MaisScreenP
             <>
               <TouchableOpacity
                 style={styles.comprovativoBtn}
-                onPress={() => enviarPorWhatsApp(enc.lojaTelefone as string, enc.id, enc.total)}
+                onPress={() => enviarPorWhatsApp(enc.lojaTelefone as string, enc.id, enc.total, enc.moeda)}
                 activeOpacity={0.85}
               >
                 <Ionicons name="logo-whatsapp" size={18} color="#fff" />

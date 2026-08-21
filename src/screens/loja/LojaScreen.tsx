@@ -3,6 +3,7 @@ import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import { Ionicons } from '@expo/vector-icons';
 import { getLojas, getProdutos, type Loja, type Produto } from '../../api/loja';
 import { useLocalizacao } from '../../hooks/useLocalizacao';
+import { formatarPreco } from '../../constants/moeda';
 import CarrinhoFixo from '../../components/loja/CarrinhoFixo';
 import ErrorView from '../../components/ErrorView';
 import LoadingView from '../../components/LoadingView';
@@ -118,11 +119,11 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
                   <Text style={styles.nome} numberOfLines={2}>{p.nome}</Text>
                   {p.precoPromocional != null ? (
                     <View style={styles.precoPromoRow}>
-                      <Text style={styles.precoRiscado}>{p.preco.toFixed(2)} Kz</Text>
-                      <Text style={styles.precoPromo}>{p.precoPromocional.toFixed(2)} Kz</Text>
+                      <Text style={styles.precoRiscado}>{formatarPreco(p.preco, p.loja.moeda)}</Text>
+                      <Text style={styles.precoPromo}>{formatarPreco(p.precoPromocional, p.loja.moeda)}</Text>
                     </View>
                   ) : (
-                    <Text style={styles.preco}>{p.preco.toFixed(2)} Kz</Text>
+                    <Text style={styles.preco}>{formatarPreco(p.preco, p.loja.moeda)}</Text>
                   )}
                   <View style={styles.lojaRow}>
                     <Ionicons name="storefront-outline" size={12} color={COLORS.textSecondary} />

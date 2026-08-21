@@ -6,6 +6,7 @@ export interface LojaResumo {
   morada?: string | null;
   latitude: number;
   longitude: number;
+  moeda: string;
 }
 
 export interface Produto {
@@ -37,6 +38,7 @@ export interface Loja {
   telefone?: string | null;
   latitude: number;
   longitude: number;
+  moeda: string;
   distanciaKm?: number | null;
   formasPagamento?: FormaPagamento[];
 }
@@ -120,6 +122,7 @@ export interface EncomendaCriada {
   infoPagamento?: string | null;
   formasPagamento: FormaPagamento[];
   total: number;
+  moeda: string;
   estado: string;
   itens: ItemEncomendaResposta[];
 }

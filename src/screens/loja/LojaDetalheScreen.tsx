@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { getLoja, getProdutosPorLoja, type Loja, type Produto } from '../../api/loja';
 import { useLocalizacao } from '../../hooks/useLocalizacao';
 import { labelMetodoPagamento, iconeMetodoPagamento } from '../../constants/metodosPagamento';
+import { formatarPreco } from '../../constants/moeda';
 import CarrinhoFixo from '../../components/loja/CarrinhoFixo';
 import ErrorView from '../../components/ErrorView';
 import LoadingView from '../../components/LoadingView';
@@ -44,7 +45,7 @@ export default function LojaDetalheScreen({ route, navigation }: MaisScreenProps
     if (!loja) return;
     const produto: Produto = {
       ...produtoResumido,
-      loja: { id: loja.id, nome: loja.nome, morada: loja.morada, latitude: loja.latitude, longitude: loja.longitude },
+      loja: { id: loja.id, nome: loja.nome, morada: loja.morada, latitude: loja.latitude, longitude: loja.longitude, moeda: loja.moeda },
       distanciaKm: loja.distanciaKm,
     };
     navigation.navigate('LojaProduto', { produto });
@@ -118,11 +119,11 @@ export default function LojaDetalheScreen({ route, navigation }: MaisScreenProps
                 <Text style={styles.produtoNome} numberOfLines={2}>{p.nome}</Text>
                 {p.precoPromocional != null ? (
                   <View style={styles.precoPromoRow}>
-                    <Text style={styles.precoRiscado}>{p.preco.toFixed(2)} Kz</Text>
-                    <Text style={styles.precoPromo}>{p.precoPromocional.toFixed(2)} Kz</Text>
+                    <Text style={styles.precoRiscado}>{formatarPreco(p.preco, loja?.moeda)}</Text>
+                    <Text style={styles.precoPromo}>{formatarPreco(p.precoPromocional, loja?.moeda)}</Text>
                   </View>
                 ) : (
-                  <Text style={styles.preco}>{p.preco.toFixed(2)} Kz</Text>
+                  <Text style={styles.preco}>{formatarPreco(p.preco, loja?.moeda)}</Text>
                 )}
               </View>
             </TouchableOpacity>

@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import type { Produto } from '../api/loja';
 
-// v2: os artigos passaram a ter uma loja associada (marketplace multi-loja)
-const STORAGE_KEY = '@ndatava_carrinho_v2';
+// v3: os artigos passaram a ter uma moeda associada (cada loja vende na sua própria)
+const STORAGE_KEY = '@ndatava_carrinho_v3';
 
 export interface ItemCarrinho {
   produtoId: number;
@@ -12,19 +12,29 @@ export interface ItemCarrinho {
   quantidade: number;
   lojaId: number;
   lojaNome: string;
+  moeda: string;
 }
 
 export interface GrupoCarrinho {
   lojaId: number;
   lojaNome: string;
+  moeda: string;
   itens: ItemCarrinho[];
   subtotal: number;
+}
+
+// O carrinho pode ter artigos de lojas em moedas diferentes (ex.: uma loja em Angola
+// e outra em Portugal) — por isso não existe um "total" único, mas sim um total por
+// cada moeda presente no carrinho.
+export interface TotalPorMoeda {
+  moeda: string;
+  total: number;
 }
 
 interface CarrinhoContextType {
   itens: ItemCarrinho[];
   grupos: GrupoCarrinho[];
-  total: number;
+  totaisPorMoeda: TotalPorMoeda[];
   quantidadeTotal: number;
   adicionar: (produto: Produto, quantidade?: number) => void;
   atualizarQuantidade: (produtoId: number, quantidade: number) => void;
@@ -37,7 +47,8 @@ export const CarrinhoContext = createContext<CarrinhoContextType | null>(null);
 function itemValido(i: unknown): i is ItemCarrinho {
   return !!i && typeof i === 'object'
     && typeof (i as ItemCarrinho).produtoId === 'number'
-    && typeof (i as ItemCarrinho).lojaId === 'number';
+    && typeof (i as ItemCarrinho).lojaId === 'number'
+    && typeof (i as ItemCarrinho).moeda === 'string';
 }
 
 export function CarrinhoProvider({ children }: { children: ReactNode }) {
@@ -75,6 +86,7 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
         quantidade,
         lojaId: produto.loja.id,
         lojaNome: produto.loja.nome,
+        moeda: produto.loja.moeda,
       }];
     });
   }, []);
@@ -92,7 +104,6 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
 
   const limpar = useCallback(() => setItens([]), []);
 
-  const total = useMemo(() => itens.reduce((s, i) => s + i.preco * i.quantidade, 0), [itens]);
   const quantidadeTotal = useMemo(() => itens.reduce((s, i) => s + i.quantidade, 0), [itens]);
 
   const grupos = useMemo<GrupoCarrinho[]>(() => {
@@ -100,7 +111,7 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
     for (const item of itens) {
       let grupo = mapa.get(item.lojaId);
       if (!grupo) {
-        grupo = { lojaId: item.lojaId, lojaNome: item.lojaNome, itens: [], subtotal: 0 };
+        grupo = { lojaId: item.lojaId, lojaNome: item.lojaNome, moeda: item.moeda, itens: [], subtotal: 0 };
         mapa.set(item.lojaId, grupo);
       }
       grupo.itens.push(item);
@@ -109,8 +120,19 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
     return Array.from(mapa.values());
   }, [itens]);
 
+  const totaisPorMoeda = useMemo<TotalPorMoeda[]>(() => {
+    const mapa = new Map<string, number>();
+    for (const grupo of grupos) {
+      mapa.set(grupo.moeda, (mapa.get(grupo.moeda) ?? 0) + grupo.subtotal);
+    }
+    return Array.from(mapa.entries()).map(([moeda, total]) => ({ moeda, total }));
+  }, [grupos]);
+
   return (
-    <CarrinhoContext.Provider value={{ itens, grupos, total, quantidadeTotal, adicionar, atualizarQuantidade, removerItem, limpar }}>
+    <CarrinhoContext.Provider value={{
+      itens, grupos, totaisPorMoeda, quantidadeTotal,
+      adicionar, atualizarQuantidade, removerItem, limpar,
+    }}>
       {children}
     </CarrinhoContext.Provider>
   );
