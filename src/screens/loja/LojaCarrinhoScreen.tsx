@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
@@ -21,6 +21,9 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
   const [observacoes, setObservacoes] = useState('');
   const [aEnviar, setAEnviar] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const refContacto = useRef<TextInput>(null);
+  const refMorada = useRef<TextInput>(null);
+  const refObservacoes = useRef<TextInput>(null);
 
   const finalizarEncomenda = async () => {
     if (!nome.trim() || !contacto.trim()) {
@@ -63,7 +66,11 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 24}
+    >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         {grupos.map(grupo => (
           <View key={grupo.lojaId} style={styles.card}>
@@ -129,16 +136,26 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
           <View style={styles.separator} />
 
           <Text style={styles.label}>Nome *</Text>
-          <TextInput style={styles.input} value={nome} onChangeText={setNome} placeholder="O seu nome" placeholderTextColor={COLORS.textSecondary} />
+          <TextInput
+            style={styles.input} value={nome} onChangeText={setNome} placeholder="O seu nome" placeholderTextColor={COLORS.textSecondary}
+            returnKeyType="next" blurOnSubmit={false} onSubmitEditing={() => refContacto.current?.focus()}
+          />
 
           <Text style={styles.label}>Contacto (telefone ou email) *</Text>
-          <TextInput style={styles.input} value={contacto} onChangeText={setContacto} placeholder="923 000 000" placeholderTextColor={COLORS.textSecondary} />
+          <TextInput
+            ref={refContacto} style={styles.input} value={contacto} onChangeText={setContacto} placeholder="923 000 000" placeholderTextColor={COLORS.textSecondary}
+            returnKeyType="next" blurOnSubmit={false} onSubmitEditing={() => refMorada.current?.focus()}
+          />
 
           <Text style={styles.label}>Morada / local de entrega (opcional)</Text>
-          <TextInput style={styles.input} value={morada} onChangeText={setMorada} placeholder="Bairro, referência..." placeholderTextColor={COLORS.textSecondary} />
+          <TextInput
+            ref={refMorada} style={styles.input} value={morada} onChangeText={setMorada} placeholder="Bairro, referência..." placeholderTextColor={COLORS.textSecondary}
+            returnKeyType="next" blurOnSubmit={false} onSubmitEditing={() => refObservacoes.current?.focus()}
+          />
 
           <Text style={styles.label}>Observações (opcional)</Text>
           <TextInput
+            ref={refObservacoes}
             style={[styles.input, styles.inputMultilinha]}
             value={observacoes}
             onChangeText={setObservacoes}

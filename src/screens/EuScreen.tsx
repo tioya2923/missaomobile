@@ -3,15 +3,15 @@ import * as ImagePicker from 'expo-image-picker';
 import * as LocalAuth from 'expo-local-authentication';
 import { useCallback, useEffect, useRef, useState, RefObject } from 'react';
 import {
-  Alert, Image, KeyboardAvoidingView, Linking, Platform, ScrollView, StyleSheet,
+  Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
   Text, TextInput, TouchableOpacity, View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { COLORS, FONTS } from '../constants/theme';
-import { WEB_BASE_URL } from '../constants/api';
 import LogoLob from '../components/LogoLob';
 import MinhasActividadesScreen from './MinhasActividadesScreen';
+import VendedorArea from './VendedorArea';
 
 const STORAGE_KEY  = '@ndatava_perfil';
 const SECURITY_KEY = '@ndatava_seguranca';
@@ -22,7 +22,7 @@ type CampoData     = 'nascimento' | 'baptismo' | 'comunhao' | 'crisma' | 'casame
 type CampoTexto    = 'diocese' | 'paroquia' | 'centroMissionario' | 'catequese';
 type CampoAtivo    = 'nome' | CampoData | CampoTexto;
 type TipoSeguranca = 'nenhuma' | 'sistema' | 'pin';
-type Vista         = 'hub' | 'perfil' | 'actividades';
+type Vista         = 'hub' | 'perfil' | 'actividades' | 'vendedor';
 type Perfil = {
   foto: string; nome: string;
   nascimento: DataCampo; baptismo: DataCampo; comunhao: DataCampo;
@@ -435,16 +435,12 @@ export default function EuScreen() {
           <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.hubCard}
-          onPress={()=>Linking.openURL(`${WEB_BASE_URL}/loja/login`)}
-          activeOpacity={0.8}
-        >
+        <TouchableOpacity style={styles.hubCard} onPress={()=>setVista('vendedor')} activeOpacity={0.8}>
           <View style={styles.hubIcone}>
             <Ionicons name="storefront-outline" size={26} color={COLORS.navbar}/>
           </View>
           <Text style={styles.hubCardTxt}>Vender no Ndatava</Text>
-          <Ionicons name="open-outline" size={18} color={COLORS.textSecondary}/>
+          <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
         </TouchableOpacity>
       </View>
 
@@ -485,6 +481,11 @@ export default function EuScreen() {
   // 5. Actividades
   if (vista === 'actividades') return (
     <MinhasActividadesScreen onVoltar={() => setVista('hub')}/>
+  );
+
+  // 5b. Vender no Ndatava (área nativa das lojas parceiras)
+  if (vista === 'vendedor') return (
+    <VendedorArea onVoltar={() => setVista('hub')}/>
   );
 
   // 6. Perfil

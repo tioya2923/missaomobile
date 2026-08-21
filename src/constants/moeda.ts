@@ -21,3 +21,17 @@ export function formatarPreco(valor: number, moeda?: string | null): string {
   const numero = valor.toFixed(2);
   return info.antes ? `${info.simbolo}${numero}` : `${numero} ${info.simbolo}`;
 }
+
+// Lista com rótulo por país, para seletores (ex.: registo/perfil de loja).
+export const MOEDAS_LISTA: { codigo: string; label: string }[] = [
+  { codigo: 'AOA', label: 'Kwanza (Angola)' },
+  { codigo: 'EUR', label: 'Euro (Portugal)' },
+  { codigo: 'BRL', label: 'Real (Brasil)' },
+  { codigo: 'MZN', label: 'Metical (Moçambique)' },
+  { codigo: 'CVE', label: 'Escudo (Cabo Verde)' },
+  { codigo: 'USD', label: 'Dólar (outros países)' },
+];
+
+export function labelMoeda(codigo: string): string {
+  return MOEDAS_LISTA.find((m) => m.codigo === codigo)?.label ?? codigo;
+}
