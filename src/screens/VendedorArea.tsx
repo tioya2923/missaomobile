@@ -6,8 +6,8 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONTS } from '../constants/theme';
-import { MOEDAS_LISTA, formatarPreco } from '../constants/moeda';
-import { METODOS_PAGAMENTO } from '../constants/metodosPagamento';
+import { MOEDAS_LISTA, formatarPreco, labelMoeda } from '../constants/moeda';
+import { METODOS_PAGAMENTO, metodosPorMoeda } from '../constants/metodosPagamento';
 import { useLocalizacao } from '../hooks/useLocalizacao';
 import { useLojaAuth } from '../context/useLojaAuth';
 import AdminArea from './AdminArea';
@@ -808,9 +808,17 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
 
         <View style={styles.campo}>
           <Text style={styles.label}>Moeda em que a loja vende</Text>
-          <SeletorMoeda valor={perfil.moeda} onEscolher={(v) => setPerfil((p) => (p ? { ...p, moeda: v } : p))} />
+          <SeletorMoeda
+            valor={perfil.moeda}
+            onEscolher={(v) => setPerfil((p) => {
+              if (!p) return p;
+              const validos = metodosPorMoeda(v).map((m) => m.codigo);
+              return { ...p, moeda: v, formasPagamento: p.formasPagamento.filter((f) => validos.includes(f.metodo)) };
+            })}
+          />
           <Text style={styles.ajuda}>
-            Todos os seus produtos e novas encomendas passam a usar esta moeda. Encomendas já feitas mantêm a moeda em que foram criadas.
+            Todos os seus produtos e novas encomendas passam a usar esta moeda. Encomendas já feitas mantêm a moeda
+            em que foram criadas. As formas de pagamento abaixo também mudam consoante o país da moeda escolhida.
           </Text>
         </View>
       </View>
@@ -824,8 +832,8 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.label}>Formas de pagamento aceites</Text>
-        {METODOS_PAGAMENTO.map((metodo) => {
+        <Text style={styles.label}>Formas de pagamento aceites em {labelMoeda(perfil.moeda)}</Text>
+        {metodosPorMoeda(perfil.moeda).map((metodo) => {
           const selecionado = perfil.formasPagamento.find((f) => f.metodo === metodo.codigo);
           return (
             <View key={metodo.codigo} style={styles.metodoBox}>
