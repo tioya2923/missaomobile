@@ -1,5 +1,5 @@
 export const COLORS = {
-  primary:        '#1976d2',   // links e botões de acção
+  primary:        '#7a1f2b',   // links e botões de acção (bordô)
   secondary:      '#5c6bc0',
   background:     '#f5f5f5',   // igual à web
   surface:        '#ffffff',
