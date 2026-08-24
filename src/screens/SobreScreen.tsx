@@ -9,9 +9,10 @@ export default function SobreScreen() {
         <View style={styles.separator} />
         <Text style={styles.texto}>
           Bem-vindo ao <Text style={styles.bold}>NDATAVA</Text> — <Text style={styles.bold}>Ide e Anunciai</Text>.{'\n\n'}
-          Somos um espaço de aprendizagem e maturidade cristãs. A nossa missão é difundir a mensagem do Evangelho e fortalecer a fé católica através dos meios de comunicação social, promovendo a Evangelização, Catequese, Formação e Informação Religiosa com dedicação.{'\n\n'}
-          <Text style={styles.bold}>Nossa Missão:</Text> Evangelização, Catequese, Formação e Informação Religiosa.{'\n\n'}
-          <Text style={styles.bold}>Catequese:</Text> Educamos e nutrimos a fé daqueles que procuram entender os princípios fundamentais da nossa fé.{'\n\n'}
+          O Ndatava nasceu para pôr a vida da Igreja ao alcance de um toque: o calendário litúrgico do dia, cânticos completos para a missa e catequese — em português, umbundu, latim e kimbundu — para que cada comunidade encontre a liturgia na sua própria língua.{'\n\n'}
+          <Text style={styles.bold}>O que encontra aqui:</Text> o calendário litúrgico diário, com leituras e cor do ofício; cânticos organizados por momento da celebração; catecismo e orações fundamentais, com pesquisa; e uma loja onde pequenas lojas e artesãos católicos vendem artigos religiosos diretamente na app.{'\n\n'}
+          <Text style={styles.bold}>Para quem é:</Text> paroquianos, catequistas, ministros de música e todos os que querem trazer a liturgia consigo, mesmo longe da paróquia ou sem ligação constante à internet.{'\n\n'}
+          Continuamos a construir o Ndatava com a mesma dedicação de sempre — a difundir a mensagem do Evangelho e a fortalecer a fé, através da Evangelização, Catequese, Formação e Informação Religiosa.{'\n\n'}
           <Text style={styles.bold}>NDATAVA — ide e anunciai — Unidos na fé, guiados pelo amor e fortalecidos pela esperança!</Text>
         </Text>
       </View>
