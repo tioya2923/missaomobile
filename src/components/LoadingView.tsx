@@ -4,7 +4,7 @@ import { COLORS, FONTS } from '../constants/theme';
 export default function LoadingView() {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color={COLORS.text} />
+      <ActivityIndicator size="large" color={COLORS.navbar} />
       <Text style={styles.text}>A carregar...</Text>
     </View>
   );

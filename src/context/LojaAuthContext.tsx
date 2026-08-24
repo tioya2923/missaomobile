@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { loginLoja, registarLoja, type RegistoLojaPayload } from '../api/vendedor';
 import { loginGestor } from '../api/admin';
+import { definirAoExpirarSessao } from '../api/client';
 
 // Reutiliza a mesma chave que o cliente axios (src/api/client.ts) já lê para
 // anexar o cabeçalho Authorization a todos os pedidos autenticados. Só pode
@@ -46,6 +47,10 @@ export function LojaAuthProvider({ children }: { children: ReactNode }) {
         setTipo(tp === 'gestor' ? 'gestor' : tp === 'loja' ? 'loja' : null);
       }
       setCarregado(true);
+    }).catch(() => {
+      // Falha a ler o armazenamento local — trata como sessão não iniciada em
+      // vez de deixar a área de vendedor/administrador presa no carregamento.
+      setCarregado(true);
     });
   }, []);
 
@@ -84,6 +89,14 @@ export function LojaAuthProvider({ children }: { children: ReactNode }) {
     setLojaId(null);
     setTipo(null);
   }, []);
+
+  // Regista o logout como reação a um 401 do servidor (sessão expirada), para
+  // que a app volte sozinha ao ecrã de entrada em vez de ficar a mostrar
+  // erros genéricos em cada ação depois do token deixar de ser válido.
+  useEffect(() => {
+    definirAoExpirarSessao(() => { logout(); });
+    return () => definirAoExpirarSessao(null);
+  }, [logout]);
 
   const value = useMemo<LojaAuthContextType>(() => ({
     token, nome, lojaId, tipo, isAuthenticated: !!token, isLoja: !!token && tipo === 'loja', isGestor: !!token && tipo === 'gestor',

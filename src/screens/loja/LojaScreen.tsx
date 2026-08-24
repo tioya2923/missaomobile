@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Image, Keyboard, KeyboardAvoidingView, Platform, RefreshControl, ScrollView,
+  StyleSheet, Text, TextInput, TouchableOpacity, View,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getLojas, getProdutos, type Loja, type Produto } from '../../api/loja';
 import { useLocalizacao } from '../../hooks/useLocalizacao';
@@ -18,6 +21,7 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
   const [lojas, setLojas] = useState<Loja[]>([]);
   const [pesquisa, setPesquisa] = useState('');
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { coords, estado, pedir } = useLocalizacao();
 
@@ -40,11 +44,31 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
 
   useEffect(() => { load(); }, [load]);
 
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      const [dadosProdutos, dadosLojas] = await Promise.all([
+        getProdutos({ q: pesquisa.trim() || undefined, coords }),
+        getLojas(coords),
+      ]);
+      setProdutos(dadosProdutos);
+      setLojas(dadosLojas);
+      setError(null);
+    } catch {
+      setError('Não foi possível carregar a loja.');
+    } finally {
+      setRefreshing(false);
+    }
+  }, [pesquisa, coords]);
+
   if (loading) return <LoadingView />;
   if (error) return <ErrorView message={error} onRetry={load} />;
 
   return (
-    <View style={{ flex: 1, backgroundColor: COLORS.background }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: COLORS.background }}
+      behavior={Platform.OS === 'ios' ? 'height' : undefined}
+    >
       <View style={styles.buscaRow}>
         <Ionicons name="search-outline" size={18} color={COLORS.textSecondary} />
         <TextInput
@@ -54,6 +78,7 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
           placeholder="Pesquisar artigos…"
           placeholderTextColor={COLORS.textSecondary}
           returnKeyType="search"
+          onSubmitEditing={Keyboard.dismiss}
         />
         {pesquisa.length > 0 && (
           <TouchableOpacity onPress={() => setPesquisa('')}>
@@ -88,7 +113,11 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
             </Text>
           </View>
         ) : (
-          <ScrollView contentContainerStyle={styles.grid}>
+          <ScrollView
+            contentContainerStyle={styles.grid}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.navbar} colors={[COLORS.navbar]} />}
+            keyboardShouldPersistTaps="handled"
+          >
             {produtos.some(p => p.emDestaque) && (
               <View style={styles.destaqueTitulo}>
                 <Ionicons name="star" size={14} color="#c0392b" />
@@ -143,7 +172,11 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
             <Text style={styles.empty}>Ainda não há lojas parceiras registadas.</Text>
           </View>
         ) : (
-          <ScrollView contentContainerStyle={styles.listaLojas}>
+          <ScrollView
+            contentContainerStyle={styles.listaLojas}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.navbar} colors={[COLORS.navbar]} />}
+            keyboardShouldPersistTaps="handled"
+          >
             {lojas.map(l => (
               <TouchableOpacity
                 key={l.id}
@@ -170,7 +203,7 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
       )}
 
       <CarrinhoFixo onPress={() => navigation.navigate('LojaCarrinho')} />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

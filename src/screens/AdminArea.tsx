@@ -45,6 +45,19 @@ function CabecalhoAdmin({ onVoltar, acao }: { onVoltar: () => void; acao?: React
   );
 }
 
+// Estado de erro ao carregar uma lista — sem isto, um pedido falhado mostrava
+// silenciosamente "ainda não há dados", confundindo-se com uma lista vazia real.
+function ErroCarregar({ onTentar }: { onTentar: () => void }) {
+  return (
+    <View style={styles.centro}>
+      <Text style={styles.erro}>Não foi possível carregar. Verifique a ligação.</Text>
+      <TouchableOpacity style={styles.btnSecundario} onPress={onTentar} activeOpacity={0.8}>
+        <Text style={styles.btnSecundarioTxt}>Tentar novamente</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 // ── Ecrã principal ───────────────────────────────────────────────────────
 // Área nativa de administração — replica o que existe no site (/admin), para
 // o gestor geral não precisar de sair da app.
@@ -389,10 +402,14 @@ function AdminResourceCrud({ recursoKey, onVoltar }: { recursoKey: string; onVol
 function AdminLojasScreen({ onVoltar }: { onVoltar: () => void }) {
   const [lojas, setLojas] = useState<LojaAdmin[]>([]);
   const [loading, setLoading] = useState(true);
+  const [erroCarregar, setErroCarregar] = useState(false);
 
   const carregar = useCallback(async () => {
     setLoading(true);
-    try { setLojas(await getLojasAdmin()); } finally { setLoading(false); }
+    setErroCarregar(false);
+    try { setLojas(await getLojasAdmin()); }
+    catch { setErroCarregar(true); }
+    finally { setLoading(false); }
   }, []);
   useEffect(() => { carregar(); }, [carregar]);
 
@@ -424,6 +441,8 @@ function AdminLojasScreen({ onVoltar }: { onVoltar: () => void }) {
 
       {loading ? (
         <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />
+      ) : erroCarregar ? (
+        <ErroCarregar onTentar={carregar} />
       ) : lojas.length === 0 ? (
         <Text style={styles.vazio}>Ainda não há lojas registadas.</Text>
       ) : (
@@ -474,10 +493,14 @@ function AdminLojasScreen({ onVoltar }: { onVoltar: () => void }) {
 function AdminEncomendasScreen({ onVoltar }: { onVoltar: () => void }) {
   const [encomendas, setEncomendas] = useState<EncomendaAdmin[]>([]);
   const [loading, setLoading] = useState(true);
+  const [erroCarregar, setErroCarregar] = useState(false);
 
   const carregar = useCallback(async () => {
     setLoading(true);
-    try { setEncomendas(await getEncomendasAdmin()); } finally { setLoading(false); }
+    setErroCarregar(false);
+    try { setEncomendas(await getEncomendasAdmin()); }
+    catch { setErroCarregar(true); }
+    finally { setLoading(false); }
   }, []);
   useEffect(() => { carregar(); }, [carregar]);
 
@@ -509,6 +532,8 @@ function AdminEncomendasScreen({ onVoltar }: { onVoltar: () => void }) {
 
       {loading ? (
         <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />
+      ) : erroCarregar ? (
+        <ErroCarregar onTentar={carregar} />
       ) : encomendas.length === 0 ? (
         <Text style={styles.vazio}>Ainda não existem encomendas.</Text>
       ) : (
@@ -566,12 +591,16 @@ function AdminEncomendasScreen({ onVoltar }: { onVoltar: () => void }) {
 function AdminVendasScreen({ onVoltar }: { onVoltar: () => void }) {
   const [resumo, setResumo] = useState<ResumoVendas | null>(null);
   const [loading, setLoading] = useState(true);
+  const [erroCarregar, setErroCarregar] = useState(false);
   const [aEnviar, setAEnviar] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);
 
   const carregar = useCallback(async () => {
     setLoading(true);
-    try { setResumo(await getResumoVendas()); } finally { setLoading(false); }
+    setErroCarregar(false);
+    try { setResumo(await getResumoVendas()); }
+    catch { setErroCarregar(true); }
+    finally { setLoading(false); }
   }, []);
   useEffect(() => { carregar(); }, [carregar]);
 
@@ -620,6 +649,8 @@ function AdminVendasScreen({ onVoltar }: { onVoltar: () => void }) {
 
       {loading ? (
         <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />
+      ) : erroCarregar ? (
+        <ErroCarregar onTentar={carregar} />
       ) : !resumo || resumo.lojas.length === 0 ? (
         <Text style={styles.vazio}>Ainda não há encomendas registadas.</Text>
       ) : (
@@ -652,7 +683,7 @@ function AdminVendasScreen({ onVoltar }: { onVoltar: () => void }) {
 // ── Estilos ───────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  centro: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.background },
+  centro: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.background, gap: 16, padding: 24 },
 
   painelHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   voltarBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 8 },

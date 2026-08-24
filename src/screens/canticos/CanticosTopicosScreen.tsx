@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { getTopicos, type Topico } from '../../api/canticos';
 import ErrorView from '../../components/ErrorView';
 import ListItem from '../../components/ListItem';
 import LoadingView from '../../components/LoadingView';
-import { COLORS } from '../../constants/theme';
+import { COLORS, FONTS } from '../../constants/theme';
 import type { CanticosScreenProps } from '../../navigation/types';
 
 export default function CanticosTopicosScreen({ route, navigation }: CanticosScreenProps<'CanticosTopicos'>) {
@@ -26,13 +26,27 @@ export default function CanticosTopicosScreen({ route, navigation }: CanticosScr
   }, [idioma]);
 
   useEffect(() => {
-    const titulos = { pt: 'Cânticos — Português', ub: 'Cânticos — Umbundu', lat: 'Cânticos — Latim' };
+    const titulos = {
+      pt: 'Cânticos — Português',
+      ub: 'Cânticos — Umbundu',
+      lat: 'Cânticos — Latim',
+      kmb: 'Cânticos — Kimbundu',
+      otc: 'Cânticos — Otchikwama',
+    };
     navigation.setOptions({ title: titulos[idioma] });
     load();
   }, [idioma, load, navigation]);
 
   if (loading) return <LoadingView />;
   if (error) return <ErrorView message={error} onRetry={load} />;
+
+  if (!topicos.length) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.empty}>Ainda não há cânticos disponíveis neste idioma.</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.container}>
@@ -65,5 +79,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 2,
+  },
+  emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background, padding: 32 },
+  empty: {
+    textAlign: 'center',
+    color: COLORS.textSecondary,
+    fontFamily: FONTS.serif,
+    fontStyle: 'italic',
+    fontSize: 16,
   },
 });

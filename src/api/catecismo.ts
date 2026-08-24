@@ -24,10 +24,11 @@ export interface CatecismoTexto {
   texto: string;
 }
 
-export async function getCatecismoTopicos(idioma: 'pt' | 'ub' | 'lat'): Promise<CatecismoTopico[]> {
+export async function getCatecismoTopicos(idioma: 'pt' | 'ub' | 'lat' | 'otc'): Promise<CatecismoTopico[]> {
   let endpoint: string;
   if (idioma === 'pt') endpoint = '/api/CatecismoPtTopicos/topicos';
   else if (idioma === 'lat') endpoint = '/api/CatecismoLatTopicos';
+  else if (idioma === 'otc') endpoint = '/api/CatecismoOtcTopicos';
   else endpoint = '/api/CatecismoUbTopicos';
   const { data } = await client.get<CatecismoTopico[]>(endpoint);
   return data;
@@ -40,28 +41,31 @@ export async function getCatecismoSubTopicos(topicoId: number): Promise<Catecism
   return data;
 }
 
-export async function getCatecismoEntradas(idioma: 'pt' | 'ub' | 'lat', topicoId: number): Promise<CatecismoEntrada[]> {
+export async function getCatecismoEntradas(idioma: 'pt' | 'ub' | 'lat' | 'otc', topicoId: number): Promise<CatecismoEntrada[]> {
   let endpoint: string;
   if (idioma === 'pt') endpoint = '/api/catecismopt';
   else if (idioma === 'lat') endpoint = '/api/CatecismoLat';
+  else if (idioma === 'otc') endpoint = '/api/CatecismoOtc';
   else endpoint = '/api/catecismoub';
   const { data } = await client.get<CatecismoEntrada[]>(endpoint, { params: { topicoId } });
   return data;
 }
 
-export async function getCatecismoTitulos(idioma: 'pt' | 'ub' | 'lat', topicoId: number): Promise<CatecismoTitulo[]> {
+export async function getCatecismoTitulos(idioma: 'pt' | 'ub' | 'lat' | 'otc', topicoId: number): Promise<CatecismoTitulo[]> {
   let endpoint: string;
   if (idioma === 'pt') endpoint = '/api/catecismopt';
   else if (idioma === 'lat') endpoint = '/api/CatecismoLat';
+  else if (idioma === 'otc') endpoint = '/api/CatecismoOtc';
   else endpoint = '/api/catecismoub';
   const { data } = await client.get<CatecismoTitulo[]>(endpoint, { params: { topicoId } });
   return data;
 }
 
-export async function getCatecismoTexto(idioma: 'pt' | 'ub' | 'lat', id: number): Promise<CatecismoTexto> {
+export async function getCatecismoTexto(idioma: 'pt' | 'ub' | 'lat' | 'otc', id: number): Promise<CatecismoTexto> {
   let endpoint: string;
   if (idioma === 'pt') endpoint = `/api/catecismopt/${id}`;
   else if (idioma === 'lat') endpoint = `/api/CatecismoLat/${id}`;
+  else if (idioma === 'otc') endpoint = `/api/CatecismoOtc/${id}`;
   else endpoint = `/api/catecismoub/${id}`;
   const { data } = await client.get<CatecismoTexto>(endpoint);
   return data;

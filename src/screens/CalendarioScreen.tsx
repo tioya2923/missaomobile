@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-  ActivityIndicator, FlatList, Modal, ScrollView, StyleSheet,
+  ActivityIndicator, FlatList, Modal, RefreshControl, ScrollView, StyleSheet,
   Text, TouchableOpacity, View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -112,6 +112,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
   const [semanaInicio, setSemanaInicio] = useState<Date>(startOfWeek(today));
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Seletores "Ir para"
@@ -132,6 +133,18 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
   }, []);
 
   useEffect(() => { load(semanaInicio); }, [semanaInicio, load]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      setEventos(await getEventosSemana(semanaInicio));
+      setError(null);
+    } catch {
+      setError('Não foi possível carregar os eventos.');
+    } finally {
+      setRefreshing(false);
+    }
+  }, [semanaInicio]);
 
   const irParaData = () => setSemanaInicio(startOfWeek(startOfDay(new Date(selAno, selMes, 1))));
   const navSemana = (n: number) => setSemanaInicio(prev => addDays(prev, n));
@@ -184,7 +197,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
       {/* ── Conteúdo ── */}
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={COLORS.text} />
+          <ActivityIndicator size="large" color={COLORS.navbar} />
           <Text style={styles.loadingText}>A carregar...</Text>
         </View>
       ) : error ? (
@@ -195,7 +208,12 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
           </TouchableOpacity>
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.list}>
+        <ScrollView
+          contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.navbar} colors={[COLORS.navbar]} />
+          }
+        >
           {dias.map(dia => {
             const evs = eventos.filter(e => e.data?.slice(0, 10) === fmtLocal(dia));
             return (

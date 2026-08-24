@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator, ScrollView, StyleSheet, Text,
   TextInput, TouchableOpacity, View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { search, type SearchResults } from '../api/search';
 import { COLORS, FONTS } from '../constants/theme';
 
@@ -13,18 +14,43 @@ export default function PesquisaScreen() {
   const [results, setResults] = useState<SearchResults | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const ultimaPesquisa = useRef('');
 
-  const handleSearch = async () => {
-    if (!query.trim()) return;
+  const executarPesquisa = async (termo: string) => {
     try {
       setLoading(true);
       setError(null);
-      setResults(await search(query.trim()));
+      const data = await search(termo);
+      // Ignora respostas atrasadas de uma pesquisa entretanto substituída.
+      if (ultimaPesquisa.current === termo) setResults(data);
     } catch {
-      setError('Erro ao pesquisar. Tente novamente.');
+      if (ultimaPesquisa.current === termo) setError('Erro ao pesquisar. Tente novamente.');
     } finally {
-      setLoading(false);
+      if (ultimaPesquisa.current === termo) setLoading(false);
     }
+  };
+
+  // Pesquisa automaticamente enquanto o utilizador escreve, com uma pequena
+  // pausa — não é preciso tocar em "Pesquisar" para ver resultados.
+  useEffect(() => {
+    const termo = query.trim();
+    ultimaPesquisa.current = termo;
+    if (termo.length < 2) {
+      setResults(null);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+    const id = setTimeout(() => executarPesquisa(termo), 400);
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
+  const handleSearch = () => {
+    const termo = query.trim();
+    if (termo.length < 2) return;
+    ultimaPesquisa.current = termo;
+    executarPesquisa(termo);
   };
 
   const hasResults = results && Object.values(results).some(v => v.length > 0);
@@ -54,29 +80,46 @@ export default function PesquisaScreen() {
     <View style={styles.container}>
       {/* Barra de pesquisa */}
       <View style={styles.searchRow}>
-        <TextInput
-          style={styles.input}
-          placeholder="Pesquisar cânticos, catecismo..."
-          placeholderTextColor={COLORS.textSecondary}
-          value={query}
-          onChangeText={setQuery}
-          onSubmitEditing={handleSearch}
-          returnKeyType="search"
-          autoCorrect={false}
-        />
-        <TouchableOpacity style={styles.btn} onPress={handleSearch}>
-          <Text style={styles.btnText}>Pesquisar</Text>
-        </TouchableOpacity>
+        <View style={styles.inputWrap}>
+          <Ionicons name="search-outline" size={17} color={COLORS.textSecondary} />
+          <TextInput
+            style={styles.input}
+            placeholder="Pesquisar cânticos, catecismo..."
+            placeholderTextColor={COLORS.textSecondary}
+            value={query}
+            onChangeText={setQuery}
+            onSubmitEditing={handleSearch}
+            returnKeyType="search"
+            autoCorrect={false}
+          />
+          {query.length > 0 && (
+            <TouchableOpacity onPress={() => setQuery('')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+              <Ionicons name="close-circle" size={17} color={COLORS.textSecondary} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
 
-      {loading && <ActivityIndicator style={{ marginTop: 32 }} color={COLORS.text} />}
+      {!query.trim() && (
+        <View style={styles.hint}>
+          <Ionicons name="search-outline" size={30} color={COLORS.textSecondary} />
+          <Text style={styles.hintText}>O que procura?</Text>
+          <Text style={styles.hintSub}>Cânticos, temas do catecismo ou eventos do calendário.</Text>
+        </View>
+      )}
+
+      {loading && <ActivityIndicator style={{ marginTop: 32 }} color={COLORS.navbar} />}
       {error && <Text style={styles.error}>{error}</Text>}
-      {results && !hasResults && (
-        <Text style={styles.empty}>Nenhum resultado encontrado.</Text>
+      {!loading && results && !hasResults && (
+        <View style={styles.hint}>
+          <Ionicons name="file-tray-outline" size={30} color={COLORS.textSecondary} />
+          <Text style={styles.hintText}>Nenhum resultado encontrado</Text>
+          <Text style={styles.hintSub}>Tente outra palavra, ou uma palavra mais curta.</Text>
+        </View>
       )}
 
       {hasResults && (
-        <ScrollView contentContainerStyle={styles.results}>
+        <ScrollView contentContainerStyle={styles.results} keyboardShouldPersistTaps="handled">
 
           <Section title="Cânticos (Português)">
             {results!.canticos.map(item => (
@@ -183,40 +226,43 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
 
   searchRow: {
-    flexDirection: 'row',
     padding: 12,
-    gap: 8,
     backgroundColor: COLORS.surface,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
   },
-  input: {
-    flex: 1,
+  inputWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
     borderWidth: 1,
     borderColor: COLORS.border,
-    borderRadius: 6,
+    borderRadius: 10,
     paddingHorizontal: 12,
-    paddingVertical: 9,
-    fontSize: 15,
     backgroundColor: COLORS.background,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 10,
+    fontSize: 15,
     color: COLORS.text,
     fontFamily: FONTS.serif,
   },
-  btn: {
-    backgroundColor: COLORS.navbar,
-    paddingHorizontal: 14,
-    borderRadius: 6,
-    justifyContent: 'center',
-  },
-  btnText: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 14 },
 
   error: {
     color: COLORS.error, textAlign: 'center', fontFamily: FONTS.serif,
     marginTop: 24, paddingHorizontal: 16,
   },
-  empty: {
-    color: COLORS.textSecondary, textAlign: 'center', fontFamily: FONTS.serif,
-    fontStyle: 'italic', marginTop: 48, fontSize: 16,
+  hint: {
+    alignItems: 'center', justifyContent: 'center',
+    gap: 8, marginTop: 56, paddingHorizontal: 32,
+  },
+  hintText: {
+    color: COLORS.text, fontFamily: FONTS.serif, fontWeight: '700', fontSize: 16,
+  },
+  hintSub: {
+    color: COLORS.textSecondary, fontFamily: FONTS.serif, fontSize: 13,
+    textAlign: 'center', lineHeight: 19,
   },
 
   results: { padding: 16, gap: 12 },

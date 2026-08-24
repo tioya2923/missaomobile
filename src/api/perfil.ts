@@ -15,8 +15,6 @@ export interface PerfilRemoto {
   ordem:      DataCampoRemoto;
   diocese?:           string | null;
   paroquia?:          string | null;
-  centroMissionario?: string | null;
-  catequese?:         string | null;
 }
 
 export type AtualizarPerfilPayload = Omit<PerfilRemoto, 'email' | 'fotoUrl'>;

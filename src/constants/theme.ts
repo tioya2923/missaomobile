@@ -9,7 +9,6 @@ export const COLORS = {
   borderDark:     '#333333',   // separadores escuros
   error:          '#d32f2f',
   navbar:         '#181818',   // igual à web
-  gold:           '#c9a84c',   // marca — usado no logótipo (cruz) e em toques de destaque
 };
 
 export const FONTS = {

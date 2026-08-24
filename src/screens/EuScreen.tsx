@@ -19,7 +19,7 @@ const PIN_LEN      = 4;
 
 type DataCampo     = { dia: string; mes: string; ano: string };
 type CampoData     = 'nascimento' | 'baptismo' | 'comunhao' | 'crisma' | 'casamento' | 'ordem';
-type CampoTexto    = 'diocese' | 'paroquia' | 'centroMissionario' | 'catequese';
+type CampoTexto    = 'diocese' | 'paroquia';
 type CampoAtivo    = 'nome' | CampoData | CampoTexto;
 type TipoSeguranca = 'nenhuma' | 'sistema' | 'pin';
 type Vista         = 'hub' | 'perfil' | 'actividades' | 'vendedor';
@@ -27,7 +27,7 @@ type Perfil = {
   foto: string; nome: string;
   nascimento: DataCampo; baptismo: DataCampo; comunhao: DataCampo;
   crisma: DataCampo;     casamento: DataCampo; ordem: DataCampo;
-  diocese: string; paroquia: string; centroMissionario: string; catequese: string;
+  diocese: string; paroquia: string;
 };
 
 const dataVazia   = (): DataCampo => ({ dia: '', mes: '', ano: '' });
@@ -35,7 +35,7 @@ const perfilVazio = (): Perfil   => ({
   foto: '', nome: '',
   nascimento: dataVazia(), baptismo: dataVazia(), comunhao: dataVazia(),
   crisma: dataVazia(),     casamento: dataVazia(), ordem: dataVazia(),
-  diocese: '', paroquia: '', centroMissionario: '', catequese: '',
+  diocese: '', paroquia: '',
 });
 
 const CAMPOS: { chave: CampoData; label: string }[] = [
@@ -162,6 +162,12 @@ export default function EuScreen() {
 
       if (tipo === 'nenhuma') { setDesbloqueado(true); desblRef.current = true; }
       else if (tipo === 'sistema') { setTimeout(() => authFnRef.current(), 400); }
+    }).catch(() => {
+      // Falha a ler o armazenamento local — segue sem proteção em vez de
+      // deixar todo o separador "Eu" preso no ecrã de carregamento.
+      setTipoSeg('nenhuma'); tipoRef.current = 'nenhuma';
+      setCarregado(true);    carregadoRef.current = true;
+      setDesbloqueado(true); desblRef.current = true;
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -295,8 +301,6 @@ export default function EuScreen() {
   const CAMPOS_TEXTO: { chave: CampoTexto; label: string; placeholder: string }[] = [
     { chave: 'diocese',           label: 'Diocese',           placeholder: 'Nome da Diocese' },
     { chave: 'paroquia',          label: 'Paróquia',          placeholder: 'Nome da Paróquia' },
-    { chave: 'centroMissionario', label: 'Centro Missionário',placeholder: 'Nome do Centro Missionário' },
-    { chave: 'catequese',         label: 'Catequese',         placeholder: 'Nome da Catequese' },
   ];
 
   const setNome   = (v:string) => setRascunho(r=>({...r, nome: v}));

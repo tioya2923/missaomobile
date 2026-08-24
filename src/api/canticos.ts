@@ -27,16 +27,25 @@ const ORDEM_TOPICOS_PT = [
   'Cordeiro de Deus', 'Comunhão', 'Acção de Graças', 'Saída',
 ];
 
-function canticosPrefix(idioma: 'pt' | 'ub' | 'lat'): string {
+type Idioma = 'pt' | 'ub' | 'lat' | 'kmb' | 'otc';
+
+function canticosPrefix(idioma: Idioma): string {
   if (idioma === 'pt') return '/api/Canticos';
   if (idioma === 'lat') return '/api/CanticosLat';
+  if (idioma === 'kmb') return '/api/kimbundu/canticos';
+  if (idioma === 'otc') return '/api/otchikwama/canticos';
   return '/api/umbundu/canticos';
 }
 
-export async function getTopicos(idioma: 'pt' | 'ub' | 'lat'): Promise<Topico[]> {
+export async function getTopicos(idioma: Idioma): Promise<Topico[]> {
+  // O Otchikwama ainda não tem nenhum cântico com letra autorizada — em
+  // vez de chamar um endpoint que não existe, devolve logo lista vazia.
+  if (idioma === 'otc') return [];
+
   let endpoint: string;
   if (idioma === 'pt') endpoint = '/api/Topicos';
   else if (idioma === 'lat') endpoint = '/api/TopicosLat';
+  else if (idioma === 'kmb') endpoint = '/api/kimbundu/topicos';
   else endpoint = '/api/umbundu/topicos';
 
   const { data } = await client.get<Topico[]>(endpoint);
@@ -48,13 +57,13 @@ export async function getTopicos(idioma: 'pt' | 'ub' | 'lat'): Promise<Topico[]>
   return data;
 }
 
-export async function getCanticosPorTopico(idioma: 'pt' | 'ub' | 'lat', slug: string): Promise<CanticoResumo[]> {
+export async function getCanticosPorTopico(idioma: Idioma, slug: string): Promise<CanticoResumo[]> {
   const prefix = canticosPrefix(idioma);
   const { data } = await client.get<CanticoResumo[]>(`${prefix}/topico/${encodeURIComponent(slug)}`);
   return data.sort((a, b) => a.titulo.localeCompare(b.titulo, 'pt'));
 }
 
-export async function getCantico(idioma: 'pt' | 'ub' | 'lat', slug: string): Promise<Cantico> {
+export async function getCantico(idioma: Idioma, slug: string): Promise<Cantico> {
   const prefix = canticosPrefix(idioma);
   const { data } = await client.get<Cantico>(`${prefix}/${encodeURIComponent(slug)}`);
   return data;

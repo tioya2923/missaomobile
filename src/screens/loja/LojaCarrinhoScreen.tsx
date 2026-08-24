@@ -46,8 +46,9 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
       });
       limpar();
       navigation.replace('LojaConfirmacao', { encomendas });
-    } catch {
-      setErro('Não foi possível enviar a encomenda. Verifique a ligação e tente novamente.');
+    } catch (e) {
+      const dados = (e as { response?: { data?: unknown } })?.response?.data;
+      setErro(typeof dados === 'string' ? dados : 'Não foi possível enviar a encomenda. Verifique a ligação e tente novamente.');
     } finally {
       setAEnviar(false);
     }
@@ -88,7 +89,7 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
                 <View style={styles.stepper}>
                   <TouchableOpacity
                     style={styles.stepperBtn}
-                    onPress={() => atualizarQuantidade(item.produtoId, item.quantidade - 1)}
+                    onPress={() => atualizarQuantidade(item.produtoId, Math.max(1, item.quantidade - 1))}
                   >
                     <Ionicons name="remove" size={16} color={COLORS.text} />
                   </TouchableOpacity>

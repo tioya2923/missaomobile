@@ -706,7 +706,12 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
   const refMorada = useRef<TextInput>(null);
   const refCategoria = useRef<TextInput>(null);
 
-  useEffect(() => { getPerfilProprio().then(setPerfil).catch(() => {}); }, []);
+  const carregarPerfil = useCallback(() => {
+    setErro(null);
+    getPerfilProprio().then(setPerfil).catch(() => setErro('Não foi possível carregar o perfil.'));
+  }, []);
+
+  useEffect(() => { carregarPerfil(); }, [carregarPerfil]);
 
   useEffect(() => {
     if (coords) setPerfil((p) => (p ? { ...p, latitude: coords.lat, longitude: coords.lng } : p));
@@ -769,7 +774,19 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
     }
   };
 
-  if (!perfil) return <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />;
+  if (!perfil) {
+    if (erro) {
+      return (
+        <View style={styles.centro}>
+          <Text style={styles.erro}>{erro}</Text>
+          <TouchableOpacity style={styles.btnSecundario} onPress={carregarPerfil} activeOpacity={0.8}>
+            <Text style={styles.btnSecundarioTxt}>Tentar novamente</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    return <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />;
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.abaContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
@@ -888,7 +905,7 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
 // ── Estilos ───────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  centro: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.background },
+  centro: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.background, gap: 16, padding: 24 },
   container: { padding: 16, paddingBottom: 48, backgroundColor: COLORS.background },
 
   voltarBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 8 },

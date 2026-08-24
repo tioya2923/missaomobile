@@ -64,6 +64,10 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
         } catch { /* ignora */ }
       }
       setCarregado(true);
+    }).catch(() => {
+      // Falha a ler o carrinho guardado — continua com o carrinho vazio em
+      // vez de nunca marcar como carregado (o que impediria futuras gravações).
+      setCarregado(true);
     });
   }, []);
 
@@ -72,17 +76,23 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
   }, [itens, carregado]);
 
   const adicionar = useCallback((produto: Produto, quantidade = 1) => {
+    const precoAtual = produto.precoPromocional ?? produto.preco;
     setItens(atual => {
       const existente = atual.find(i => i.produtoId === produto.id);
       if (existente) {
+        // Atualiza também o preço (e nome/moeda, caso a loja os tenha mudado
+        // entretanto) — sem isto, um artigo já no carrinho ficava "congelado"
+        // no preço de quando foi adicionado, mesmo que já não fosse o atual.
+        // O total real cobrado já vinha sempre certo (o backend repriça no
+        // momento da encomenda); isto corrige o que era mostrado ao comprador.
         return atual.map(i => i.produtoId === produto.id
-          ? { ...i, quantidade: i.quantidade + quantidade }
+          ? { ...i, quantidade: i.quantidade + quantidade, preco: precoAtual, nome: produto.nome, moeda: produto.loja.moeda }
           : i);
       }
       return [...atual, {
         produtoId: produto.id,
         nome: produto.nome,
-        preco: produto.precoPromocional ?? produto.preco,
+        preco: precoAtual,
         quantidade,
         lojaId: produto.loja.id,
         lojaNome: produto.loja.nome,

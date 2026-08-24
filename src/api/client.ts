@@ -14,4 +14,21 @@ client.interceptors.request.use(async (config) => {
   return config;
 });
 
+// Quando a sessão (loja ou gestor) expira, o servidor responde 401 a partir
+// daí em todos os pedidos — sem isto, cada ecrã ficava só a mostrar "não foi
+// possível..." indefinidamente, sem indicar que é preciso entrar outra vez.
+// LojaAuthContext regista aqui a sua função de logout ao arrancar.
+let aoExpirarSessao: (() => void) | null = null;
+export function definirAoExpirarSessao(fn: (() => void) | null) {
+  aoExpirarSessao = fn;
+}
+
+client.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401) aoExpirarSessao?.();
+    return Promise.reject(error);
+  },
+);
+
 export default client;

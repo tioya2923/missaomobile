@@ -7,13 +7,20 @@ import { formatarPreco } from '../../constants/moeda';
 import { COLORS, FONTS } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
 
-// Normaliza um número angolano para o formato internacional que o WhatsApp espera
-// (sem "+", com o indicativo 244 à frente).
-function paraFormatoWhatsApp(telefone: string): string {
+// Indicativo internacional por país (derivado da moeda da loja) — sem isto, o
+// número era sempre tratado como angolano, o que gerava um link errado do
+// WhatsApp para lojas em Portugal, Brasil, Moçambique ou Cabo Verde.
+const INDICATIVO_POR_MOEDA: Record<string, string> = {
+  AOA: '244', EUR: '351', BRL: '55', MZN: '258', CVE: '238',
+};
+
+// Normaliza um número de telefone para o formato internacional que o WhatsApp
+// espera (sem "+", com o indicativo do país à frente).
+function paraFormatoWhatsApp(telefone: string, moeda: string): string {
   const digitos = telefone.replace(/\D/g, '');
-  if (digitos.startsWith('244')) return digitos;
-  if (digitos.length === 9) return `244${digitos}`;
-  return digitos;
+  const indicativo = INDICATIVO_POR_MOEDA[moeda];
+  if (!indicativo || digitos.startsWith(indicativo)) return digitos;
+  return `${indicativo}${digitos}`;
 }
 
 export default function LojaConfirmacaoScreen({ route, navigation }: MaisScreenProps<'LojaConfirmacao'>) {
@@ -37,7 +44,7 @@ export default function LojaConfirmacaoScreen({ route, navigation }: MaisScreenP
   };
 
   const enviarPorWhatsApp = (telefone: string, id: number, total: number, moeda: string) => {
-    const numero = paraFormatoWhatsApp(telefone);
+    const numero = paraFormatoWhatsApp(telefone, moeda);
     const texto = encodeURIComponent(
       `Olá! Aqui está o comprovativo de pagamento da encomenda #${id} (Total: ${formatarPreco(total, moeda)}).`
     );
