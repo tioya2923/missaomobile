@@ -37,6 +37,7 @@ export type CatecismoStackParamList = {
 export type MaisStackParamList = {
   MaisMenu: undefined;
   Sobre: undefined;
+  Privacidade: undefined;
   Contacto: undefined;
   Apoiar: undefined;
   Loja: undefined;

@@ -10,6 +10,7 @@ export default function MaisMenuScreen({ navigation }: MaisScreenProps<'MaisMenu
         <ListItem title="Loja" onPress={() => navigation.navigate('Loja')} />
         <ListItem title="Apoiar" onPress={() => navigation.navigate('Apoiar')} />
         <ListItem title="Sobre" onPress={() => navigation.navigate('Sobre')} />
+        <ListItem title="Política de Privacidade" onPress={() => navigation.navigate('Privacidade')} />
         <ListItem title="Contacto" onPress={() => navigation.navigate('Contacto')} />
       </View>
     </View>

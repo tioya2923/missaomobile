@@ -3,6 +3,7 @@ import NavBar from '../components/NavBar';
 import ApoiarScreen from '../screens/ApoiarScreen';
 import ContactoScreen from '../screens/ContactoScreen';
 import MaisMenuScreen from '../screens/MaisMenuScreen';
+import PrivacidadeScreen from '../screens/PrivacidadeScreen';
 import SobreScreen from '../screens/SobreScreen';
 import LojaScreen from '../screens/loja/LojaScreen';
 import LojaProdutoScreen from '../screens/loja/LojaProdutoScreen';
@@ -28,6 +29,7 @@ export default function MaisNavigator() {
     >
       <Stack.Screen name="MaisMenu"        component={MaisMenuScreen}        />
       <Stack.Screen name="Sobre"           component={SobreScreen}           />
+      <Stack.Screen name="Privacidade"     component={PrivacidadeScreen}     options={{ title: 'Política de Privacidade' }} />
       <Stack.Screen name="Contacto"        component={ContactoScreen}        />
       <Stack.Screen name="Apoiar"          component={ApoiarScreen}          options={{ title: 'Apoiar' }} />
       <Stack.Screen name="Loja"            component={LojaScreen}            options={{ title: 'Loja' }} />
