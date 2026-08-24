@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { CarrinhoProvider } from './src/context/CarrinhoContext';
 import { LojaAuthProvider } from './src/context/LojaAuthContext';
 import RootNavigator from './src/navigation/RootNavigator';
+import AtualizarAppModal from './src/components/AtualizarAppModal';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <NavigationContainer>
             <StatusBar style="light" />
             <RootNavigator />
+            <AtualizarAppModal />
           </NavigationContainer>
         </CarrinhoProvider>
       </LojaAuthProvider>
