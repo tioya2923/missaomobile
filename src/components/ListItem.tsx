@@ -11,12 +11,14 @@ interface Props {
 
 export default function ListItem({ title, prefix, titleBold, subtitle, onPress }: Props) {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.6}>
+      {prefix ? (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{prefix}</Text>
+        </View>
+      ) : null}
       <View style={styles.content}>
-        <Text style={[styles.title, titleBold && styles.titleBold]}>
-          {prefix ? <Text style={styles.prefix}>{prefix} </Text> : null}
-          {title}
-        </Text>
+        <Text style={[styles.title, titleBold && styles.titleBold]}>{title}</Text>
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
       </View>
       <Text style={styles.chevron}>›</Text>
@@ -28,22 +30,34 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
     backgroundColor: COLORS.surface,
+    gap: 12,
+  },
+  badge: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: COLORS.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: COLORS.primary,
+    fontFamily: FONTS.sansSerif,
   },
   content: { flex: 1 },
   title: {
-    fontSize: 17,
+    fontSize: 16,
     color: COLORS.text,
     fontFamily: FONTS.serif,
   },
   titleBold: {
-    fontWeight: '700',
-  },
-  prefix: {
     fontWeight: '700',
   },
   subtitle: {
@@ -53,8 +67,8 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   chevron: {
-    fontSize: 22,
-    color: COLORS.textSecondary,
-    marginLeft: 8,
+    fontSize: 20,
+    color: COLORS.gold,
+    marginLeft: 4,
   },
 });

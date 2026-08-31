@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
 
   card: {
     backgroundColor: COLORS.surface,
-    borderRadius: 10,
+    borderRadius: 14,
     padding: 20,
     marginBottom: 16,
     shadowColor: '#000',
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
 
   copiarBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
-    backgroundColor: COLORS.navbar, borderRadius: 8,
+    backgroundColor: COLORS.navbar, borderRadius: 16,
     paddingVertical: 9, paddingHorizontal: 12,
   },
   copiarTxt: { color: '#fff', fontSize: 13, fontWeight: '700', fontFamily: FONTS.serif },

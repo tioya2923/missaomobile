@@ -213,20 +213,20 @@ const styles = StyleSheet.create({
   buscaRow: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     backgroundColor: COLORS.surface, marginHorizontal: 16, marginTop: 12,
-    borderRadius: 10, paddingHorizontal: 12, paddingVertical: 9,
+    borderRadius: 14, paddingHorizontal: 12, paddingVertical: 9,
     borderWidth: 1, borderColor: COLORS.border,
   },
   buscaInput: { flex: 1, fontSize: 14.5, fontFamily: FONTS.serif, color: COLORS.text, padding: 0 },
 
   abas: { flexDirection: 'row', gap: 8, marginHorizontal: 16, marginTop: 12 },
-  aba: { flex: 1, paddingVertical: 9, borderRadius: 8, alignItems: 'center', backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border },
+  aba: { flex: 1, paddingVertical: 9, borderRadius: 16, alignItems: 'center', backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border },
   abaAtiva: { backgroundColor: COLORS.navbar, borderColor: COLORS.navbar },
   abaTxt: { fontSize: 13, fontWeight: '700', fontFamily: FONTS.serif, color: COLORS.textSecondary },
   abaTxtAtivo: { color: '#fff' },
 
   avisoLocalizacao: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
-    marginHorizontal: 16, marginTop: 12, padding: 10, borderRadius: 8,
+    marginHorizontal: 16, marginTop: 12, padding: 10, borderRadius: 16,
     backgroundColor: `${COLORS.primary}12`,
   },
   avisoLocalizacaoTxt: { flex: 1, fontSize: 12.5, fontFamily: FONTS.serif, color: COLORS.primary },
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   destaqueTituloTxt: { fontSize: 13, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.4 },
 
   card: {
-    width: CARD_W, backgroundColor: COLORS.surface, borderRadius: 10, overflow: 'hidden',
+    width: CARD_W, backgroundColor: COLORS.surface, borderRadius: 14, overflow: 'hidden',
     marginBottom: 4,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2,
   },
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   listaLojas: { padding: 16, paddingBottom: 90, gap: 10 },
   lojaCard: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
-    backgroundColor: COLORS.surface, borderRadius: 10, padding: 14,
+    backgroundColor: COLORS.surface, borderRadius: 14, padding: 14,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2,
   },
   lojaIcone: {

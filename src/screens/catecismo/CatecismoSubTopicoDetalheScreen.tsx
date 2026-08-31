@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 32 },
   card: {
     backgroundColor: COLORS.surface,
-    borderRadius: 8,
+    borderRadius: 16,
     padding: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

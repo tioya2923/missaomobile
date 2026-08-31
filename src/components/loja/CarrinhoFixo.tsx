@@ -40,7 +40,7 @@ export default function CarrinhoFixo({ onPress }: Props) {
 const styles = StyleSheet.create({
   barra: {
     position: 'absolute', left: 16, right: 16, bottom: 16,
-    backgroundColor: COLORS.navbar, borderRadius: 12, paddingVertical: 12, paddingHorizontal: 14,
+    backgroundColor: COLORS.navbar, borderRadius: 999, paddingVertical: 12, paddingHorizontal: 16,
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10,
     shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.25, shadowRadius: 12, elevation: 6,
   },

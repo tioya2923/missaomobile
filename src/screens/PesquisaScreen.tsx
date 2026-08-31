@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     gap: 8,
     borderWidth: 1,
     borderColor: COLORS.border,
-    borderRadius: 10,
+    borderRadius: 14,
     paddingHorizontal: 12,
     backgroundColor: COLORS.background,
   },
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   },
   sectionGroup: {
     backgroundColor: COLORS.surface,
-    borderRadius: 8,
+    borderRadius: 16,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },

@@ -344,17 +344,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderWidth: 1,
-    borderColor: COLORS.borderDark,
-    borderRadius: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
+    borderColor: COLORS.border,
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     backgroundColor: COLORS.background,
   },
   selectorText: { fontFamily: FONTS.serif, fontSize: 13, fontWeight: '700', color: COLORS.text },
   selectorArrow: { fontSize: 9, color: COLORS.textSecondary, marginLeft: 4 },
   irBtn: {
     backgroundColor: COLORS.navbar,
-    borderRadius: 4,
+    borderRadius: 999,
     paddingHorizontal: 18,
     paddingVertical: 8,
   },
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
   /* Anterior / Hoje / Próximo */
   navBtns: { flexDirection: 'row', justifyContent: 'center', gap: 8 },
   navBtn: {
-    borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 4,
+    borderWidth: 1, borderColor: COLORS.border, borderRadius: 999,
     paddingHorizontal: 14, paddingVertical: 7,
   },
   navBtnText: { fontFamily: FONTS.serif, fontSize: 13, fontWeight: '700', color: COLORS.text },
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
   },
   acessoBtn: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7,
-    backgroundColor: COLORS.navbar, borderRadius: 8, paddingVertical: 11,
+    backgroundColor: COLORS.navbar, borderRadius: 999, paddingVertical: 12,
   },
   acessoBtnApoiar: {
     backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.navbar,
@@ -397,11 +397,12 @@ const styles = StyleSheet.create({
 
   /* Card */
   card: {
-    backgroundColor: COLORS.surface, borderRadius: 8, borderWidth: 2,
-    padding: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.07, shadowRadius: 4, elevation: 2,
+    backgroundColor: COLORS.surface, borderRadius: 16,
+    borderLeftWidth: 5,
+    padding: 14, shadowColor: '#3a2a1f', shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06, shadowRadius: 8, elevation: 2,
   },
-  cardToday: { shadowOpacity: 0.18, elevation: 5 },
+  cardToday: { shadowOpacity: 0.16, elevation: 5 },
   cardTop: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 8 },
   cardTitulo: {
     flex: 1, fontSize: 15, fontWeight: '700',
@@ -427,7 +428,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
   },
   modalBox: {
-    backgroundColor: COLORS.surface, borderRadius: 10,
+    backgroundColor: COLORS.surface, borderRadius: 16,
     width: 220, maxHeight: 320,
     overflow: 'hidden',
     shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
@@ -442,6 +443,6 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, gap: 16 },
   loadingText: { fontFamily: FONTS.serif, fontStyle: 'italic', color: COLORS.textSecondary, fontSize: 15 },
   errorText: { color: COLORS.error, fontFamily: FONTS.serif, fontSize: 16, textAlign: 'center' },
-  retryBtn: { backgroundColor: COLORS.text, paddingHorizontal: 24, paddingVertical: 12, borderRadius: 8 },
+  retryBtn: { backgroundColor: COLORS.primary, paddingHorizontal: 26, paddingVertical: 12, borderRadius: 999 },
   retryText: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 15 },
 });

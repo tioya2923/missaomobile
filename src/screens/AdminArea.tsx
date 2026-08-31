@@ -704,37 +704,37 @@ const styles = StyleSheet.create({
   grupoItemSep: { borderBottomWidth: 1, borderBottomColor: COLORS.border },
   grupoItemTxt: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.serif, fontWeight: '600' },
 
-  card: { backgroundColor: COLORS.surface, borderRadius: 10, padding: 16, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2 },
+  card: { backgroundColor: COLORS.surface, borderRadius: 14, padding: 16, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2 },
   secaoTitulo: { fontSize: 16, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, marginBottom: 4 },
   campo: { marginBottom: 14 },
   label: { fontSize: 11, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
-  input: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.serif, borderWidth: 1, borderColor: COLORS.border, borderRadius: 8, paddingVertical: 10, paddingHorizontal: 12 },
+  input: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.serif, borderWidth: 1, borderColor: COLORS.border, borderRadius: 16, paddingVertical: 10, paddingHorizontal: 12 },
   inputMultilinha: { minHeight: 90, textAlignVertical: 'top' },
 
   btnPrimario: {
-    backgroundColor: COLORS.navbar, borderRadius: 10, paddingVertical: 14, paddingHorizontal: 24,
+    backgroundColor: COLORS.navbar, borderRadius: 14, paddingVertical: 14, paddingHorizontal: 24,
     alignItems: 'center', justifyContent: 'center', minHeight: 50,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.12, shadowRadius: 5, elevation: 2,
   },
   btnPrimarioTxt: { color: '#fff', fontSize: 15, fontWeight: '700', fontFamily: FONTS.serif, letterSpacing: 0.2 },
   btnSecundario: {
-    borderWidth: 1.5, borderColor: COLORS.borderDark, borderRadius: 10, paddingVertical: 14, paddingHorizontal: 24,
+    borderWidth: 1.5, borderColor: COLORS.borderDark, borderRadius: 14, paddingVertical: 14, paddingHorizontal: 24,
     alignItems: 'center', justifyContent: 'center', minHeight: 50, backgroundColor: COLORS.surface,
   },
   btnSecundarioTxt: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, letterSpacing: 0.2 },
   formAcoesBtn: { flex: 1 },
   formAcoes: { flexDirection: 'row', gap: 10, marginTop: 4 },
 
-  btnPrimarioPequeno: { backgroundColor: COLORS.navbar, borderRadius: 8, paddingVertical: 8, paddingHorizontal: 14 },
+  btnPrimarioPequeno: { backgroundColor: COLORS.navbar, borderRadius: 16, paddingVertical: 8, paddingHorizontal: 14 },
   btnPrimarioPequenoTxt: { color: '#fff', fontSize: 13, fontWeight: '700', fontFamily: FONTS.serif },
-  btnSecundarioPequeno: { borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 8, paddingVertical: 6, paddingHorizontal: 12 },
+  btnSecundarioPequeno: { borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 16, paddingVertical: 6, paddingHorizontal: 12 },
   btnSecundarioPequenoTxt: { fontSize: 12, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif },
-  btnPerigoPequeno: { borderWidth: 1, borderColor: COLORS.error, borderRadius: 8, paddingVertical: 6, paddingHorizontal: 12 },
+  btnPerigoPequeno: { borderWidth: 1, borderColor: COLORS.error, borderRadius: 16, paddingVertical: 6, paddingHorizontal: 12 },
   btnPerigoPequenoTxt: { fontSize: 12, fontWeight: '600', color: COLORS.error, fontFamily: FONTS.serif },
 
   vazio: { textAlign: 'center', color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', marginTop: 24 },
 
-  itemCard: { flexDirection: 'row', gap: 12, backgroundColor: COLORS.surface, borderRadius: 10, padding: 14, marginBottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 6, elevation: 1 },
+  itemCard: { flexDirection: 'row', gap: 12, backgroundColor: COLORS.surface, borderRadius: 14, padding: 14, marginBottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 6, elevation: 1 },
   itemTitulo: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, marginBottom: 2 },
   itemDesc: { fontSize: 13, color: COLORS.text, fontFamily: FONTS.serif },
   itemDescMuted: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 2 },
@@ -754,7 +754,7 @@ const styles = StyleSheet.create({
 
   linhaSwitch: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 6 },
 
-  aviso: { borderRadius: 10, padding: 14, marginBottom: 16 },
+  aviso: { borderRadius: 14, padding: 14, marginBottom: 16 },
   avisoOk: { backgroundColor: '#e8f5e9' },
   avisoOkTxt: { color: '#2e7d32', fontFamily: FONTS.serif, fontSize: 13, lineHeight: 19 },
   avisoInfo: { backgroundColor: '#eef4fc' },

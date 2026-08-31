@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: COLORS.surface,
-    borderRadius: 12,
+    borderRadius: 20,
     padding: 24,
     width: '100%',
     maxWidth: 380,
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   btnPrimario: {
     backgroundColor: COLORS.navbar,
     paddingVertical: 14,
-    borderRadius: 8,
+    borderRadius: 999,
     alignItems: 'center',
   },
   btnPrimarioTxt: { color: '#fff', fontSize: 15, fontWeight: '700', fontFamily: FONTS.serif },

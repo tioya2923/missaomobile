@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
   voltarTxt: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.serif, fontWeight: '600' },
   container: { paddingHorizontal: 16, paddingBottom: 32 },
 
-  aviso:    { flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: '#dbeafe', borderRadius: 10, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: '#bfdbfe' },
+  aviso:    { flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: '#dbeafe', borderRadius: 14, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: '#bfdbfe' },
   avisoTxt: { flex: 1, fontSize: 12, color: '#1e40af', fontFamily: FONTS.serif, lineHeight: 18 },
 
   secaoTitulo:  { fontSize: 11, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 10 },
@@ -613,11 +613,11 @@ const styles = StyleSheet.create({
   addBtn:   { width: 34, height: 34, borderRadius: 17, backgroundColor: COLORS.navbar, alignItems: 'center', justifyContent: 'center' },
   vazioTxt: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', textAlign: 'center', paddingVertical: 24 },
 
-  actCard:       { backgroundColor: COLORS.surface, borderRadius: 10, marginBottom: 10, shadowColor: '#000', shadowOffset:{width:0,height:2}, shadowOpacity: 0.07, shadowRadius: 6, elevation: 2, overflow: 'hidden' },
+  actCard:       { backgroundColor: COLORS.surface, borderRadius: 14, marginBottom: 10, shadowColor: '#000', shadowOffset:{width:0,height:2}, shadowOpacity: 0.07, shadowRadius: 6, elevation: 2, overflow: 'hidden' },
   actHeader:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 14 },
   actHeaderLeft: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 },
   actHeaderRight:{ flexDirection: 'row', alignItems: 'center', gap: 10 },
-  actIcone:      { width: 38, height: 38, borderRadius: 10, backgroundColor: COLORS.background, alignItems: 'center', justifyContent: 'center' },
+  actIcone:      { width: 38, height: 38, borderRadius: 14, backgroundColor: COLORS.background, alignItems: 'center', justifyContent: 'center' },
   actIconeOn:    { backgroundColor: COLORS.navbar },
   actLabel:      { fontSize: 15, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif, flex: 1 },
   actHora:       { fontSize: 14, color: COLORS.primary, fontFamily: FONTS.serif, fontWeight: '700' },
@@ -654,7 +654,7 @@ const styles = StyleSheet.create({
   barra:    { fontSize: 18, color: COLORS.textSecondary, fontFamily: FONTS.serif },
 
   modosRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 7 },
-  modoBtn:  { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 7, paddingHorizontal: 10, borderRadius: 8, borderWidth: 1, borderColor: COLORS.border, backgroundColor: COLORS.background },
+  modoBtn:  { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: 7, paddingHorizontal: 10, borderRadius: 16, borderWidth: 1, borderColor: COLORS.border, backgroundColor: COLORS.background },
   modoBtnOn:{ backgroundColor: COLORS.navbar, borderColor: COLORS.navbar },
   modoTxt:  { fontSize: 12, color: COLORS.text, fontFamily: FONTS.serif, fontWeight: '600' },
   modoTxtOn:{ color: '#fff' },
@@ -662,8 +662,8 @@ const styles = StyleSheet.create({
   inputTitulo: { fontSize: 16, color: COLORS.text, fontFamily: FONTS.serif, borderBottomWidth: 1, borderBottomColor: COLORS.borderDark, paddingVertical: 8 },
 
   actAcoes:      { flexDirection: 'row', gap: 8 },
-  btnCancelar:   { flex: 1, borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 8, paddingVertical: 12, alignItems: 'center' },
+  btnCancelar:   { flex: 1, borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 16, paddingVertical: 12, alignItems: 'center' },
   btnCancelarTxt:{ fontSize: 14, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif },
-  btnGuardar:    { flex: 2, backgroundColor: COLORS.navbar, borderRadius: 8, paddingVertical: 12, alignItems: 'center' },
+  btnGuardar:    { flex: 2, backgroundColor: COLORS.navbar, borderRadius: 16, paddingVertical: 12, alignItems: 'center' },
   btnGuardarTxt: { fontSize: 14, fontWeight: '700', color: '#fff', fontFamily: FONTS.serif },
 });

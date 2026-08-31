@@ -670,8 +670,8 @@ const styles = StyleSheet.create({
   hubCameraOverlay:{position:'absolute', bottom:0, right:0, width:28, height:28, borderRadius:14, backgroundColor:COLORS.primary, alignItems:'center', justifyContent:'center', borderWidth:2, borderColor:COLORS.background},
   hubNome:         {fontSize:20, fontWeight:'700', color:COLORS.text, fontFamily:FONTS.serif, textAlign:'center', marginBottom:36},
   hubOpcoes:       {width:'100%', gap:12},
-  hubCard:         {flexDirection:'row', alignItems:'center', gap:14, backgroundColor:COLORS.surface, borderRadius:12, paddingVertical:18, paddingHorizontal:18, shadowColor:'#000', shadowOffset:{width:0,height:2}, shadowOpacity:0.07, shadowRadius:8, elevation:2},
-  hubIcone:        {width:44, height:44, borderRadius:10, backgroundColor:COLORS.background, alignItems:'center', justifyContent:'center'},
+  hubCard:         {flexDirection:'row', alignItems:'center', gap:14, backgroundColor:COLORS.surface, borderRadius:16, paddingVertical:18, paddingHorizontal:18, shadowColor:'#000', shadowOffset:{width:0,height:2}, shadowOpacity:0.07, shadowRadius:8, elevation:2},
+  hubIcone:        {width:44, height:44, borderRadius:14, backgroundColor:COLORS.background, alignItems:'center', justifyContent:'center'},
   hubCardTxt:      {flex:1, fontSize:16, fontWeight:'600', color:COLORS.text, fontFamily:FONTS.serif},
   hubSegCard:      {width:'100%', marginTop:12},
 
@@ -682,14 +682,14 @@ const styles = StyleSheet.create({
   /* ── Bloqueio ── */
   lockScreen:  {flex:1, backgroundColor:COLORS.background, alignItems:'center', justifyContent:'center', paddingHorizontal:32},
   lockLabel:   {fontSize:16, color:COLORS.textSecondary, fontFamily:FONTS.serif, textAlign:'center', marginBottom:24},
-  lockBtn:     {flexDirection:'row', alignItems:'center', gap:10, backgroundColor:COLORS.navbar, borderRadius:10, paddingVertical:14, paddingHorizontal:28, marginTop:8},
+  lockBtn:     {flexDirection:'row', alignItems:'center', gap:10, backgroundColor:COLORS.navbar, borderRadius:999, paddingVertical:14, paddingHorizontal:28, marginTop:8},
   lockBtnTxt:  {color:'#fff', fontSize:16, fontWeight:'700', fontFamily:FONTS.serif},
   lockCancelar:    {marginTop:28},
   lockCancelarTxt: {color:COLORS.textSecondary, fontSize:14, fontFamily:FONTS.serif},
 
   /* ── PIN dots ── */
   pinDots: {flexDirection:'row', gap:18, marginBottom:8},
-  pinDot:  {width:16, height:16, borderRadius:8, borderWidth:2, borderColor:COLORS.borderDark, backgroundColor:'transparent'},
+  pinDot:  {width:16, height:16, borderRadius:16, borderWidth:2, borderColor:COLORS.borderDark, backgroundColor:'transparent'},
   pinDotOn:{backgroundColor:COLORS.text, borderColor:COLORS.text},
   pinErro: {color:COLORS.error, fontFamily:FONTS.serif, fontSize:13, textAlign:'center', minHeight:20, marginBottom:8},
 
@@ -701,7 +701,7 @@ const styles = StyleSheet.create({
   /* ── Perfil ── */
   container: {padding:16, paddingBottom:48, backgroundColor:COLORS.background},
 
-  avisoWrap:   {flexDirection:'row', alignItems:'flex-start', gap:10, backgroundColor:'#fef3c7', borderRadius:10, padding:14, marginBottom:16, borderWidth:1, borderColor:'#fde68a'},
+  avisoWrap:   {flexDirection:'row', alignItems:'flex-start', gap:10, backgroundColor:'#fef3c7', borderRadius:14, padding:14, marginBottom:16, borderWidth:1, borderColor:'#fde68a'},
   avisoTitulo: {fontSize:14, fontWeight:'700', color:'#92400e', fontFamily:FONTS.serif},
   avisoDesc:   {fontSize:12, color:'#b45309', fontFamily:FONTS.serif},
 
@@ -713,7 +713,7 @@ const styles = StyleSheet.create({
   cameraOverlay:{position:'absolute', bottom:0, right:0, width:26, height:26, borderRadius:13, backgroundColor:COLORS.primary, alignItems:'center', justifyContent:'center', borderWidth:2, borderColor:COLORS.background},
   nomeDisplay: {fontSize:18, fontWeight:'700', color:COLORS.text, fontFamily:FONTS.serif, textAlign:'center'},
 
-  card:    {backgroundColor:COLORS.surface, borderRadius:10, overflow:'hidden', shadowColor:'#000', shadowOffset:{width:0,height:2}, shadowOpacity:0.07, shadowRadius:8, elevation:2, marginBottom:20},
+  card:    {backgroundColor:COLORS.surface, borderRadius:14, overflow:'hidden', shadowColor:'#000', shadowOffset:{width:0,height:2}, shadowOpacity:0.07, shadowRadius:8, elevation:2, marginBottom:20},
   row:     {paddingVertical:14, paddingHorizontal:16, gap:6},
   sep:     {borderBottomWidth:1, borderBottomColor:COLORS.border},
   label:   {fontSize:11, fontWeight:'700', color:COLORS.textSecondary, fontFamily:FONTS.serif, textTransform:'uppercase', letterSpacing:0.5},
@@ -728,17 +728,17 @@ const styles = StyleSheet.create({
   barra:     {fontSize:18, color:COLORS.textSecondary, fontFamily:FONTS.serif},
 
   inlineAcoes:     {flexDirection:'row', justifyContent:'flex-end', gap:8, marginTop:6},
-  inlineCancelar:  {paddingVertical:5, paddingHorizontal:12, borderRadius:6, borderWidth:1, borderColor:COLORS.borderDark},
+  inlineCancelar:  {paddingVertical:5, paddingHorizontal:12, borderRadius:16, borderWidth:1, borderColor:COLORS.borderDark},
   inlineCancelarTxt:{fontSize:13, color:COLORS.text, fontFamily:FONTS.serif, fontWeight:'600'},
-  inlineGuardar:   {paddingVertical:5, paddingHorizontal:14, borderRadius:6, backgroundColor:COLORS.navbar},
+  inlineGuardar:   {paddingVertical:5, paddingHorizontal:14, borderRadius:16, backgroundColor:COLORS.navbar},
   inlineGuardarTxt:{fontSize:13, color:'#fff', fontFamily:FONTS.serif, fontWeight:'700'},
 
   botoesRow:    {flexDirection:'row', gap:10},
-  btnCancelar:  {flex:1, borderWidth:1, borderColor:COLORS.borderDark, borderRadius:8, paddingVertical:13, alignItems:'center'},
+  btnCancelar:  {flex:1, borderWidth:1, borderColor:COLORS.border, borderRadius:999, paddingVertical:13, alignItems:'center'},
   btnCancelarTxt:{fontSize:15, fontWeight:'600', color:COLORS.text, fontFamily:FONTS.serif},
-  btnGuardar:   {flex:2, backgroundColor:COLORS.navbar, borderRadius:8, paddingVertical:13, alignItems:'center'},
+  btnGuardar:   {flex:2, backgroundColor:COLORS.navbar, borderRadius:999, paddingVertical:13, alignItems:'center'},
   btnGuardarTxt:{fontSize:15, fontWeight:'700', color:'#fff', fontFamily:FONTS.serif},
-  btnEditar:    {backgroundColor:COLORS.navbar, borderRadius:8, paddingVertical:13, alignItems:'center'},
+  btnEditar:    {backgroundColor:COLORS.navbar, borderRadius:999, paddingVertical:13, alignItems:'center'},
   btnEditarTxt: {fontSize:15, fontWeight:'700', color:'#fff', fontFamily:FONTS.serif},
 
   segOpcao: {flexDirection:'row', alignItems:'center', paddingVertical:14, paddingHorizontal:16, gap:12},
@@ -746,5 +746,5 @@ const styles = StyleSheet.create({
   segDesc:  {fontSize:12, color:COLORS.textSecondary, fontFamily:FONTS.serif},
   radio:    {width:22, height:22, borderRadius:11, borderWidth:2, borderColor:COLORS.borderDark, alignItems:'center', justifyContent:'center'},
   radioOn:  {borderColor:COLORS.navbar},
-  radioPonto:{width:11, height:11, borderRadius:6, backgroundColor:COLORS.navbar},
+  radioPonto:{width:11, height:11, borderRadius:16, backgroundColor:COLORS.navbar},
 });

@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   heroTexto: { fontSize: 14.5, color: COLORS.textSecondary, fontFamily: FONTS.serif, textAlign: 'center', lineHeight: 22 },
 
   card: {
-    backgroundColor: COLORS.surface, borderRadius: 10, padding: 20, marginBottom: 16,
+    backgroundColor: COLORS.surface, borderRadius: 14, padding: 20, marginBottom: 16,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2,
   },
   cardHeader: { flexDirection: 'row', alignItems: 'center', gap: 6 },
@@ -190,22 +190,22 @@ const styles = StyleSheet.create({
   metodoValor: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 2 },
   infoAdicional: { fontSize: 12.5, color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', marginTop: 10, lineHeight: 18 },
 
-  copiarBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: COLORS.navbar, borderRadius: 8, paddingVertical: 9, paddingHorizontal: 12 },
+  copiarBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: COLORS.navbar, borderRadius: 16, paddingVertical: 9, paddingHorizontal: 12 },
   copiarTxt: { color: '#fff', fontSize: 13, fontWeight: '700', fontFamily: FONTS.serif },
 
   comprovativoBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
-    backgroundColor: '#25D366', borderRadius: 10, paddingVertical: 12, marginTop: 4,
+    backgroundColor: '#25D366', borderRadius: 14, paddingVertical: 12, marginTop: 4,
   },
   comprovativoBtnTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 14 },
   ligarBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
-    borderWidth: 1, borderColor: COLORS.primary, borderRadius: 10, paddingVertical: 10, marginTop: 8,
+    borderWidth: 1, borderColor: COLORS.primary, borderRadius: 14, paddingVertical: 10, marginTop: 8,
   },
   ligarBtnTxt: { color: COLORS.primary, fontWeight: '700', fontFamily: FONTS.serif, fontSize: 13.5 },
 
   aviso: { fontSize: 11.5, color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', marginTop: 10, lineHeight: 17 },
 
-  btnVoltar: { borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 10, paddingVertical: 13, alignItems: 'center' },
+  btnVoltar: { borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 14, paddingVertical: 13, alignItems: 'center' },
   btnVoltarTxt: { color: COLORS.text, fontWeight: '700', fontFamily: FONTS.serif, fontSize: 15 },
 });

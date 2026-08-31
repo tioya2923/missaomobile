@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background, padding: 16 },
   group: {
     backgroundColor: COLORS.surface,
-    borderRadius: 8,
+    borderRadius: 16,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

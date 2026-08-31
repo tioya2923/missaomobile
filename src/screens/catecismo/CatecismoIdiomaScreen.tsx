@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: COLORS.surface,
-    borderRadius: 8,
+    borderRadius: 16,
     padding: 32,
     width: '100%',
     maxWidth: 400,
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: COLORS.navbar,
     paddingVertical: 16,
-    borderRadius: 6,
+    borderRadius: 12,
     alignItems: 'center',
   },
   btnText: {

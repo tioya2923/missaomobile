@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { COLORS } from '../constants/theme';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { COLORS, RADIUS } from '../constants/theme';
 import NavBar from '../components/NavBar';
 import CalendarioScreen from '../screens/CalendarioScreen';
 import PesquisaScreen from '../screens/PesquisaScreen';
@@ -22,6 +24,8 @@ const ICONS: Record<keyof RootTabParamList, keyof typeof Ionicons.glyphMap> = {
 };
 
 export default function RootNavigator() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tab.Navigator
       screenOptions={({ route, navigation }) => ({
@@ -33,9 +37,22 @@ export default function RootNavigator() {
         ),
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.textSecondary,
-        tabBarStyle: { backgroundColor: COLORS.surface, borderTopColor: COLORS.border },
-        tabBarIcon: ({ color, size }) => (
-          <Ionicons name={ICONS[route.name as keyof RootTabParamList]} size={size} color={color} />
+        tabBarStyle: {
+          backgroundColor: COLORS.surface,
+          borderTopWidth: 0,
+          height: 60 + insets.bottom,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: { fontSize: 10, fontWeight: '500', fontFamily: 'sans-serif' },
+        tabBarItemStyle: { paddingHorizontal: 0 },
+        tabBarIcon: ({ color, size, focused }) => (
+          <View style={{
+            width: 40, height: 28, borderRadius: RADIUS.pill,
+            alignItems: 'center', justifyContent: 'center',
+            backgroundColor: focused ? COLORS.primaryLight : 'transparent',
+          }}>
+            <Ionicons name={ICONS[route.name as keyof RootTabParamList]} size={size} color={color} />
+          </View>
         ),
       })}
     >

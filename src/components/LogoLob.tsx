@@ -26,19 +26,13 @@ const styles = StyleSheet.create({
   navWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: 9,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.18)',
-    paddingHorizontal: 12,
-    paddingVertical: 5,
   },
   navText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '900',
+    color: COLORS.primary,
+    fontSize: 18,
+    fontWeight: '700',
     fontFamily: FONTS.serif,
-    letterSpacing: 3,
+    letterSpacing: 4,
   },
 
   /* ── Lock-screen variant ── */

@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 40, backgroundColor: COLORS.background },
 
   card: {
-    backgroundColor: COLORS.surface, borderRadius: 10, padding: 18, marginBottom: 16,
+    backgroundColor: COLORS.surface, borderRadius: 14, padding: 18, marginBottom: 16,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2,
   },
   cardTitulo: { fontSize: 13, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.5 },
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   itemPreco: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 2 },
 
   stepper: { flexDirection: 'row', alignItems: 'center', gap: 2 },
-  stepperBtn: { width: 28, height: 28, borderRadius: 6, borderWidth: 1, borderColor: COLORS.borderDark, alignItems: 'center', justifyContent: 'center' },
+  stepperBtn: { width: 28, height: 28, borderRadius: 12, borderWidth: 1, borderColor: COLORS.borderDark, alignItems: 'center', justifyContent: 'center' },
   stepperValor: { fontSize: 14, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, minWidth: 22, textAlign: 'center' },
 
   totalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 8 },
@@ -222,23 +222,23 @@ const styles = StyleSheet.create({
 
   label: { fontSize: 12.5, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 12, marginBottom: 6, textTransform: 'uppercase' },
   input: {
-    borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10,
+    borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 10,
     fontSize: 15, fontFamily: FONTS.serif, color: COLORS.text,
   },
   inputMultilinha: { minHeight: 70, textAlignVertical: 'top' },
 
   erroBox: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
-    backgroundColor: '#c0392b15', borderRadius: 8, padding: 12, marginBottom: 12,
+    backgroundColor: '#c0392b15', borderRadius: 16, padding: 12, marginBottom: 12,
   },
   erroTxt: { flex: 1, color: '#c0392b', fontFamily: FONTS.serif, fontSize: 13 },
 
-  btnFinalizar: { backgroundColor: COLORS.navbar, borderRadius: 10, paddingVertical: 15, alignItems: 'center' },
+  btnFinalizar: { backgroundColor: COLORS.navbar, borderRadius: 14, paddingVertical: 15, alignItems: 'center' },
   btnFinalizarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 16 },
   aviso: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', textAlign: 'center', marginTop: 12, lineHeight: 18 },
 
   emptyContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 14, backgroundColor: COLORS.background },
   empty: { color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', fontSize: 16, textAlign: 'center' },
-  btnVoltar: { backgroundColor: COLORS.navbar, borderRadius: 8, paddingVertical: 12, paddingHorizontal: 24 },
+  btnVoltar: { backgroundColor: COLORS.navbar, borderRadius: 16, paddingVertical: 12, paddingHorizontal: 24 },
   btnVoltarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif },
 });

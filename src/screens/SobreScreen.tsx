@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   container: { padding: 16, backgroundColor: COLORS.background },
   card: {
     backgroundColor: COLORS.surface,
-    borderRadius: 8,
+    borderRadius: 16,
     padding: 24,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

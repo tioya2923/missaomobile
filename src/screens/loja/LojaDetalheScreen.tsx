@@ -140,7 +140,7 @@ const CARD_W = '48%';
 
 const styles = StyleSheet.create({
   cabecalho: {
-    backgroundColor: COLORS.surface, margin: 16, marginTop: 12, padding: 16, borderRadius: 10, gap: 6,
+    backgroundColor: COLORS.surface, margin: 16, marginTop: 12, padding: 16, borderRadius: 14, gap: 6,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2,
   },
   nome: { fontSize: 19, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   pagamentoRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 10 },
   pagamentoChip: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
-    backgroundColor: `${COLORS.primary}12`, borderRadius: 6, paddingVertical: 4, paddingHorizontal: 8,
+    backgroundColor: `${COLORS.primary}12`, borderRadius: 12, paddingVertical: 4, paddingHorizontal: 8,
   },
   pagamentoChipTxt: { fontSize: 11, color: COLORS.primary, fontWeight: '600', fontFamily: FONTS.serif },
   infoTxt: { fontSize: 12.5, color: COLORS.textSecondary, fontFamily: FONTS.serif },
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     padding: 16, paddingTop: 4, paddingBottom: 90, gap: 12,
   },
   card: {
-    width: CARD_W, backgroundColor: COLORS.surface, borderRadius: 10, overflow: 'hidden',
+    width: CARD_W, backgroundColor: COLORS.surface, borderRadius: 14, overflow: 'hidden',
     marginBottom: 4,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2,
   },
