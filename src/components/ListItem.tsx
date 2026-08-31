@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   chevron: {
     fontSize: 20,
-    color: COLORS.gold,
+    color: COLORS.textSecondary,
     marginLeft: 4,
   },
 });

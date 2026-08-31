@@ -7,7 +7,7 @@ export const COLORS = {
   background:     '#faf7f1',   // marfim quente — mais acolhedor que o cinzento plano
   surface:        '#ffffff',
   text:           '#2a2420',   // grafite quente em vez de preto puro
-  textSecondary:  '#8a8175',
+  textSecondary:  '#6b6155',   // contraste AA garantido (6:1) sobre branco e marfim
   border:         '#ede6dc',   // linha subtil sobre o marfim
   borderDark:     '#333333',
   error:          '#b3261e',

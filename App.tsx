@@ -13,7 +13,7 @@ function App() {
       <LojaAuthProvider>
         <CarrinhoProvider>
           <NavigationContainer>
-            <StatusBar style="light" />
+            <StatusBar style="dark" />
             <RootNavigator />
             <AtualizarAppModal />
           </NavigationContainer>
