@@ -38,6 +38,9 @@ export default function CanticoDetalheScreen({ route, navigation }: CanticosScre
         <Text style={styles.titulo}>{titulo}</Text>
         <View style={styles.separator} />
         <Text style={styles.letra}>{cantico?.letra}</Text>
+        {!!cantico?.autor && (
+          <Text style={styles.autor}>Letra e Música: {cantico.autor}</Text>
+        )}
       </View>
     </ScrollView>
   );
@@ -73,5 +76,12 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     fontFamily: FONTS.serif,
     lineHeight: 28,
+  },
+  autor: {
+    fontSize: 13,
+    color: COLORS.textSecondary,
+    fontFamily: FONTS.serif,
+    textAlign: 'right',
+    marginTop: 12,
   },
 });

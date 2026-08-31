@@ -18,6 +18,7 @@ export interface Cantico {
   titulo: string;
   slug: string;
   letra: string;
+  autor?: string | null;
   pdfUrl?: string;
 }
 
