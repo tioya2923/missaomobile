@@ -1,9 +1,17 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS, FONTS } from '../constants/theme';
 
 export default function PrivacidadeScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <TouchableOpacity
+        style={styles.botaoEliminar}
+        onPress={() => Linking.openURL('https://ndatava.onrender.com/eliminar-conta')}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.botaoEliminarTxt}>Pedir eliminação da conta e dos dados</Text>
+      </TouchableOpacity>
+
       <View style={styles.card}>
         <Text style={styles.titulo}>Política de Privacidade</Text>
         <Text style={styles.data}>Última atualização: 24 de agosto de 2026</Text>
@@ -66,6 +74,21 @@ export default function PrivacidadeScreen() {
 
 const styles = StyleSheet.create({
   container: { padding: 16, backgroundColor: COLORS.background },
+  botaoEliminar: {
+    backgroundColor: COLORS.surface,
+    borderWidth: 1.5,
+    borderColor: COLORS.error,
+    borderRadius: 999,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  botaoEliminarTxt: {
+    color: COLORS.error,
+    fontWeight: '700',
+    fontFamily: FONTS.serif,
+    fontSize: 14,
+  },
   card: {
     backgroundColor: COLORS.surface,
     borderRadius: 16,

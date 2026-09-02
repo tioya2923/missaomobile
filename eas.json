@@ -12,13 +12,26 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
       }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "ios": {
+        "credentialsSource": "local"
+      }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascAppId": "6807356330",
+        "ascApiKeyPath": "./AuthKey_EAS.p8",
+        "ascApiKeyId": "9T3GZ663S5",
+        "ascApiKeyIssuerId": "a0aadf85-8891-417b-890f-2e00a2420aae"
+      }
+    }
   }
 }

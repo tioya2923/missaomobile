@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
+  ActivityIndicator, Alert, Image, KeyboardAvoidingView, Linking, Platform, ScrollView, StyleSheet,
   Switch, Text, TextInput, TouchableOpacity, View, type TextInputProps,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -898,6 +898,14 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
           {aGuardar ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnPrimarioTxt}>Guardar</Text>}
         </TouchableOpacity>
       </View>
+
+      <TouchableOpacity
+        style={styles.linkWrap}
+        onPress={() => Linking.openURL('https://ndatava.onrender.com/eliminar-conta')}
+        activeOpacity={0.7}
+      >
+        <Text style={[styles.linkTxt, { color: COLORS.error }]}>Pedir eliminação da conta e dos dados</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
