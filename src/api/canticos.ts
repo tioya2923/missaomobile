@@ -31,27 +31,32 @@ const ORDEM_TOPICOS_PT = [
 
 type Idioma = 'pt' | 'ub' | 'lat' | 'kmb' | 'otc';
 
+// Otchikwama nunca teve tabelas/endpoints próprios de cânticos — usa a API
+// genérica multi-idioma do backend (?idioma=otc) em vez de um prefixo fixo.
+const IDIOMA_GENERICO = 'otc';
+
 function canticosPrefix(idioma: Idioma): string {
   if (idioma === 'pt') return '/api/Canticos';
   if (idioma === 'lat') return '/api/CanticosLat';
   if (idioma === 'kmb') return '/api/kimbundu/canticos';
-  if (idioma === 'otc') return '/api/otchikwama/canticos';
+  if (idioma === 'otc') return '/api/canticos';
   return '/api/umbundu/canticos';
 }
 
-export async function getTopicos(idioma: Idioma): Promise<Topico[]> {
-  // O Otchikwama ainda não tem nenhum cântico com letra autorizada — em
-  // vez de chamar um endpoint que não existe, devolve logo lista vazia.
-  if (idioma === 'otc') return [];
+function paramsGenericos(idioma: Idioma) {
+  return idioma === IDIOMA_GENERICO ? { idioma } : undefined;
+}
 
+export async function getTopicos(idioma: Idioma): Promise<Topico[]> {
   return cachedFetch(`canticos:topicos:${idioma}`, async () => {
     let endpoint: string;
     if (idioma === 'pt') endpoint = '/api/Topicos';
     else if (idioma === 'lat') endpoint = '/api/TopicosLat';
     else if (idioma === 'kmb') endpoint = '/api/kimbundu/topicos';
+    else if (idioma === 'otc') endpoint = '/api/topicos';
     else endpoint = '/api/umbundu/topicos';
 
-    const { data } = await client.get<Topico[]>(endpoint);
+    const { data } = await client.get<Topico[]>(endpoint, { params: paramsGenericos(idioma) });
     if (idioma === 'pt') {
       return ORDEM_TOPICOS_PT
         .map(nome => data.find(t => t.nome === nome))
@@ -64,7 +69,9 @@ export async function getTopicos(idioma: Idioma): Promise<Topico[]> {
 export async function getCanticosPorTopico(idioma: Idioma, slug: string): Promise<CanticoResumo[]> {
   return cachedFetch(`canticos:por-topico:${idioma}:${slug}`, async () => {
     const prefix = canticosPrefix(idioma);
-    const { data } = await client.get<CanticoResumo[]>(`${prefix}/topico/${encodeURIComponent(slug)}`);
+    const { data } = await client.get<CanticoResumo[]>(`${prefix}/topico/${encodeURIComponent(slug)}`, {
+      params: paramsGenericos(idioma),
+    });
     return data.sort((a, b) => a.titulo.localeCompare(b.titulo, 'pt'));
   });
 }
@@ -72,7 +79,9 @@ export async function getCanticosPorTopico(idioma: Idioma, slug: string): Promis
 export async function getCantico(idioma: Idioma, slug: string): Promise<Cantico> {
   return cachedFetch(`canticos:cantico:${idioma}:${slug}`, async () => {
     const prefix = canticosPrefix(idioma);
-    const { data } = await client.get<Cantico>(`${prefix}/${encodeURIComponent(slug)}`);
+    const { data } = await client.get<Cantico>(`${prefix}/${encodeURIComponent(slug)}`, {
+      params: paramsGenericos(idioma),
+    });
     return data;
   });
 }
