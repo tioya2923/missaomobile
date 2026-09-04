@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator, Alert, Image, KeyboardAvoidingView, Linking, Platform, ScrollView, StyleSheet,
+  ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
   Switch, Text, TextInput, TouchableOpacity, View, type TextInputProps,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -12,7 +12,7 @@ import { useLocalizacao } from '../hooks/useLocalizacao';
 import { useLojaAuth } from '../context/useLojaAuth';
 import AdminArea from './AdminArea';
 import {
-  getPerfilProprio, atualizarPerfilProprio, pausarOuReativar,
+  getPerfilProprio, atualizarPerfilProprio, pausarOuReativar, eliminarContaPropria,
   getMeusProdutos, criarProduto, atualizarProduto, eliminarProduto,
   getMinhasEncomendas, atualizarEstadoEncomenda, uploadImagemProduto,
   type PerfilLoja, type ProdutoLoja, type ProdutoLojaPayload, type EncomendaLoja,
@@ -698,9 +698,11 @@ function AbaEncomendas() {
 function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
   const [perfil, setPerfil] = useState<PerfilLoja | null>(null);
   const { coords, estado: estadoLoc, pedir } = useLocalizacao();
+  const { logout } = useLojaAuth();
   const [erro, setErro] = useState<string | null>(null);
   const [ok, setOk] = useState(false);
   const [aGuardar, setAGuardar] = useState(false);
+  const [aEliminar, setAEliminar] = useState(false);
   const refDescricao = useRef<TextInput>(null);
   const refTelefone = useRef<TextInput>(null);
   const refMorada = useRef<TextInput>(null);
@@ -771,6 +773,29 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
       setPerfil((p) => (p ? { ...p, ativa: novaAtiva } : p));
     } catch {
       Alert.alert('Erro', 'Não foi possível atualizar.');
+    }
+  };
+
+  const pedirEliminarConta = () => {
+    Alert.alert(
+      'Eliminar conta e dados',
+      'Isto elimina definitivamente a sua conta de loja, o perfil e os dados pessoais associados. Não pode ser desfeito. Tem a certeza?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Eliminar', style: 'destructive', onPress: confirmarEliminarConta },
+      ],
+    );
+  };
+
+  const confirmarEliminarConta = async () => {
+    setAEliminar(true);
+    try {
+      await eliminarContaPropria();
+      logout();
+    } catch {
+      Alert.alert('Erro', 'Não foi possível eliminar a conta. Tente novamente.');
+    } finally {
+      setAEliminar(false);
     }
   };
 
@@ -901,10 +926,13 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
 
       <TouchableOpacity
         style={styles.linkWrap}
-        onPress={() => Linking.openURL('https://ndatava.onrender.com/eliminar-conta')}
+        onPress={pedirEliminarConta}
+        disabled={aEliminar}
         activeOpacity={0.7}
       >
-        <Text style={[styles.linkTxt, { color: COLORS.error }]}>Pedir eliminação da conta e dos dados</Text>
+        {aEliminar
+          ? <ActivityIndicator color={COLORS.error} />
+          : <Text style={[styles.linkTxt, { color: COLORS.error }]}>Eliminar conta e dados</Text>}
       </TouchableOpacity>
     </ScrollView>
   );

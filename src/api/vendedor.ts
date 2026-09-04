@@ -79,6 +79,12 @@ export async function pausarOuReativar(ativa: boolean): Promise<void> {
   await client.put('/api/lojas/eu/pausar', ativa);
 }
 
+// Elimina em definitivo a conta de loja autenticada (e os seus dados pessoais).
+// Ação irreversível — ver LojasController.EliminarContaPropria no backend.
+export async function eliminarContaPropria(): Promise<void> {
+  await client.delete('/api/lojas/eu');
+}
+
 // ── Produtos da própria loja ─────────────────────────────────────────────
 
 export interface ProdutoLoja {
