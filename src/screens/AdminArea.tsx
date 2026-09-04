@@ -10,7 +10,7 @@ import { labelMetodoPagamento } from '../constants/metodosPagamento';
 import { useLojaAuth } from '../context/useLojaAuth';
 import client from '../api/client';
 import {
-  RECURSOS, getRecurso, getGrupos, type RecursoConfig, type CampoRecurso,
+  getRecurso, getRecursoComIdiomas, getGrupos, type CampoRecurso, type IdiomaInfo,
 } from '../constants/resourcesConfig';
 import { listarRecurso, criarRecurso, atualizarRecurso, eliminarRecurso } from '../api/adminResource';
 import {
@@ -66,6 +66,11 @@ export default function AdminArea({ onVoltar }: { onVoltar: () => void }) {
   const { nome, logout } = useLojaAuth();
   const [vista, setVista] = useState<Vista>('hub');
   const [recursoKey, setRecursoKey] = useState<string | null>(null);
+  const [idiomas, setIdiomas] = useState<IdiomaInfo[]>([]);
+
+  useEffect(() => {
+    client.get<IdiomaInfo[]>('/api/idiomas').then((r) => setIdiomas(r.data)).catch(() => setIdiomas([]));
+  }, []);
 
   const sair = () => {
     Alert.alert('Sair', 'Terminar sessão de administrador?', [
@@ -91,7 +96,7 @@ export default function AdminArea({ onVoltar }: { onVoltar: () => void }) {
       <Text style={styles.titulo}>Administração</Text>
       <Text style={styles.subtitulo}>{nome}</Text>
 
-      {getGrupos().map((g) => (
+      {getGrupos(idiomas).map((g) => (
         <View key={g.nome} style={styles.grupoWrap}>
           <Text style={styles.grupoTitulo}>{g.nome}</Text>
           <View style={styles.card}>
@@ -205,7 +210,21 @@ function valorInicialDoCampo(campo: CampoRecurso): unknown {
 }
 
 function AdminResourceCrud({ recursoKey, onVoltar }: { recursoKey: string; onVoltar: () => void }) {
-  const recurso = useMemo(() => getRecurso(recursoKey), [recursoKey]);
+  // Recursos estáticos (ex: Apoio, Idiomas) resolvem já; recursos por idioma
+  // (Cânticos/Catecismo de um idioma) só resolvem depois de /api/idiomas carregar.
+  const [idiomas, setIdiomas] = useState<IdiomaInfo[] | null>(null);
+  useEffect(() => {
+    client.get<IdiomaInfo[]>('/api/idiomas').then((r) => setIdiomas(r.data)).catch(() => setIdiomas([]));
+  }, []);
+
+  // Memoizado: gerarRecursosIdioma cria objetos novos a cada chamada, e sem
+  // isto o "recurso" mudava de identidade em todos os renders, fazendo o
+  // carregar() disparar em loop infinito.
+  const recurso = useMemo(
+    () => (idiomas === null ? getRecurso(recursoKey) : getRecursoComIdiomas(recursoKey, idiomas)),
+    [recursoKey, idiomas],
+  );
+
   const [itens, setItens] = useState<Record<string, unknown>[]>([]);
   const [opcoesPorCampo, setOpcoesPorCampo] = useState<Record<string, Record<string, unknown>[]>>({});
   const [loading, setLoading] = useState(true);
@@ -243,9 +262,12 @@ function AdminResourceCrud({ recursoKey, onVoltar }: { recursoKey: string; onVol
   useEffect(() => { carregar(); }, [carregar]);
 
   if (!recurso) {
+    const aResolverIdioma = idiomas === null && !getRecurso(recursoKey);
     return (
       <View style={styles.centro}>
-        <Text style={styles.erro}>Tipo de conteúdo desconhecido.</Text>
+        {aResolverIdioma
+          ? <ActivityIndicator color={COLORS.navbar} />
+          : <Text style={styles.erro}>Tipo de conteúdo desconhecido.</Text>}
       </View>
     );
   }

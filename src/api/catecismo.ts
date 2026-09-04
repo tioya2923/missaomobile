@@ -25,14 +25,22 @@ export interface CatecismoTexto {
   texto: string;
 }
 
-export async function getCatecismoTopicos(idioma: 'pt' | 'ub' | 'lat' | 'otc'): Promise<CatecismoTopico[]> {
+type Idioma = 'pt' | 'ub' | 'lat' | 'otc';
+
+// O admin gere Catecismo/Orações de todos os idiomas através das mesmas
+// tabelas genéricas do backend (/api/catecismopttopicos, /api/catecismopt,
+// ?idioma=<código>) — por isso a app tem de ler dali também, senão o que o
+// admin edita/cria deixa de aparecer aqui. "ub" (código local) corresponde
+// a "umb" no backend.
+function codigoBackend(idioma: Idioma): string {
+  return idioma === 'ub' ? 'umb' : idioma;
+}
+
+export async function getCatecismoTopicos(idioma: Idioma): Promise<CatecismoTopico[]> {
   return cachedFetch(`catecismo:topicos:${idioma}`, async () => {
-    let endpoint: string;
-    if (idioma === 'pt') endpoint = '/api/CatecismoPtTopicos/topicos';
-    else if (idioma === 'lat') endpoint = '/api/CatecismoLatTopicos';
-    else if (idioma === 'otc') endpoint = '/api/CatecismoOtcTopicos';
-    else endpoint = '/api/CatecismoUbTopicos';
-    const { data } = await client.get<CatecismoTopico[]>(endpoint);
+    const { data } = await client.get<CatecismoTopico[]>('/api/CatecismoPtTopicos/topicos', {
+      params: { idioma: codigoBackend(idioma) },
+    });
     return data;
   });
 }
@@ -46,38 +54,27 @@ export async function getCatecismoSubTopicos(topicoId: number): Promise<Catecism
   });
 }
 
-export async function getCatecismoEntradas(idioma: 'pt' | 'ub' | 'lat' | 'otc', topicoId: number): Promise<CatecismoEntrada[]> {
+export async function getCatecismoEntradas(idioma: Idioma, topicoId: number): Promise<CatecismoEntrada[]> {
   return cachedFetch(`catecismo:entradas:${idioma}:${topicoId}`, async () => {
-    let endpoint: string;
-    if (idioma === 'pt') endpoint = '/api/catecismopt';
-    else if (idioma === 'lat') endpoint = '/api/CatecismoLat';
-    else if (idioma === 'otc') endpoint = '/api/CatecismoOtc';
-    else endpoint = '/api/catecismoub';
-    const { data } = await client.get<CatecismoEntrada[]>(endpoint, { params: { topicoId } });
+    const { data } = await client.get<CatecismoEntrada[]>('/api/catecismopt', {
+      params: { topicoId, idioma: codigoBackend(idioma) },
+    });
     return data;
   });
 }
 
-export async function getCatecismoTitulos(idioma: 'pt' | 'ub' | 'lat' | 'otc', topicoId: number): Promise<CatecismoTitulo[]> {
+export async function getCatecismoTitulos(idioma: Idioma, topicoId: number): Promise<CatecismoTitulo[]> {
   return cachedFetch(`catecismo:titulos:${idioma}:${topicoId}`, async () => {
-    let endpoint: string;
-    if (idioma === 'pt') endpoint = '/api/catecismopt';
-    else if (idioma === 'lat') endpoint = '/api/CatecismoLat';
-    else if (idioma === 'otc') endpoint = '/api/CatecismoOtc';
-    else endpoint = '/api/catecismoub';
-    const { data } = await client.get<CatecismoTitulo[]>(endpoint, { params: { topicoId } });
+    const { data } = await client.get<CatecismoTitulo[]>('/api/catecismopt', {
+      params: { topicoId, idioma: codigoBackend(idioma) },
+    });
     return data;
   });
 }
 
-export async function getCatecismoTexto(idioma: 'pt' | 'ub' | 'lat' | 'otc', id: number): Promise<CatecismoTexto> {
+export async function getCatecismoTexto(idioma: Idioma, id: number): Promise<CatecismoTexto> {
   return cachedFetch(`catecismo:texto:${idioma}:${id}`, async () => {
-    let endpoint: string;
-    if (idioma === 'pt') endpoint = `/api/catecismopt/${id}`;
-    else if (idioma === 'lat') endpoint = `/api/CatecismoLat/${id}`;
-    else if (idioma === 'otc') endpoint = `/api/CatecismoOtc/${id}`;
-    else endpoint = `/api/catecismoub/${id}`;
-    const { data } = await client.get<CatecismoTexto>(endpoint);
+    const { data } = await client.get<CatecismoTexto>(`/api/catecismopt/${id}`);
     return data;
   });
 }

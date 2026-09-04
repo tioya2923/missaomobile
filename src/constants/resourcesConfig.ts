@@ -1,6 +1,11 @@
 // Configuração central de todo o conteúdo gerível pelo painel de administração —
 // espelha exatamente src/components/Admin/resourcesConfig.js do site, para que
 // o mesmo conteúdo seja editável nativamente na app.
+//
+// Cânticos e Catecismo/Orações são gerados a partir da lista de idiomas
+// (API /api/idiomas) — ver gerarRecursosIdioma() mais abaixo — em vez de um
+// bloco fixo por idioma. Criar um idioma novo em Administração → Idiomas faz
+// aparecer "Cânticos (Nome)"/"Catecismo (Nome)" automaticamente.
 
 import { MOEDAS_LISTA, labelMoeda } from './moeda';
 
@@ -37,6 +42,8 @@ export interface RecursoConfig {
   campos: CampoRecurso[];
   colunas: ColunaRecurso[];
 }
+
+export interface IdiomaInfo { id: number; codigo: string; nome: string }
 
 export const RECURSOS: RecursoConfig[] = [
   // ── Apoio ──────────────────────────────────────────────────────────────
@@ -85,156 +92,24 @@ export const RECURSOS: RecursoConfig[] = [
     ],
   },
 
-  // ── Cânticos — Português ───────────────────────────────────────────────
+  // ── Idiomas ────────────────────────────────────────────────────────────
   {
-    key: 'canticos-pt-topicos',
-    titulo: 'Tópicos',
-    grupo: 'Cânticos (Português)',
-    api: { base: '/api/topicos', list: '/api/topicos' },
+    key: 'idiomas',
+    titulo: 'Idiomas',
+    grupo: 'Idiomas',
+    api: { base: '/api/idiomas', list: '/api/idiomas' },
     tituloCampo: 'nome',
-    campos: [{ nome: 'nome', label: 'Nome', tipo: 'text', obrigatorio: true }],
-    colunas: [{ campo: 'nome', label: 'Nome' }, { campo: 'slug', label: 'Slug' }],
-  },
-  {
-    key: 'canticos-pt',
-    titulo: 'Cânticos',
-    grupo: 'Cânticos (Português)',
-    api: { base: '/api/canticos', list: '/api/canticos' },
-    tituloCampo: 'titulo',
     campos: [
-      { nome: 'titulo', label: 'Título', tipo: 'text', obrigatorio: true },
-      { nome: 'topicoId', label: 'Tópico', tipo: 'select', obrigatorio: true, opcoes: { endpoint: '/api/topicos', valor: 'id', label: 'nome' } },
-      { nome: 'letra', label: 'Letra', tipo: 'textarea', obrigatorio: true, linhas: 10 },
+      { nome: 'nome', label: 'Nome (ex: Suaíli)', tipo: 'text', obrigatorio: true },
+      { nome: 'codigo', label: 'Código curto (ex: swa)', tipo: 'text', obrigatorio: true },
+      { nome: 'ordem', label: 'Ordem de exibição', tipo: 'number', valorInicial: 0 },
+      { nome: 'ativo', label: 'Ativo (aparece na app)', tipo: 'boolean', valorInicial: true },
     ],
-    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'topicoId', label: 'Tópico', ref: 'topicoId' }],
-  },
-
-  // ── Cânticos — Umbundu ─────────────────────────────────────────────────
-  {
-    key: 'canticos-umb-topicos',
-    titulo: 'Tópicos',
-    grupo: 'Cânticos (Umbundu)',
-    api: { base: '/api/umbundu/topicos', list: '/api/umbundu/topicos' },
-    tituloCampo: 'nome',
-    campos: [{ nome: 'nome', label: 'Nome', tipo: 'text', obrigatorio: true }],
-    colunas: [{ campo: 'nome', label: 'Nome' }, { campo: 'slug', label: 'Slug' }],
-  },
-  {
-    key: 'canticos-umb',
-    titulo: 'Cânticos',
-    grupo: 'Cânticos (Umbundu)',
-    api: { base: '/api/umbundu/canticos', list: '/api/umbundu/canticos/canticos-com-topico' },
-    tituloCampo: 'titulo',
-    campos: [
-      { nome: 'titulo', label: 'Título', tipo: 'text', obrigatorio: true },
-      { nome: 'topicoId', label: 'Tópico', tipo: 'select', obrigatorio: true, opcoes: { endpoint: '/api/umbundu/topicos', valor: 'id', label: 'nome' } },
-      { nome: 'letra', label: 'Letra', tipo: 'textarea', obrigatorio: true, linhas: 10 },
+    colunas: [
+      { campo: 'nome', label: 'Nome' },
+      { campo: 'codigo', label: 'Código' },
+      { campo: 'ativo', label: 'Ativo', formatar: (v) => (v ? 'Sim' : 'Não') },
     ],
-    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'topicoId', label: 'Tópico', ref: 'topicoId' }],
-  },
-
-  // ── Cânticos — Latim ───────────────────────────────────────────────────
-  {
-    key: 'canticos-lat-topicos',
-    titulo: 'Tópicos',
-    grupo: 'Cânticos (Latim)',
-    api: { base: '/api/topicoslat', list: '/api/topicoslat' },
-    tituloCampo: 'nome',
-    campos: [{ nome: 'nome', label: 'Nome', tipo: 'text', obrigatorio: true }],
-    colunas: [{ campo: 'nome', label: 'Nome' }, { campo: 'slug', label: 'Slug' }],
-  },
-  {
-    key: 'canticos-lat',
-    titulo: 'Cânticos',
-    grupo: 'Cânticos (Latim)',
-    api: { base: '/api/canticoslat', list: '/api/canticoslat' },
-    tituloCampo: 'titulo',
-    campos: [
-      { nome: 'titulo', label: 'Título', tipo: 'text', obrigatorio: true },
-      { nome: 'topicoId', label: 'Tópico', tipo: 'select', obrigatorio: true, opcoes: { endpoint: '/api/topicoslat', valor: 'id', label: 'nome' } },
-      { nome: 'letra', label: 'Letra', tipo: 'textarea', obrigatorio: true, linhas: 10 },
-    ],
-    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'topicoId', label: 'Tópico', ref: 'topicoId' }],
-  },
-
-  // ── Catecismo — Português ──────────────────────────────────────────────
-  {
-    key: 'catecismo-pt-topicos',
-    titulo: 'Tópicos e Subtópicos',
-    grupo: 'Catecismo (Português)',
-    api: { base: '/api/catecismopttopicos/topicos', list: '/api/catecismopttopicos/topicos/todos' },
-    tituloCampo: 'titulo',
-    campos: [
-      { nome: 'titulo', label: 'Título', tipo: 'text', obrigatorio: true },
-      {
-        nome: 'parentId', label: 'Tópico principal (deixe vazio para ser um tópico de topo)',
-        tipo: 'select', excluirProprio: true,
-        opcoes: { endpoint: '/api/catecismopttopicos/topicos/todos', valor: 'id', label: 'titulo' },
-      },
-    ],
-    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'parentId', label: 'Subtópico de', ref: 'parentId' }],
-  },
-  {
-    key: 'catecismo-pt',
-    titulo: 'Perguntas e Respostas',
-    grupo: 'Catecismo (Português)',
-    api: { base: '/api/catecismopt', list: '/api/catecismopt' },
-    tituloCampo: 'titulo',
-    campos: [
-      { nome: 'titulo', label: 'Pergunta / Título', tipo: 'text', obrigatorio: true },
-      { nome: 'catecismoPtTopicoId', label: 'Tópico', tipo: 'select', opcoes: { endpoint: '/api/catecismopttopicos/topicos/todos', valor: 'id', label: 'titulo' } },
-      { nome: 'texto', label: 'Resposta / Texto', tipo: 'textarea', obrigatorio: true, linhas: 10 },
-    ],
-    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'catecismoPtTopicoId', label: 'Tópico', ref: 'catecismoPtTopicoId' }],
-  },
-
-  // ── Catecismo — Umbundu ────────────────────────────────────────────────
-  {
-    key: 'catecismo-ub-topicos',
-    titulo: 'Tópicos',
-    grupo: 'Catecismo (Umbundu)',
-    api: { base: '/api/catecismoubtopicos', list: '/api/catecismoubtopicos' },
-    tituloCampo: 'titulo',
-    campos: [{ nome: 'titulo', label: 'Título', tipo: 'text', obrigatorio: true }],
-    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'slug', label: 'Slug' }],
-  },
-  {
-    key: 'catecismo-ub',
-    titulo: 'Perguntas e Respostas',
-    grupo: 'Catecismo (Umbundu)',
-    api: { base: '/api/catecismoub', list: '/api/catecismoub' },
-    tituloCampo: 'titulo',
-    campos: [
-      { nome: 'titulo', label: 'Pergunta / Título', tipo: 'text', obrigatorio: true },
-      { nome: 'catecismoUbTopicoId', label: 'Tópico', tipo: 'select', obrigatorio: true, opcoes: { endpoint: '/api/catecismoubtopicos', valor: 'id', label: 'titulo' } },
-      { nome: 'texto', label: 'Resposta / Texto', tipo: 'textarea', obrigatorio: true, linhas: 10 },
-    ],
-    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'catecismoUbTopicoId', label: 'Tópico', ref: 'catecismoUbTopicoId' }],
-  },
-
-  // ── Catecismo — Latim ──────────────────────────────────────────────────
-  {
-    key: 'catecismo-lat-topicos',
-    titulo: 'Tópicos',
-    grupo: 'Catecismo (Latim)',
-    api: { base: '/api/catecismolattopicos', list: '/api/catecismolattopicos' },
-    tituloCampo: 'titulo',
-    campos: [{ nome: 'titulo', label: 'Título', tipo: 'text', obrigatorio: true }],
-    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'slug', label: 'Slug' }],
-  },
-  {
-    key: 'catecismo-lat',
-    titulo: 'Textos',
-    grupo: 'Catecismo (Latim)',
-    api: { base: '/api/catecismolat', list: '/api/catecismolat' },
-    tituloCampo: 'titulo',
-    campos: [
-      { nome: 'titulo', label: 'Título', tipo: 'text', obrigatorio: true },
-      { nome: 'slug', label: 'Slug (opcional)', tipo: 'text' },
-      { nome: 'catecismoLatTopicoId', label: 'Tópico', tipo: 'select', obrigatorio: true, opcoes: { endpoint: '/api/catecismolattopicos', valor: 'id', label: 'titulo' } },
-      { nome: 'texto', label: 'Texto', tipo: 'textarea', obrigatorio: true, linhas: 10 },
-    ],
-    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'catecismoLatTopicoId', label: 'Tópico', ref: 'catecismoLatTopicoId' }],
   },
 ];
 
@@ -247,12 +122,104 @@ export const EXTRAS: ExtraConfig[] = [
   { key: 'vendas', titulo: 'Vendas das lojas', grupo: 'Marketplace' },
 ];
 
+// ── Cânticos e Catecismo/Orações — gerados por idioma ───────────────────────
+
+export function chaveCanticosTopicos(codigo: string): string { return `canticos-topicos-${codigo}`; }
+export function chaveCanticos(codigo: string): string { return `canticos-${codigo}`; }
+export function chaveCatecismoTopicos(codigo: string): string { return `catecismo-topicos-${codigo}`; }
+export function chaveCatecismo(codigo: string): string { return `catecismo-${codigo}`; }
+
+export function gerarRecursosIdioma(idioma: IdiomaInfo): RecursoConfig[] {
+  const { codigo, nome } = idioma;
+  const q = `?idioma=${codigo}`;
+
+  const topicosCanticos: RecursoConfig = {
+    key: chaveCanticosTopicos(codigo),
+    titulo: 'Tópicos',
+    grupo: `Cânticos (${nome})`,
+    api: { base: `/api/topicos${q}`, list: `/api/topicos${q}` },
+    tituloCampo: 'nome',
+    campos: [{ nome: 'nome', label: 'Nome', tipo: 'text', obrigatorio: true }],
+    colunas: [{ campo: 'nome', label: 'Nome' }, { campo: 'slug', label: 'Slug' }],
+  };
+
+  const canticos: RecursoConfig = {
+    key: chaveCanticos(codigo),
+    titulo: 'Cânticos',
+    grupo: `Cânticos (${nome})`,
+    api: { base: `/api/canticos${q}`, list: `/api/canticos${q}` },
+    tituloCampo: 'titulo',
+    campos: [
+      { nome: 'titulo', label: 'Título', tipo: 'text', obrigatorio: true },
+      { nome: 'topicoId', label: 'Tópico', tipo: 'select', obrigatorio: true, opcoes: { endpoint: `/api/topicos${q}`, valor: 'id', label: 'nome' } },
+      { nome: 'letra', label: 'Letra', tipo: 'textarea', obrigatorio: true, linhas: 10 },
+      { nome: 'autor', label: 'Autor (opcional)', tipo: 'text' },
+    ],
+    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'topicoId', label: 'Tópico', ref: 'topicoId' }],
+  };
+
+  const topicosCatecismo: RecursoConfig = {
+    key: chaveCatecismoTopicos(codigo),
+    titulo: 'Tópicos e Subtópicos',
+    grupo: `Catecismo (${nome})`,
+    api: { base: `/api/catecismopttopicos/topicos${q}`, list: `/api/catecismopttopicos/topicos/todos${q}` },
+    tituloCampo: 'titulo',
+    campos: [
+      { nome: 'titulo', label: 'Título', tipo: 'text', obrigatorio: true },
+      {
+        nome: 'parentId', label: 'Tópico principal (deixe vazio para ser um tópico de topo)',
+        tipo: 'select', excluirProprio: true,
+        opcoes: { endpoint: `/api/catecismopttopicos/topicos/todos${q}`, valor: 'id', label: 'titulo' },
+      },
+    ],
+    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'parentId', label: 'Subtópico de', ref: 'parentId' }],
+  };
+
+  const catecismo: RecursoConfig = {
+    key: chaveCatecismo(codigo),
+    titulo: 'Catecismo / Orações',
+    grupo: `Catecismo (${nome})`,
+    api: { base: `/api/catecismopt${q}`, list: `/api/catecismopt${q}` },
+    tituloCampo: 'titulo',
+    campos: [
+      { nome: 'titulo', label: 'Pergunta / Título', tipo: 'text', obrigatorio: true },
+      { nome: 'catecismoPtTopicoId', label: 'Tópico', tipo: 'select', opcoes: { endpoint: `/api/catecismopttopicos/topicos/todos${q}`, valor: 'id', label: 'titulo' } },
+      { nome: 'texto', label: 'Resposta / Texto', tipo: 'textarea', obrigatorio: true, linhas: 10 },
+    ],
+    colunas: [{ campo: 'titulo', label: 'Título' }, { campo: 'catecismoPtTopicoId', label: 'Tópico', ref: 'catecismoPtTopicoId' }],
+  };
+
+  return [topicosCanticos, canticos, topicosCatecismo, catecismo];
+}
+
+// Decodifica o idioma a partir de uma chave gerada (ex: "canticos-swa" → "swa").
+export function decodificarIdiomaDaChave(key: string): string | null {
+  for (const prefixo of ['canticos-topicos-', 'canticos-', 'catecismo-topicos-', 'catecismo-']) {
+    if (key.startsWith(prefixo)) return key.slice(prefixo.length);
+  }
+  return null;
+}
+
 export function getRecurso(key: string): RecursoConfig | null {
   return RECURSOS.find((r) => r.key === key) ?? null;
 }
 
+// Versão que também resolve recursos dinâmicos (cânticos/catecismo por idioma),
+// dada a lista de idiomas já carregada (de /api/idiomas).
+export function getRecursoComIdiomas(key: string, idiomas: IdiomaInfo[] | null): RecursoConfig | null {
+  const estatico = getRecurso(key);
+  if (estatico) return estatico;
+
+  const codigo = decodificarIdiomaDaChave(key);
+  if (!codigo) return null;
+  const idioma = (idiomas || []).find((i) => i.codigo === codigo);
+  if (!idioma) return null;
+
+  return gerarRecursosIdioma(idioma).find((r) => r.key === key) ?? null;
+}
+
 export interface GrupoMenu { nome: string; itens: { key: string; titulo: string; ehExtra: boolean }[] }
-export function getGrupos(): GrupoMenu[] {
+export function getGrupos(idiomas: IdiomaInfo[] = []): GrupoMenu[] {
   const grupos: GrupoMenu[] = [];
   const push = (grupo: string, key: string, titulo: string, ehExtra: boolean) => {
     let g = grupos.find((g) => g.nome === grupo);
@@ -261,5 +228,8 @@ export function getGrupos(): GrupoMenu[] {
   };
   for (const r of RECURSOS) push(r.grupo, r.key, r.titulo, false);
   for (const e of EXTRAS) push(e.grupo, e.key, e.titulo, true);
+  for (const idioma of idiomas) {
+    for (const r of gerarRecursosIdioma(idioma)) push(r.grupo, r.key, r.titulo, false);
+  }
   return grupos;
 }

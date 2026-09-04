@@ -31,32 +31,17 @@ const ORDEM_TOPICOS_PT = [
 
 type Idioma = 'pt' | 'ub' | 'lat' | 'kmb' | 'otc';
 
-// Otchikwama nunca teve tabelas/endpoints próprios de cânticos — usa a API
-// genérica multi-idioma do backend (?idioma=otc) em vez de um prefixo fixo.
-const IDIOMA_GENERICO = 'otc';
-
-function canticosPrefix(idioma: Idioma): string {
-  if (idioma === 'pt') return '/api/Canticos';
-  if (idioma === 'lat') return '/api/CanticosLat';
-  if (idioma === 'kmb') return '/api/kimbundu/canticos';
-  if (idioma === 'otc') return '/api/canticos';
-  return '/api/umbundu/canticos';
-}
-
-function paramsGenericos(idioma: Idioma) {
-  return idioma === IDIOMA_GENERICO ? { idioma } : undefined;
+// O admin gere Cânticos de todos os idiomas através das mesmas tabelas
+// genéricas do backend (/api/topicos, /api/canticos, ?idioma=<código>) —
+// por isso a app tem de ler dali também, senão o que o admin edita/cria
+// deixa de aparecer aqui. "ub" (código local) corresponde a "umb" no backend.
+function codigoBackend(idioma: Idioma): string {
+  return idioma === 'ub' ? 'umb' : idioma;
 }
 
 export async function getTopicos(idioma: Idioma): Promise<Topico[]> {
   return cachedFetch(`canticos:topicos:${idioma}`, async () => {
-    let endpoint: string;
-    if (idioma === 'pt') endpoint = '/api/Topicos';
-    else if (idioma === 'lat') endpoint = '/api/TopicosLat';
-    else if (idioma === 'kmb') endpoint = '/api/kimbundu/topicos';
-    else if (idioma === 'otc') endpoint = '/api/topicos';
-    else endpoint = '/api/umbundu/topicos';
-
-    const { data } = await client.get<Topico[]>(endpoint, { params: paramsGenericos(idioma) });
+    const { data } = await client.get<Topico[]>('/api/topicos', { params: { idioma: codigoBackend(idioma) } });
     if (idioma === 'pt') {
       return ORDEM_TOPICOS_PT
         .map(nome => data.find(t => t.nome === nome))
@@ -68,9 +53,8 @@ export async function getTopicos(idioma: Idioma): Promise<Topico[]> {
 
 export async function getCanticosPorTopico(idioma: Idioma, slug: string): Promise<CanticoResumo[]> {
   return cachedFetch(`canticos:por-topico:${idioma}:${slug}`, async () => {
-    const prefix = canticosPrefix(idioma);
-    const { data } = await client.get<CanticoResumo[]>(`${prefix}/topico/${encodeURIComponent(slug)}`, {
-      params: paramsGenericos(idioma),
+    const { data } = await client.get<CanticoResumo[]>(`/api/canticos/topico/${encodeURIComponent(slug)}`, {
+      params: { idioma: codigoBackend(idioma) },
     });
     return data.sort((a, b) => a.titulo.localeCompare(b.titulo, 'pt'));
   });
@@ -78,9 +62,8 @@ export async function getCanticosPorTopico(idioma: Idioma, slug: string): Promis
 
 export async function getCantico(idioma: Idioma, slug: string): Promise<Cantico> {
   return cachedFetch(`canticos:cantico:${idioma}:${slug}`, async () => {
-    const prefix = canticosPrefix(idioma);
-    const { data } = await client.get<Cantico>(`${prefix}/${encodeURIComponent(slug)}`, {
-      params: paramsGenericos(idioma),
+    const { data } = await client.get<Cantico>(`/api/canticos/${encodeURIComponent(slug)}`, {
+      params: { idioma: codigoBackend(idioma) },
     });
     return data;
   });
