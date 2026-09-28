@@ -26,7 +26,7 @@ export default function CatecismoTopicosScreen({ route, navigation }: CatecismoS
   }, [idioma]);
 
   useEffect(() => {
-    const titulos = { pt: 'Catecismo — Português', ub: 'Catecismo — Umbundu', lat: 'Catecismo — Latim', otc: 'Catecismo — Otchikwama' };
+    const titulos = { pt: 'Catecismo — Português', ub: 'Catecismo — Umbundu', lat: 'Catecismo — Latim', otc: 'Catecismo — Oshikwanhama' };
     navigation.setOptions({ title: titulos[idioma] });
     load();
   }, [idioma, load, navigation]);

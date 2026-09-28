@@ -19,7 +19,7 @@ export default function CatecismoIdiomaScreen({ navigation }: CatecismoScreenPro
           <Text style={styles.btnText}>Latim</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn} onPress={() => navegar('otc')}>
-          <Text style={styles.btnText}>Otchikwama</Text>
+          <Text style={styles.btnText}>Oshikwanhama</Text>
         </TouchableOpacity>
       </View>
     </View>

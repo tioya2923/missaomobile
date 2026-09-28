@@ -22,7 +22,7 @@ export default function CanticosIdiomaScreen({ navigation }: CanticosScreenProps
           <Text style={styles.btnText}>Kimbundu</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn} onPress={() => navegar('otc')}>
-          <Text style={styles.btnText}>Otchikwama</Text>
+          <Text style={styles.btnText}>Oshikwanhama</Text>
         </TouchableOpacity>
       </View>
     </View>

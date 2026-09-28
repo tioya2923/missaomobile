@@ -31,7 +31,7 @@ export default function CanticosTopicosScreen({ route, navigation }: CanticosScr
       ub: 'Cânticos — Umbundu',
       lat: 'Cânticos — Latim',
       kmb: 'Cânticos — Kimbundu',
-      otc: 'Cânticos — Otchikwama',
+      otc: 'Cânticos — Oshikwanhama',
     };
     navigation.setOptions({ title: titulos[idioma] });
     load();
