@@ -24,7 +24,7 @@ export interface Cantico {
 
 // Ordem litúrgica dos tópicos PT
 const ORDEM_TOPICOS_PT = [
-  'Procissão', 'Entrada', 'Kyrie', 'Entronização da Palavra', 'Aleluia',
+  'Procissão', 'Entrada', 'Kyrie', 'Glória', 'Entronização da Palavra', 'Aleluia',
   'Oração dos Fiéis', 'Ofertório', 'Elevação', 'Santo', 'Saudação',
   'Cordeiro de Deus', 'Comunhão', 'Acção de Graças', 'Saída',
 ];
@@ -43,9 +43,13 @@ export async function getTopicos(idioma: Idioma): Promise<Topico[]> {
   return cachedFetch(`canticos:topicos:${idioma}`, async () => {
     const { data } = await client.get<Topico[]>('/api/topicos', { params: { idioma: codigoBackend(idioma) } });
     if (idioma === 'pt') {
-      return ORDEM_TOPICOS_PT
+      const ordenados = ORDEM_TOPICOS_PT
         .map(nome => data.find(t => t.nome === nome))
         .filter((t): t is Topico => t !== undefined);
+      // Qualquer tópico que o admin crie e que ainda não conste da ordem acima
+      // continua a aparecer (no fim da lista) em vez de ser omitido em silêncio.
+      const outros = data.filter(t => !ORDEM_TOPICOS_PT.includes(t.nome));
+      return [...ordenados, ...outros];
     }
     return data;
   });
