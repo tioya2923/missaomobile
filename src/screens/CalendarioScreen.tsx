@@ -5,8 +5,9 @@ import {
 import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { getEventosSemana, type Evento } from '../api/calendario';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
 import type { RootScreenProps } from '../navigation/types';
+import { useColors, useThemedStyles } from '../context/ThemeContext';
 
 // ── Dias da semana ───────────────────────────────────────────────────────────
 const DIAS_SEMANA = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
@@ -79,6 +80,7 @@ function PickerModal<T extends string | number>({
   onSelect: (v: T) => void;
   onClose: () => void;
 }) {
+  const styles = useThemedStyles(createStyles);
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
@@ -107,6 +109,8 @@ function PickerModal<T extends string | number>({
 
 // ── Ecrã principal ────────────────────────────────────────────────────────────
 export default function CalendarioScreen({ navigation }: RootScreenProps<'Calendario'>) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const today = startOfDay(new Date());
 
   const [semanaInicio, setSemanaInicio] = useState<Date>(startOfWeek(today));
@@ -197,7 +201,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
       {/* ── Conteúdo ── */}
       {loading ? (
         <View style={styles.center}>
-          <ActivityIndicator size="large" color={COLORS.navbar} />
+          <ActivityIndicator size="large" color={COLORS.primary} />
           <Text style={styles.loadingText}>A carregar...</Text>
         </View>
       ) : error ? (
@@ -211,7 +215,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
         <ScrollView
           contentContainerStyle={styles.list}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.navbar} colors={[COLORS.navbar]} />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} colors={[COLORS.primary]} />
           }
         >
           {dias.map(dia => {
@@ -243,7 +247,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
           activeOpacity={0.85}
           onPress={() => navigation.navigate('Mais', { screen: 'Apoiar' })}
         >
-          <Ionicons name="heart-outline" size={18} color={COLORS.navbar} />
+          <Ionicons name="heart-outline" size={18} color={COLORS.primary} />
           <Text style={[styles.acessoTxt, styles.acessoTxtApoiar]}>Apoiar</Text>
         </TouchableOpacity>
       </View>
@@ -271,6 +275,8 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
 
 // ── Card de evento ────────────────────────────────────────────────────────────
 function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isToday: boolean }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const nomeDia = DIAS_SEMANA[dia.getDay()];
 
   if (eventos.length === 0) {
@@ -324,7 +330,7 @@ function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isTo
 }
 
 // ── Estilos ───────────────────────────────────────────────────────────────────
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   root: { flex: 1, backgroundColor: COLORS.background },
 
   navBar: {
@@ -387,10 +393,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.navbar, borderRadius: 999, paddingVertical: 12,
   },
   acessoBtnApoiar: {
-    backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.navbar,
+    backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.primary,
   },
   acessoTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 14 },
-  acessoTxtApoiar: { color: COLORS.navbar },
+  acessoTxtApoiar: { color: COLORS.primary },
 
   /* Lista */
   list: { padding: 12, gap: 12 },
@@ -443,6 +449,6 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, gap: 16 },
   loadingText: { fontFamily: FONTS.sans, fontStyle: 'italic', color: COLORS.textSecondary, fontSize: 15 },
   errorText: { color: COLORS.error, fontFamily: FONTS.sans, fontSize: 16, textAlign: 'center' },
-  retryBtn: { backgroundColor: COLORS.primary, paddingHorizontal: 26, paddingVertical: 12, borderRadius: 999 },
+  retryBtn: { backgroundColor: COLORS.navbar, paddingHorizontal: 26, paddingVertical: 12, borderRadius: 999 },
   retryText: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 15 },
 });

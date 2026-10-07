@@ -1,6 +1,7 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Text from './AppText';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
+import { useThemedStyles } from '../context/ThemeContext';
 
 interface Props {
   message: string;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function ErrorView({ message, onRetry }: Props) {
+  const styles = useThemedStyles(createStyles);
   return (
     <View style={styles.container}>
       <Text style={styles.message}>{message}</Text>
@@ -20,7 +22,7 @@ export default function ErrorView({ message, onRetry }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -36,7 +38,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.navbar,
     paddingHorizontal: 26,
     paddingVertical: 12,
     borderRadius: 999,

@@ -4,7 +4,7 @@ import TextInput from '../components/AppTextInput';
 import Text from '../components/AppText';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
 import { MOEDAS_LISTA, formatarPreco, labelMoeda } from '../constants/moeda';
 import { METODOS_PAGAMENTO, metodosPorMoeda } from '../constants/metodosPagamento';
 import { useLocalizacao } from '../hooks/useLocalizacao';
@@ -16,6 +16,7 @@ import {
   getMinhasEncomendas, atualizarEstadoEncomenda, uploadImagemProduto,
   type PerfilLoja, type ProdutoLoja, type ProdutoLojaPayload, type EncomendaLoja,
 } from '../api/vendedor';
+import { useColors, useThemedStyles } from '../context/ThemeContext';
 
 type AbaPainel = 'produtos' | 'encomendas' | 'perfil';
 
@@ -32,6 +33,8 @@ function respostaErro(e: unknown, fallback: string): string {
 // ── Peças reutilizáveis ─────────────────────────────────────────────────────
 
 function CabecalhoVoltar({ onVoltar }: { onVoltar: () => void }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   return (
     <TouchableOpacity style={styles.voltarBtn} onPress={onVoltar} activeOpacity={0.7}>
       <Ionicons name="arrow-back" size={22} color={COLORS.text} />
@@ -46,6 +49,8 @@ interface CampoProps extends TextInputProps {
 // forwardRef permite encadear campos com o botão "seguinte" do teclado (ver
 // encadearCampos), para o vendedor não ter de tocar manualmente em cada campo.
 const Campo = forwardRef<TextInput, CampoProps>(function Campo({ label, style, multiline, ...rest }, ref) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   return (
     <View style={styles.campo}>
       <Text style={styles.label}>{label}</Text>
@@ -64,6 +69,8 @@ const Campo = forwardRef<TextInput, CampoProps>(function Campo({ label, style, m
 // para o utilizador poder conferir o que escreveu antes de submeter.
 type CampoSenhaProps = Omit<CampoProps, 'secureTextEntry'>;
 const CampoSenha = forwardRef<TextInput, CampoSenhaProps>(function CampoSenha({ label, style, ...rest }, ref) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const [visivel, setVisivel] = useState(false);
   return (
     <View style={styles.campo}>
@@ -90,6 +97,7 @@ const CampoSenha = forwardRef<TextInput, CampoSenhaProps>(function CampoSenha({ 
 });
 
 function SeletorMoeda({ valor, onEscolher }: { valor: string; onEscolher: (v: string) => void }) {
+  const styles = useThemedStyles(createStyles);
   return (
     <View style={styles.chipsWrap}>
       {MOEDAS_LISTA.map((m) => (
@@ -107,6 +115,8 @@ function SeletorMoeda({ valor, onEscolher }: { valor: string; onEscolher: (v: st
 }
 
 function LinhaSwitch({ label, valor, onValueChange }: { label: string; valor: boolean; onValueChange: (v: boolean) => void }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   return (
     <View style={styles.linhaSwitch}>
       <Text style={[styles.label, { flex: 1, textTransform: 'none' }]}>{label}</Text>
@@ -119,13 +129,15 @@ function LinhaSwitch({ label, valor, onValueChange }: { label: string; valor: bo
 // Área nativa das lojas parceiras (não abre o site — tudo corre dentro da app).
 
 export default function VendedorArea({ onVoltar }: { onVoltar: () => void }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const { isLoja, isGestor, carregado } = useLojaAuth();
   const [modo, setModo] = useState<'login' | 'registar'>('login');
 
   if (!carregado) {
     return (
       <View style={styles.centro}>
-        <ActivityIndicator color={COLORS.navbar} />
+        <ActivityIndicator color={COLORS.primary} />
       </View>
     );
   }
@@ -141,6 +153,7 @@ export default function VendedorArea({ onVoltar }: { onVoltar: () => void }) {
 // ── Login ─────────────────────────────────────────────────────────────────
 
 function Login({ onVoltar, onRegistar }: { onVoltar: () => void; onRegistar: () => void }) {
+  const styles = useThemedStyles(createStyles);
   const { login, loginAdmin } = useLojaAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -216,6 +229,7 @@ const REGISTO_VAZIO: RascunhoRegisto = {
 };
 
 function Registar({ onVoltar, onEntrar }: { onVoltar: () => void; onEntrar: () => void }) {
+  const styles = useThemedStyles(createStyles);
   const { registar } = useLojaAuth();
   const { coords, estado, pedir } = useLocalizacao();
   const [form, setForm] = useState<RascunhoRegisto>(REGISTO_VAZIO);
@@ -341,6 +355,8 @@ function Registar({ onVoltar, onEntrar }: { onVoltar: () => void; onEntrar: () =
 // ── Painel (área autenticada) ────────────────────────────────────────────
 
 function Painel({ onVoltar }: { onVoltar: () => void }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const { nome, logout } = useLojaAuth();
   const [aba, setAba] = useState<AbaPainel>('produtos');
   const [moeda, setMoeda] = useState('AOA');
@@ -403,6 +419,8 @@ const RASCUNHO_PRODUTO_VAZIO: RascunhoProduto = {
 };
 
 function AbaProdutos({ moeda }: { moeda: string }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const [produtos, setProdutos] = useState<ProdutoLoja[]>([]);
   const [loading, setLoading] = useState(true);
   const [aEditar, setAEditar] = useState<'nova' | number | null>(null);
@@ -584,7 +602,7 @@ function AbaProdutos({ moeda }: { moeda: string }) {
       )}
 
       {loading ? (
-        <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />
+        <ActivityIndicator color={COLORS.primary} style={{ marginTop: 20 }} />
       ) : produtos.length === 0 ? (
         <Text style={styles.vazio}>Ainda não tem produtos.</Text>
       ) : (
@@ -621,6 +639,8 @@ function AbaProdutos({ moeda }: { moeda: string }) {
 // ── Aba: Encomendas ──────────────────────────────────────────────────────
 
 function AbaEncomendas() {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const [encomendas, setEncomendas] = useState<EncomendaLoja[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -640,7 +660,7 @@ function AbaEncomendas() {
     }
   };
 
-  if (loading) return <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />;
+  if (loading) return <ActivityIndicator color={COLORS.primary} style={{ marginTop: 20 }} />;
 
   return (
     <ScrollView contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
@@ -695,6 +715,8 @@ function AbaEncomendas() {
 // ── Aba: Perfil da loja ──────────────────────────────────────────────────
 
 function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const [perfil, setPerfil] = useState<PerfilLoja | null>(null);
   const { coords, estado: estadoLoc, pedir } = useLocalizacao();
   const { logout } = useLojaAuth();
@@ -809,7 +831,7 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
         </View>
       );
     }
-    return <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />;
+    return <ActivityIndicator color={COLORS.primary} style={{ marginTop: 20 }} />;
   }
 
   return (
@@ -939,7 +961,7 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
 
 // ── Estilos ───────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   centro: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.background, gap: 16, padding: 24 },
   container: { padding: 16, paddingBottom: 48, backgroundColor: COLORS.background },
 
@@ -951,7 +973,7 @@ const styles = StyleSheet.create({
 
   erro: { color: COLORS.error, fontFamily: FONTS.sans, fontSize: 13, marginBottom: 12 },
   erroInline: { color: COLORS.error, fontFamily: FONTS.sans, fontSize: 12, marginTop: 6 },
-  sucesso: { color: '#2e7d32', fontFamily: FONTS.sans, fontSize: 13, marginBottom: 12 },
+  sucesso: { color: COLORS.okText, fontFamily: FONTS.sans, fontSize: 13, marginBottom: 12 },
 
   card: { backgroundColor: COLORS.surface, borderRadius: 14, padding: 16, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2 },
   campo: { marginBottom: 14 },
@@ -991,12 +1013,12 @@ const styles = StyleSheet.create({
   metodoBox: { borderWidth: 1, borderColor: COLORS.border, borderRadius: 16, padding: 10, marginBottom: 10 },
 
   aviso: { borderRadius: 14, padding: 14, marginBottom: 16 },
-  avisoOk: { backgroundColor: '#e8f5e9' },
-  avisoOkTxt: { color: '#2e7d32', fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
-  avisoPendente: { backgroundColor: '#fff3e0' },
-  avisoPendenteTxt: { color: '#e65100', fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
-  avisoInfo: { backgroundColor: '#eef4fc' },
-  avisoInfoTxt: { color: '#1c4a7a', fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
+  avisoOk: { backgroundColor: COLORS.okBg },
+  avisoOkTxt: { color: COLORS.okText, fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
+  avisoPendente: { backgroundColor: COLORS.warnBg },
+  avisoPendenteTxt: { color: COLORS.warnText, fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
+  avisoInfo: { backgroundColor: COLORS.infoBg },
+  avisoInfoTxt: { color: COLORS.infoText, fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
 
   painelHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 8 },
   painelTituloWrap: { paddingHorizontal: 16, marginBottom: 12 },
@@ -1025,7 +1047,7 @@ const styles = StyleSheet.create({
   itemDesc: { fontSize: 13, color: COLORS.text, fontFamily: FONTS.sans },
   itemDescMuted: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 2 },
   precoRiscado: { textDecorationLine: 'line-through', color: COLORS.textSecondary },
-  precoPromo: { color: '#c0392b', fontWeight: '700' },
+  precoPromo: { color: COLORS.promo, fontWeight: '700' },
 
   badge: { paddingVertical: 4, paddingHorizontal: 10, borderRadius: 20 },
   badgeTxt: { fontSize: 11, fontWeight: '700', fontFamily: FONTS.sans },

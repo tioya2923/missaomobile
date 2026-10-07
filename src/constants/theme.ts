@@ -1,18 +1,73 @@
-export const COLORS = {
-  primary:        '#7a1f2b',   // bordô — cor de marca, acções principais
-  primaryDark:    '#5a1520',   // bordô profundo — estado premido, fundos de destaque
-  primaryLight:   '#f6e9e8',   // fundo suave para estados activos/realce
-  gold:           '#b8912f',   // dourado litúrgico — acento pontual, nunca decorativo em excesso
-  goldLight:      '#f7f0dd',   // fundo suave para o dourado
+export interface Palette {
+  primary:        string;   // cor de marca para texto/realce (clara no modo escuro, para ter contraste)
+  primaryDark:    string;
+  primaryLight:   string;   // fundo suave para estados activos/realce
+  gold:           string;
+  goldLight:      string;
+  secondary:      string;
+  background:     string;
+  surface:        string;
+  text:           string;
+  textSecondary:  string;
+  border:         string;
+  borderDark:     string;
+  error:          string;
+  navbar:         string;   // bordô para botões e superfícies cheias (texto branco por cima)
+  okBg:           string;
+  okText:         string;
+  warnBg:         string;
+  warnText:       string;
+  infoBg:         string;
+  infoText:       string;
+  promo:          string;
+}
+
+export const LIGHT: Palette = {
+  primary:        '#7a1f2b',   // bordô — cor de marca
+  primaryDark:    '#5a1520',
+  primaryLight:   '#f6e9e8',
+  gold:           '#b8912f',   // dourado litúrgico — acento pontual
+  goldLight:      '#f7f0dd',
   secondary:      '#5c6bc0',
-  background:     '#f8f6f2',   // marfim claro — acolhedor sem pesar
+  background:     '#f8f6f2',   // marfim claro
   surface:        '#ffffff',
-  text:           '#1e1a17',   // grafite quente em vez de preto puro
-  textSecondary:  '#6a625a',   // contraste AA garantido sobre branco e marfim
-  border:         '#ece7e0',   // linha subtil sobre o marfim
+  text:           '#1e1a17',   // grafite quente
+  textSecondary:  '#6a625a',
+  border:         '#ece7e0',
   borderDark:     '#333333',
   error:          '#b3261e',
-  navbar:         '#7a1f2b',   // cabeçalho e barra activa seguem a cor de marca
+  navbar:         '#7a1f2b',
+  okBg:           '#e8f5e9',
+  okText:         '#2e7d32',
+  warnBg:         '#fff3e0',
+  warnText:       '#e65100',
+  infoBg:         '#eef4fc',
+  infoText:       '#1c4a7a',
+  promo:          '#c0392b',
+};
+
+export const DARK: Palette = {
+  primary:        '#e59aa5',   // rosa-bordô claro: legível sobre fundo escuro
+  primaryDark:    '#5a1520',
+  primaryLight:   '#3a1e24',
+  gold:           '#d4ab45',
+  goldLight:      '#3a3220',
+  secondary:      '#8c98e0',
+  background:     '#141110',   // castanho quase preto, quente
+  surface:        '#201c19',
+  text:           '#f2ece5',
+  textSecondary:  '#b5aca1',
+  border:         '#312b26',
+  borderDark:     '#cfc7bd',
+  error:          '#f2918b',
+  navbar:         '#8e2434',
+  okBg:           '#1c2e20',
+  okText:         '#7bd88f',
+  warnBg:         '#33261a',
+  warnText:       '#ffb066',
+  infoBg:         '#1a2636',
+  infoText:       '#8fbbe8',
+  promo:          '#ef6b5c',
 };
 
 export const RADIUS = {

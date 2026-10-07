@@ -5,10 +5,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCarrinho } from '../../context/useCarrinho';
 import { formatarPreco } from '../../constants/moeda';
 import CarrinhoFixo from '../../components/loja/CarrinhoFixo';
-import { COLORS, FONTS } from '../../constants/theme';
+import { FONTS, type Palette } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
+import { useColors, useThemedStyles } from '../../context/ThemeContext';
 
 export default function LojaProdutoScreen({ route, navigation }: MaisScreenProps<'LojaProduto'>) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const { produto } = route.params;
   const { adicionar } = useCarrinho();
   const [quantidade, setQuantidade] = useState(1);
@@ -108,7 +111,7 @@ export default function LojaProdutoScreen({ route, navigation }: MaisScreenProps
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: { backgroundColor: COLORS.background, paddingBottom: 40 },
   imagem: { width: '100%', height: 260, backgroundColor: COLORS.border },
   imagemPlaceholder: { alignItems: 'center', justifyContent: 'center' },
@@ -119,7 +122,7 @@ const styles = StyleSheet.create({
   },
   destaqueBadge: {
     flexDirection: 'row', alignItems: 'center', gap: 5, alignSelf: 'flex-start',
-    backgroundColor: '#c0392b', borderRadius: 12, paddingVertical: 4, paddingHorizontal: 8, marginBottom: 8,
+    backgroundColor: COLORS.promo, borderRadius: 12, paddingVertical: 4, paddingHorizontal: 8, marginBottom: 8,
   },
   destaqueBadgeTxt: { color: '#fff', fontSize: 11, fontWeight: '700', fontFamily: FONTS.sans, textTransform: 'uppercase' },
   categoria: {
@@ -130,7 +133,7 @@ const styles = StyleSheet.create({
   preco: { fontSize: 22, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.sans, marginTop: 6 },
   precoPromoRow: { flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 6 },
   precoRiscado: { fontSize: 15, color: COLORS.textSecondary, fontFamily: FONTS.sans, textDecorationLine: 'line-through' },
-  precoPromo: { fontSize: 22, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.sans },
+  precoPromo: { fontSize: 22, fontWeight: '700', color: COLORS.promo, fontFamily: FONTS.sans },
   lojaBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10,
     backgroundColor: `${COLORS.primary}12`, alignSelf: 'flex-start',

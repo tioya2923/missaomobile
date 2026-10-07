@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { COLORS } from '../constants/theme';
+import { type Palette } from '../constants/theme';
 import LogoLob from './LogoLob';
+import { useColors, useThemedStyles } from '../context/ThemeContext';
 
 interface Props {
   activeTab?: string;
@@ -12,6 +13,8 @@ interface Props {
 }
 
 export default function NavBar({ canGoBack, onBack, onNavigate }: Props) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const insets = useSafeAreaInsets();
 
   return (
@@ -39,7 +42,7 @@ export default function NavBar({ canGoBack, onBack, onNavigate }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: {
     backgroundColor: COLORS.surface,
     borderBottomWidth: StyleSheet.hairlineWidth,

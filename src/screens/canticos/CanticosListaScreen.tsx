@@ -5,10 +5,12 @@ import { getCanticosPorTopico, type CanticoResumo } from '../../api/canticos';
 import ErrorView from '../../components/ErrorView';
 import ListItem from '../../components/ListItem';
 import LoadingView from '../../components/LoadingView';
-import { COLORS, FONTS, RADIUS, SHADOW } from '../../constants/theme';
+import { FONTS, RADIUS, SHADOW, type Palette } from '../../constants/theme';
 import type { CanticosScreenProps } from '../../navigation/types';
+import { useThemedStyles } from '../../context/ThemeContext';
 
 export default function CanticosListaScreen({ route, navigation }: CanticosScreenProps<'CanticosLista'>) {
+  const styles = useThemedStyles(createStyles);
   const { idioma, topicoSlug, topicoNome } = route.params;
   const [canticos, setCanticos] = useState<CanticoResumo[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,7 +64,7 @@ export default function CanticosListaScreen({ route, navigation }: CanticosScree
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   scroll: { flex: 1, backgroundColor: COLORS.background },
   container: { padding: 16 },
   group: {

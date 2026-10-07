@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import Text from './AppText';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
+import { useThemedStyles } from '../context/ThemeContext';
 
 interface Props {
   variant?: 'navbar' | 'lockscreen';
@@ -9,6 +10,7 @@ interface Props {
 const MARK_GOLD = '#f0d98d';
 
 export default function LogoLob({ variant = 'navbar' }: Props) {
+  const styles = useThemedStyles(createStyles);
   if (variant === 'lockscreen') {
     return (
       <View style={styles.lockWrap}>
@@ -30,7 +32,7 @@ export default function LogoLob({ variant = 'navbar' }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   /* ── Navbar variant ── */
   navWrap: {
     flexDirection: 'row',
@@ -41,7 +43,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 9,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.navbar,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -71,7 +73,7 @@ const styles = StyleSheet.create({
     width: 84,
     height: 84,
     borderRadius: 26,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.navbar,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: COLORS.primaryDark,

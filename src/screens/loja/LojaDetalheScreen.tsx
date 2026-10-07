@@ -9,10 +9,13 @@ import { formatarPreco } from '../../constants/moeda';
 import CarrinhoFixo from '../../components/loja/CarrinhoFixo';
 import ErrorView from '../../components/ErrorView';
 import LoadingView from '../../components/LoadingView';
-import { COLORS, FONTS } from '../../constants/theme';
+import { FONTS, type Palette } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
+import { useColors, useThemedStyles } from '../../context/ThemeContext';
 
 export default function LojaDetalheScreen({ route, navigation }: MaisScreenProps<'LojaDetalhe'>) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const { lojaId, lojaNome } = route.params;
   const [loja, setLoja] = useState<Loja | null>(null);
   const [produtos, setProdutos] = useState<Omit<Produto, 'loja' | 'distanciaKm'>[]>([]);
@@ -139,7 +142,7 @@ export default function LojaDetalheScreen({ route, navigation }: MaisScreenProps
 
 const CARD_W = '48%';
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   cabecalho: {
     backgroundColor: COLORS.surface, margin: 16, marginTop: 12, padding: 16, borderRadius: 14, gap: 6,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2,
@@ -168,7 +171,7 @@ const styles = StyleSheet.create({
   },
   destaqueBadge: {
     position: 'absolute', top: 8, right: 8, zIndex: 1,
-    width: 22, height: 22, borderRadius: 11, backgroundColor: '#c0392b',
+    width: 22, height: 22, borderRadius: 11, backgroundColor: COLORS.promo,
     alignItems: 'center', justifyContent: 'center',
   },
   imagem: { width: '100%', height: 120, backgroundColor: COLORS.border },
@@ -182,7 +185,7 @@ const styles = StyleSheet.create({
   preco: { fontSize: 15, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.sans, marginTop: 2 },
   precoPromoRow: { flexDirection: 'row', alignItems: 'baseline', gap: 6, marginTop: 2 },
   precoRiscado: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.sans, textDecorationLine: 'line-through' },
-  precoPromo: { fontSize: 15, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.sans },
+  precoPromo: { fontSize: 15, fontWeight: '700', color: COLORS.promo, fontFamily: FONTS.sans },
 
   emptyContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   empty: {

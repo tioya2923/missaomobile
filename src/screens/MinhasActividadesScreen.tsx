@@ -4,7 +4,8 @@ import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Touchabl
 import TextInput from '../components/AppTextInput';
 import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
+import { useColors, useThemedStyles } from '../context/ThemeContext';
 
 const ACT_KEY = '@ndatava_actividades';
 
@@ -133,6 +134,8 @@ function validarMissa(m: LembreteMissa): string | null {
 
 // ─────────────────────────────────────────────────────────────────────────────
 export default function MinhasActividadesScreen({ onVoltar }: { onVoltar: () => void }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
 
   const [dados,         setDados]         = useState<Dados>(dadosVazios());
   const [expandido,     setExpandido]     = useState<string | null>(null);
@@ -451,7 +454,7 @@ export default function MinhasActividadesScreen({ onVoltar }: { onVoltar: () => 
         >
           {/* Aviso */}
           <View style={styles.aviso}>
-            <Ionicons name="information-circle-outline" size={16} color="#1d4ed8"/>
+            <Ionicons name="information-circle-outline" size={16} color={COLORS.infoText}/>
             <Text style={styles.avisoTxt}>
               Os lembretes aparecem enquanto a aplicação estiver aberta. Para notificações em segundo plano, instale a aplicação a partir de um build.
             </Text>
@@ -598,14 +601,14 @@ export default function MinhasActividadesScreen({ onVoltar }: { onVoltar: () => 
 }
 
 // ── Estilos ───────────────────────────────────────────────────────────────────
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   ecra:      { flex: 1, backgroundColor: COLORS.background },
   voltarBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, padding: 16 },
   voltarTxt: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.sans, fontWeight: '600' },
   container: { paddingHorizontal: 16, paddingBottom: 32 },
 
-  aviso:    { flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: '#dbeafe', borderRadius: 14, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: '#bfdbfe' },
-  avisoTxt: { flex: 1, fontSize: 12, color: '#1e40af', fontFamily: FONTS.sans, lineHeight: 18 },
+  aviso:    { flexDirection: 'row', alignItems: 'flex-start', gap: 8, backgroundColor: COLORS.infoBg, borderRadius: 14, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: COLORS.border },
+  avisoTxt: { flex: 1, fontSize: 12, color: COLORS.infoText, fontFamily: FONTS.sans, lineHeight: 18 },
 
   secaoTitulo:  { fontSize: 11, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.sans, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 10 },
   outrosHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 20, marginBottom: 10 },

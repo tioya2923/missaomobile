@@ -1,8 +1,10 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Text from '../components/AppText';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
+import { useThemedStyles } from '../context/ThemeContext';
 
 export default function SobreScreen() {
+  const styles = useThemedStyles(createStyles);
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.card}>
@@ -20,7 +22,7 @@ export default function SobreScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: { padding: 16, backgroundColor: COLORS.background },
   card: {
     backgroundColor: COLORS.surface,

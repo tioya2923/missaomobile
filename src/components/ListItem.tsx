@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Text from './AppText';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
+import { useThemedStyles } from '../context/ThemeContext';
 
 interface Props {
   title: string;
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function ListItem({ title, prefix, titleBold, subtitle, onPress }: Props) {
+  const styles = useThemedStyles(createStyles);
   return (
     <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.6}>
       {prefix ? (
@@ -28,7 +30,7 @@ export default function ListItem({ title, prefix, titleBold, subtitle, onPress }
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',

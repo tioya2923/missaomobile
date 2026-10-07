@@ -5,8 +5,9 @@ import Text from '../../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { labelMetodoPagamento, iconeMetodoPagamento } from '../../constants/metodosPagamento';
 import { formatarPreco } from '../../constants/moeda';
-import { COLORS, FONTS } from '../../constants/theme';
+import { FONTS, type Palette } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
+import { useColors, useThemedStyles } from '../../context/ThemeContext';
 
 // Indicativo internacional por país (derivado da moeda da loja) — sem isto, o
 // número era sempre tratado como angolano, o que gerava um link errado do
@@ -25,6 +26,8 @@ function paraFormatoWhatsApp(telefone: string, moeda: string): string {
 }
 
 export default function LojaConfirmacaoScreen({ route, navigation }: MaisScreenProps<'LojaConfirmacao'>) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const { encomendas } = route.params;
   const [copiadoChave, setCopiadoChave] = useState<string | null>(null);
 
@@ -164,7 +167,7 @@ export default function LojaConfirmacaoScreen({ route, navigation }: MaisScreenP
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: { padding: 16, paddingBottom: 40, backgroundColor: COLORS.background },
 
   hero: { alignItems: 'center', paddingVertical: 20, gap: 8 },

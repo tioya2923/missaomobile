@@ -5,9 +5,12 @@ import TextInput from '../components/AppTextInput';
 import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { search, type SearchResults } from '../api/search';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
+import { useColors, useThemedStyles } from '../context/ThemeContext';
 
 export default function PesquisaScreen() {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const navigation = useNavigation<any>();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResults | null>(null);
@@ -107,7 +110,7 @@ export default function PesquisaScreen() {
         </View>
       )}
 
-      {loading && <ActivityIndicator style={{ marginTop: 32 }} color={COLORS.navbar} />}
+      {loading && <ActivityIndicator style={{ marginTop: 32 }} color={COLORS.primary} />}
       {error && <Text style={styles.error}>{error}</Text>}
       {!loading && results && !hasResults && (
         <View style={styles.hint}>
@@ -198,6 +201,7 @@ export default function PesquisaScreen() {
 
 // ── Componentes auxiliares ───────────────────────────────────────────────────
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  const styles = useThemedStyles(createStyles);
   const hasChildren = Array.isArray(children)
     ? children.some(Boolean)
     : Boolean(children);
@@ -212,6 +216,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 function ResultItem({ label, onPress }: { label: string; onPress: () => void }) {
+  const styles = useThemedStyles(createStyles);
   return (
     <TouchableOpacity style={styles.resultItem} onPress={onPress} activeOpacity={0.7}>
       <Text style={styles.resultText}>{label}</Text>
@@ -221,7 +226,7 @@ function ResultItem({ label, onPress }: { label: string; onPress: () => void }) 
 }
 
 // ── Estilos ──────────────────────────────────────────────────────────────────
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
 
   searchRow: {

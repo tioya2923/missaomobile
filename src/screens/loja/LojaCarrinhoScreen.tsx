@@ -6,12 +6,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCarrinho } from '../../context/useCarrinho';
 import { criarEncomenda } from '../../api/loja';
 import { formatarPreco } from '../../constants/moeda';
-import { COLORS, FONTS } from '../../constants/theme';
+import { FONTS, type Palette } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
+import { useColors, useThemedStyles } from '../../context/ThemeContext';
 
 // Nota: usa-se um aviso inline (erro) em vez de Alert.alert porque o React
 // Native não tem uma implementação fiável do Alert na Web.
 export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'LojaCarrinho'>) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const { itens, grupos, totaisPorMoeda, atualizarQuantidade, removerItem, limpar } = useCarrinho();
 
   const [nome, setNome] = useState('');
@@ -167,7 +170,7 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
 
         {erro && (
           <View style={styles.erroBox}>
-            <Ionicons name="alert-circle" size={16} color="#c0392b" />
+            <Ionicons name="alert-circle" size={16} color={COLORS.promo} />
             <Text style={styles.erroTxt}>{erro}</Text>
           </View>
         )}
@@ -188,7 +191,7 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: { padding: 16, paddingBottom: 40, backgroundColor: COLORS.background },
 
   card: {
@@ -217,7 +220,7 @@ const styles = StyleSheet.create({
   totalLabel: { fontSize: 13, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.sans, textTransform: 'uppercase', letterSpacing: 0.4 },
   totalMoedaLabel: { fontSize: 16, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans },
   totalValor: { fontSize: 18, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.sans },
-  avisoMoedas: { fontSize: 12, color: '#b45309', fontFamily: FONTS.sans, fontStyle: 'italic', marginTop: 10, lineHeight: 17 },
+  avisoMoedas: { fontSize: 12, color: COLORS.warnText, fontFamily: FONTS.sans, fontStyle: 'italic', marginTop: 10, lineHeight: 17 },
 
   label: { fontSize: 12.5, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 12, marginBottom: 6, textTransform: 'uppercase' },
   input: {
@@ -230,7 +233,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 8,
     backgroundColor: '#c0392b15', borderRadius: 16, padding: 12, marginBottom: 12,
   },
-  erroTxt: { flex: 1, color: '#c0392b', fontFamily: FONTS.sans, fontSize: 13 },
+  erroTxt: { flex: 1, color: COLORS.promo, fontFamily: FONTS.sans, fontSize: 13 },
 
   btnFinalizar: { backgroundColor: COLORS.navbar, borderRadius: 14, paddingVertical: 15, alignItems: 'center' },
   btnFinalizarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 16 },

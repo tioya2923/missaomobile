@@ -3,7 +3,7 @@ import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView, S
 import TextInput from '../components/AppTextInput';
 import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
 import { formatarPreco, labelMoeda } from '../constants/moeda';
 import { labelMetodoPagamento } from '../constants/metodosPagamento';
 import { useLojaAuth } from '../context/useLojaAuth';
@@ -17,6 +17,7 @@ import {
   getEncomendasAdmin, atualizarEstadoEncomendaAdmin, eliminarEncomendaAdmin, type EncomendaAdmin,
   getResumoVendas, enviarLembreteApoioAgora, type ResumoVendas,
 } from '../api/adminMarketplace';
+import { useColors, useThemedStyles } from '../context/ThemeContext';
 
 type Vista = 'hub' | 'recurso' | 'lojas' | 'encomendas' | 'vendas';
 
@@ -33,6 +34,8 @@ function respostaErro(e: unknown, fallback: string): string {
 // ── Cabeçalho reutilizável ───────────────────────────────────────────────
 
 function CabecalhoAdmin({ onVoltar, acao }: { onVoltar: () => void; acao?: React.ReactNode }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   return (
     <View style={styles.painelHeader}>
       <TouchableOpacity style={styles.voltarBtn} onPress={onVoltar} activeOpacity={0.7}>
@@ -47,6 +50,7 @@ function CabecalhoAdmin({ onVoltar, acao }: { onVoltar: () => void; acao?: React
 // Estado de erro ao carregar uma lista — sem isto, um pedido falhado mostrava
 // silenciosamente "ainda não há dados", confundindo-se com uma lista vazia real.
 function ErroCarregar({ onTentar }: { onTentar: () => void }) {
+  const styles = useThemedStyles(createStyles);
   return (
     <View style={styles.centro}>
       <Text style={styles.erro}>Não foi possível carregar. Verifique a ligação.</Text>
@@ -62,6 +66,8 @@ function ErroCarregar({ onTentar }: { onTentar: () => void }) {
 // o gestor geral não precisar de sair da app.
 
 export default function AdminArea({ onVoltar }: { onVoltar: () => void }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const { nome, logout } = useLojaAuth();
   const [vista, setVista] = useState<Vista>('hub');
   const [recursoKey, setRecursoKey] = useState<string | null>(null);
@@ -127,6 +133,8 @@ function CampoRecursoInput({
   campo: CampoRecurso; valor: unknown; onChange: (v: unknown) => void;
   opcoes?: Record<string, unknown>[]; excluirId?: number | null;
 }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   if (campo.tipo === 'boolean') {
     return (
       <View style={styles.linhaSwitch}>
@@ -209,6 +217,8 @@ function valorInicialDoCampo(campo: CampoRecurso): unknown {
 }
 
 function AdminResourceCrud({ recursoKey, onVoltar }: { recursoKey: string; onVoltar: () => void }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   // Recursos estáticos (ex: Apoio, Idiomas) resolvem já; recursos por idioma
   // (Cânticos/Catecismo de um idioma) só resolvem depois de /api/idiomas carregar.
   const [idiomas, setIdiomas] = useState<IdiomaInfo[] | null>(null);
@@ -265,7 +275,7 @@ function AdminResourceCrud({ recursoKey, onVoltar }: { recursoKey: string; onVol
     return (
       <View style={styles.centro}>
         {aResolverIdioma
-          ? <ActivityIndicator color={COLORS.navbar} />
+          ? <ActivityIndicator color={COLORS.primary} />
           : <Text style={styles.erro}>Tipo de conteúdo desconhecido.</Text>}
       </View>
     );
@@ -388,7 +398,7 @@ function AdminResourceCrud({ recursoKey, onVoltar }: { recursoKey: string; onVol
         )}
 
         {loading ? (
-          <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />
+          <ActivityIndicator color={COLORS.primary} style={{ marginTop: 20 }} />
         ) : itens.length === 0 ? (
           <Text style={styles.vazio}>Ainda não existe conteúdo aqui.</Text>
         ) : (
@@ -421,6 +431,8 @@ function AdminResourceCrud({ recursoKey, onVoltar }: { recursoKey: string; onVol
 // ── Lojas parceiras ──────────────────────────────────────────────────────
 
 function AdminLojasScreen({ onVoltar }: { onVoltar: () => void }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const [lojas, setLojas] = useState<LojaAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [erroCarregar, setErroCarregar] = useState(false);
@@ -461,7 +473,7 @@ function AdminLojasScreen({ onVoltar }: { onVoltar: () => void }) {
       <Text style={styles.titulo}>Lojas parceiras</Text>
 
       {loading ? (
-        <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />
+        <ActivityIndicator color={COLORS.primary} style={{ marginTop: 20 }} />
       ) : erroCarregar ? (
         <ErroCarregar onTentar={carregar} />
       ) : lojas.length === 0 ? (
@@ -472,8 +484,8 @@ function AdminLojasScreen({ onVoltar }: { onVoltar: () => void }) {
             <View style={{ flex: 1 }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
                 <Text style={styles.itemTitulo}>{l.nome}</Text>
-                <View style={[styles.badge, { backgroundColor: l.aprovada ? '#e8f5e9' : '#fff3e0' }]}>
-                  <Text style={[styles.badgeTxt, { color: l.aprovada ? '#2e7d32' : '#e65100' }]}>{l.aprovada ? 'Aprovada' : 'Pendente'}</Text>
+                <View style={[styles.badge, { backgroundColor: l.aprovada ? COLORS.okBg : COLORS.warnBg }]}>
+                  <Text style={[styles.badgeTxt, { color: l.aprovada ? COLORS.okText : COLORS.warnText }]}>{l.aprovada ? 'Aprovada' : 'Pendente'}</Text>
                 </View>
                 {!l.ativa && (
                   <View style={[styles.badge, { backgroundColor: COLORS.border }]}>
@@ -512,6 +524,8 @@ function AdminLojasScreen({ onVoltar }: { onVoltar: () => void }) {
 // ── Todas as encomendas ──────────────────────────────────────────────────
 
 function AdminEncomendasScreen({ onVoltar }: { onVoltar: () => void }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const [encomendas, setEncomendas] = useState<EncomendaAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [erroCarregar, setErroCarregar] = useState(false);
@@ -552,7 +566,7 @@ function AdminEncomendasScreen({ onVoltar }: { onVoltar: () => void }) {
       <Text style={styles.titulo}>Todas as encomendas</Text>
 
       {loading ? (
-        <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />
+        <ActivityIndicator color={COLORS.primary} style={{ marginTop: 20 }} />
       ) : erroCarregar ? (
         <ErroCarregar onTentar={carregar} />
       ) : encomendas.length === 0 ? (
@@ -610,6 +624,8 @@ function AdminEncomendasScreen({ onVoltar }: { onVoltar: () => void }) {
 // ── Vendas das lojas ─────────────────────────────────────────────────────
 
 function AdminVendasScreen({ onVoltar }: { onVoltar: () => void }) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const [resumo, setResumo] = useState<ResumoVendas | null>(null);
   const [loading, setLoading] = useState(true);
   const [erroCarregar, setErroCarregar] = useState(false);
@@ -669,7 +685,7 @@ function AdminVendasScreen({ onVoltar }: { onVoltar: () => void }) {
       {mensagem && <Text style={styles.sucesso}>{mensagem}</Text>}
 
       {loading ? (
-        <ActivityIndicator color={COLORS.navbar} style={{ marginTop: 20 }} />
+        <ActivityIndicator color={COLORS.primary} style={{ marginTop: 20 }} />
       ) : erroCarregar ? (
         <ErroCarregar onTentar={carregar} />
       ) : !resumo || resumo.lojas.length === 0 ? (
@@ -703,7 +719,7 @@ function AdminVendasScreen({ onVoltar }: { onVoltar: () => void }) {
 
 // ── Estilos ───────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   centro: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: COLORS.background, gap: 16, padding: 24 },
 
   painelHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
@@ -715,7 +731,7 @@ const styles = StyleSheet.create({
   subtitulo: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 4, marginBottom: 16 },
 
   erro: { color: COLORS.error, fontFamily: FONTS.sans, fontSize: 13, marginBottom: 12 },
-  sucesso: { color: '#2e7d32', fontFamily: FONTS.sans, fontSize: 13, marginBottom: 12 },
+  sucesso: { color: COLORS.okText, fontFamily: FONTS.sans, fontSize: 13, marginBottom: 12 },
 
   abaContainer: { padding: 16, paddingBottom: 48, backgroundColor: COLORS.background },
 
@@ -776,8 +792,8 @@ const styles = StyleSheet.create({
   linhaSwitch: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 6 },
 
   aviso: { borderRadius: 14, padding: 14, marginBottom: 16 },
-  avisoOk: { backgroundColor: '#e8f5e9' },
-  avisoOkTxt: { color: '#2e7d32', fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
-  avisoInfo: { backgroundColor: '#eef4fc' },
-  avisoInfoTxt: { color: '#1c4a7a', fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
+  avisoOk: { backgroundColor: COLORS.okBg },
+  avisoOkTxt: { color: COLORS.okText, fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
+  avisoInfo: { backgroundColor: COLORS.infoBg },
+  avisoInfoTxt: { color: COLORS.infoText, fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
 });

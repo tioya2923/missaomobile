@@ -1,8 +1,10 @@
 import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Text from '../components/AppText';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
+import { useThemedStyles } from '../context/ThemeContext';
 
 export default function PrivacidadeScreen() {
+  const styles = useThemedStyles(createStyles);
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TouchableOpacity
@@ -73,7 +75,7 @@ export default function PrivacidadeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: { padding: 16, backgroundColor: COLORS.background },
   botaoEliminar: {
     backgroundColor: COLORS.surface,

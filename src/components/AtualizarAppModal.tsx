@@ -4,13 +4,15 @@ import Text from './AppText';
 import Constants from 'expo-constants';
 import { getVersaoApp } from '../api/versaoApp';
 import { versaoEhMenorQue } from '../utils/versao';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
+import { useThemedStyles } from '../context/ThemeContext';
 
 // Mostra um aviso a pedir para atualizar a app quando a versão instalada
 // é mais antiga do que a versão recomendada/mínima definida pelo Gestor
 // (em Administração → Versão da App). Se for inferior à versão mínima,
 // o aviso não pode ser fechado.
 export default function AtualizarAppModal() {
+  const styles = useThemedStyles(createStyles);
   const [visivel, setVisivel] = useState(false);
   const [obrigatorio, setObrigatorio] = useState(false);
   const [mensagem, setMensagem] = useState('Está disponível uma nova versão da Ndatava.');
@@ -63,7 +65,7 @@ export default function AtualizarAppModal() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   fundo: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.6)',

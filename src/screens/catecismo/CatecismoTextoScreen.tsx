@@ -4,10 +4,12 @@ import Text from '../../components/AppText';
 import { getCatecismoTexto, type CatecismoTexto } from '../../api/catecismo';
 import ErrorView from '../../components/ErrorView';
 import LoadingView from '../../components/LoadingView';
-import { COLORS, FONTS } from '../../constants/theme';
+import { FONTS, type Palette } from '../../constants/theme';
 import type { CatecismoScreenProps } from '../../navigation/types';
+import { useThemedStyles } from '../../context/ThemeContext';
 
 export default function CatecismoTextoScreen({ route, navigation }: CatecismoScreenProps<'CatecismoTexto'>) {
+  const styles = useThemedStyles(createStyles);
   const { idioma, id, titulo } = route.params;
   const [item, setItem] = useState<CatecismoTexto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -44,7 +46,7 @@ export default function CatecismoTextoScreen({ route, navigation }: CatecismoScr
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: { padding: 16, backgroundColor: COLORS.background },
   card: {
     backgroundColor: COLORS.surface,

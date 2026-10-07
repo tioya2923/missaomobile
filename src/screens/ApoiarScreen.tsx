@@ -3,10 +3,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
 import { getFormasApoio, type FormaApoio } from '../api/apoio';
+import { useColors, useThemedStyles } from '../context/ThemeContext';
 
 export default function ApoiarScreen() {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const [formas, setFormas] = useState<FormaApoio[]>([]);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState(false);
@@ -37,7 +40,7 @@ export default function ApoiarScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       {/* Cabeçalho */}
       <View style={styles.hero}>
-        <Ionicons name="heart-outline" size={40} color={COLORS.navbar} />
+        <Ionicons name="heart-outline" size={40} color={COLORS.primary} />
         <Text style={styles.heroTitulo}>Apoie o Ndatava</Text>
         <Text style={styles.heroTexto}>
           Esta aplicação é e será sempre gratuita para todos. Se quiser, pode ajudar
@@ -102,7 +105,7 @@ export default function ApoiarScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: { padding: 16, paddingBottom: 40, backgroundColor: COLORS.background },
 
   hero: { alignItems: 'center', paddingVertical: 24, paddingHorizontal: 8, gap: 10 },

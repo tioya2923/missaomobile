@@ -4,10 +4,12 @@ import { getCatecismoTopicos, type CatecismoTopico } from '../../api/catecismo';
 import ErrorView from '../../components/ErrorView';
 import ListItem from '../../components/ListItem';
 import LoadingView from '../../components/LoadingView';
-import { COLORS, RADIUS, SHADOW } from '../../constants/theme';
+import { RADIUS, SHADOW, type Palette } from '../../constants/theme';
 import type { CatecismoScreenProps } from '../../navigation/types';
+import { useThemedStyles } from '../../context/ThemeContext';
 
 export default function CatecismoTopicosScreen({ route, navigation }: CatecismoScreenProps<'CatecismoTopicos'>) {
+  const styles = useThemedStyles(createStyles);
   const { idioma } = route.params;
   const [topicos, setTopicos] = useState<CatecismoTopico[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,7 +67,7 @@ export default function CatecismoTopicosScreen({ route, navigation }: CatecismoS
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   scroll: { flex: 1, backgroundColor: COLORS.background },
   container: { padding: 16 },
   group: {

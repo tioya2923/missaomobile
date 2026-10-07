@@ -3,7 +3,8 @@ import Text from '../AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { useCarrinho } from '../../context/useCarrinho';
 import { formatarPreco } from '../../constants/moeda';
-import { COLORS, FONTS } from '../../constants/theme';
+import { FONTS, type Palette } from '../../constants/theme';
+import { useThemedStyles } from '../../context/ThemeContext';
 
 interface Props {
   onPress: () => void;
@@ -14,6 +15,7 @@ interface Props {
 // durante toda a compra. Ao contrário de um aviso temporário, só desaparece
 // quando o carrinho fica vazio (não tem temporizador).
 export default function CarrinhoFixo({ onPress }: Props) {
+  const styles = useThemedStyles(createStyles);
   const { quantidadeTotal, totaisPorMoeda } = useCarrinho();
 
   if (quantidadeTotal === 0) return null;
@@ -38,7 +40,7 @@ export default function CarrinhoFixo({ onPress }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   barra: {
     position: 'absolute', left: 16, right: 16, bottom: 16,
     backgroundColor: COLORS.navbar, borderRadius: 999, paddingVertical: 12, paddingHorizontal: 16,

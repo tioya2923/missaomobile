@@ -1,7 +1,8 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Text from './AppText';
 import ListItem from './ListItem';
-import { COLORS, FONTS, RADIUS, SHADOW } from '../constants/theme';
+import { FONTS, RADIUS, SHADOW, type Palette } from '../constants/theme';
+import { useThemedStyles } from '../context/ThemeContext';
 
 export interface IdiomaOpcao<T extends string> {
   codigo: T;
@@ -17,6 +18,7 @@ interface Props<T extends string> {
 }
 
 export default function IdiomaPicker<T extends string>({ titulo, subtitulo, opcoes, onEscolher }: Props<T>) {
+  const styles = useThemedStyles(createStyles);
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.container}>
       <View style={styles.header}>
@@ -33,7 +35,7 @@ export default function IdiomaPicker<T extends string>({ titulo, subtitulo, opco
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   scroll: { flex: 1, backgroundColor: COLORS.background },
   container: { padding: 16, paddingTop: 28 },
   header: { alignItems: 'center', marginBottom: 24 },

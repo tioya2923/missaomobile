@@ -7,10 +7,11 @@ import TextInput from '../components/AppTextInput';
 import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import { COLORS, FONTS } from '../constants/theme';
+import { FONTS, type Palette } from '../constants/theme';
 import LogoLob from '../components/LogoLob';
 import MinhasActividadesScreen from './MinhasActividadesScreen';
 import VendedorArea from './VendedorArea';
+import { useColors, useThemedStyles } from '../context/ThemeContext';
 
 const STORAGE_KEY  = '@ndatava_perfil';
 const SECURITY_KEY = '@ndatava_seguranca';
@@ -67,6 +68,8 @@ function validarData(d: DataCampo, label: string): string | null {
 
 // ─────────────────────────────────────────────────────────────────────────────
 export default function EuScreen() {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
 
   /* ── perfil ── */
   const [perfil,    setPerfil]    = useState<Perfil>(perfilVazio());
@@ -424,7 +427,7 @@ export default function EuScreen() {
       <View style={styles.hubOpcoes}>
         <TouchableOpacity style={styles.hubCard} onPress={()=>setVista('perfil')} activeOpacity={0.8}>
           <View style={styles.hubIcone}>
-            <Ionicons name="person-outline" size={26} color={COLORS.navbar}/>
+            <Ionicons name="person-outline" size={26} color={COLORS.primary}/>
           </View>
           <Text style={styles.hubCardTxt}>O Meu Perfil</Text>
           <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
@@ -432,7 +435,7 @@ export default function EuScreen() {
 
         <TouchableOpacity style={styles.hubCard} onPress={()=>setVista('actividades')} activeOpacity={0.8}>
           <View style={styles.hubIcone}>
-            <Ionicons name="list-outline" size={26} color={COLORS.navbar}/>
+            <Ionicons name="list-outline" size={26} color={COLORS.primary}/>
           </View>
           <Text style={styles.hubCardTxt}>As Minhas Actividades</Text>
           <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
@@ -440,7 +443,7 @@ export default function EuScreen() {
 
         <TouchableOpacity style={styles.hubCard} onPress={()=>setVista('vendedor')} activeOpacity={0.8}>
           <View style={styles.hubIcone}>
-            <Ionicons name="storefront-outline" size={26} color={COLORS.navbar}/>
+            <Ionicons name="storefront-outline" size={26} color={COLORS.primary}/>
           </View>
           <Text style={styles.hubCardTxt}>Vender no Ndatava</Text>
           <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
@@ -513,7 +516,7 @@ export default function EuScreen() {
         {/* Aviso de segurança */}
         {tipoSeg === 'nenhuma' && (
           <View style={styles.avisoWrap}>
-            <Ionicons name="shield-outline" size={18} color="#92400e"/>
+            <Ionicons name="shield-outline" size={18} color={COLORS.warnText}/>
             <View style={{flex:1, gap:2}}>
               <Text style={styles.avisoTitulo}>Perfil sem protecção</Text>
               <Text style={styles.avisoDesc}>Garanta a segurança do seu perfil</Text>
@@ -659,14 +662,14 @@ export default function EuScreen() {
 const AV  = 90;
 const HAV = 100;
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   /* ── Hub ── */
   hubContainer:    {flexGrow:1, alignItems:'center', paddingTop:48, paddingBottom:48, paddingHorizontal:24, backgroundColor:COLORS.background},
   hubAvatarWrap:   {width:HAV, height:HAV, marginBottom:16},
   hubAvatar:       {width:HAV, height:HAV, borderRadius:HAV/2, backgroundColor:COLORS.navbar, alignItems:'center', justifyContent:'center'},
   hubFoto:         {width:HAV, height:HAV, borderRadius:HAV/2},
   hubLetra:        {color:'#fff', fontSize:40, fontWeight:'700', fontFamily:FONTS.sans},
-  hubCameraOverlay:{position:'absolute', bottom:0, right:0, width:28, height:28, borderRadius:14, backgroundColor:COLORS.primary, alignItems:'center', justifyContent:'center', borderWidth:2, borderColor:COLORS.background},
+  hubCameraOverlay:{position:'absolute', bottom:0, right:0, width:28, height:28, borderRadius:14, backgroundColor:COLORS.navbar, alignItems:'center', justifyContent:'center', borderWidth:2, borderColor:COLORS.background},
   hubNome:         {fontSize:20, fontWeight:'700', color:COLORS.text, fontFamily:FONTS.sans, textAlign:'center', marginBottom:36},
   hubOpcoes:       {width:'100%', gap:12},
   hubCard:         {flexDirection:'row', alignItems:'center', gap:14, backgroundColor:COLORS.surface, borderRadius:16, paddingVertical:18, paddingHorizontal:18, shadowColor:'#000', shadowOffset:{width:0,height:2}, shadowOpacity:0.07, shadowRadius:8, elevation:2},
@@ -700,16 +703,16 @@ const styles = StyleSheet.create({
   /* ── Perfil ── */
   container: {padding:16, paddingBottom:48, backgroundColor:COLORS.background},
 
-  avisoWrap:   {flexDirection:'row', alignItems:'flex-start', gap:10, backgroundColor:'#fef3c7', borderRadius:14, padding:14, marginBottom:16, borderWidth:1, borderColor:'#fde68a'},
-  avisoTitulo: {fontSize:14, fontWeight:'700', color:'#92400e', fontFamily:FONTS.sans},
-  avisoDesc:   {fontSize:12, color:'#b45309', fontFamily:FONTS.sans},
+  avisoWrap:   {flexDirection:'row', alignItems:'flex-start', gap:10, backgroundColor:COLORS.warnBg, borderRadius:14, padding:14, marginBottom:16, borderWidth:1, borderColor:COLORS.border},
+  avisoTitulo: {fontSize:14, fontWeight:'700', color:COLORS.warnText, fontFamily:FONTS.sans},
+  avisoDesc:   {fontSize:12, color:COLORS.warnText, fontFamily:FONTS.sans},
 
   cabecalho:   {alignItems:'center', marginBottom:20, gap:10},
   avatarWrap:  {width:AV, height:AV},
   avatar:      {width:AV, height:AV, borderRadius:AV/2, backgroundColor:COLORS.navbar, alignItems:'center', justifyContent:'center'},
   avatarFoto:  {width:AV, height:AV, borderRadius:AV/2},
   avatarLetra: {color:'#fff', fontSize:36, fontWeight:'700', fontFamily:FONTS.sans},
-  cameraOverlay:{position:'absolute', bottom:0, right:0, width:26, height:26, borderRadius:13, backgroundColor:COLORS.primary, alignItems:'center', justifyContent:'center', borderWidth:2, borderColor:COLORS.background},
+  cameraOverlay:{position:'absolute', bottom:0, right:0, width:26, height:26, borderRadius:13, backgroundColor:COLORS.navbar, alignItems:'center', justifyContent:'center', borderWidth:2, borderColor:COLORS.background},
   nomeDisplay: {fontSize:18, fontWeight:'700', color:COLORS.text, fontFamily:FONTS.sans, textAlign:'center'},
 
   card:    {backgroundColor:COLORS.surface, borderRadius:14, overflow:'hidden', shadowColor:'#000', shadowOffset:{width:0,height:2}, shadowOpacity:0.07, shadowRadius:8, elevation:2, marginBottom:20},
@@ -744,6 +747,6 @@ const styles = StyleSheet.create({
   segLabel: {fontSize:15, color:COLORS.text, fontFamily:FONTS.sans, fontWeight:'600'},
   segDesc:  {fontSize:12, color:COLORS.textSecondary, fontFamily:FONTS.sans},
   radio:    {width:22, height:22, borderRadius:11, borderWidth:2, borderColor:COLORS.borderDark, alignItems:'center', justifyContent:'center'},
-  radioOn:  {borderColor:COLORS.navbar},
-  radioPonto:{width:11, height:11, borderRadius:16, backgroundColor:COLORS.navbar},
+  radioOn:  {borderColor:COLORS.primary},
+  radioPonto:{width:11, height:11, borderRadius:16, backgroundColor:COLORS.primary},
 });

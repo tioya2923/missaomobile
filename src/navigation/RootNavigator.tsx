@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { COLORS, RADIUS } from '../constants/theme';
+import { RADIUS } from '../constants/theme';
 import NavBar from '../components/NavBar';
 import CalendarioScreen from '../screens/CalendarioScreen';
 import PesquisaScreen from '../screens/PesquisaScreen';
@@ -11,6 +11,7 @@ import CatecismoNavigator from './CatecismoNavigator';
 import EuScreen from '../screens/EuScreen';
 import MaisNavigator from './MaisNavigator';
 import type { RootTabParamList } from './types';
+import { useColors } from '../context/ThemeContext';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -27,6 +28,7 @@ const ICONS: Record<keyof RootTabParamList, [IconName, IconName]> = {
 };
 
 export default function RootNavigator() {
+  const COLORS = useColors();
   const insets = useSafeAreaInsets();
 
   return (

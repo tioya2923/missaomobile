@@ -4,10 +4,12 @@ import Text from '../../components/AppText';
 import { getCantico, type Cantico } from '../../api/canticos';
 import ErrorView from '../../components/ErrorView';
 import LoadingView from '../../components/LoadingView';
-import { COLORS, FONTS, RADIUS, SHADOW } from '../../constants/theme';
+import { FONTS, RADIUS, SHADOW, type Palette } from '../../constants/theme';
 import type { CanticosScreenProps } from '../../navigation/types';
+import { useThemedStyles } from '../../context/ThemeContext';
 
 export default function CanticoDetalheScreen({ route, navigation }: CanticosScreenProps<'CanticoDetalhe'>) {
+  const styles = useThemedStyles(createStyles);
   const { idioma, slug, titulo } = route.params;
   const [cantico, setCantico] = useState<Cantico | null>(null);
   const [loading, setLoading] = useState(true);
@@ -47,7 +49,7 @@ export default function CanticoDetalheScreen({ route, navigation }: CanticosScre
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   container: { padding: 16, backgroundColor: COLORS.background },
   card: {
     backgroundColor: COLORS.surface,

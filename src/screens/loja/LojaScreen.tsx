@@ -9,12 +9,15 @@ import { formatarPreco } from '../../constants/moeda';
 import CarrinhoFixo from '../../components/loja/CarrinhoFixo';
 import ErrorView from '../../components/ErrorView';
 import LoadingView from '../../components/LoadingView';
-import { COLORS, FONTS } from '../../constants/theme';
+import { FONTS, type Palette } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
+import { useColors, useThemedStyles } from '../../context/ThemeContext';
 
 type Aba = 'artigos' | 'lojas';
 
 export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
+  const COLORS = useColors();
+  const styles = useThemedStyles(createStyles);
   const [aba, setAba] = useState<Aba>('artigos');
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [lojas, setLojas] = useState<Loja[]>([]);
@@ -114,12 +117,12 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
         ) : (
           <ScrollView
             contentContainerStyle={styles.grid}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.navbar} colors={[COLORS.navbar]} />}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} colors={[COLORS.primary]} />}
             keyboardShouldPersistTaps="handled"
           >
             {produtos.some(p => p.emDestaque) && (
               <View style={styles.destaqueTitulo}>
-                <Ionicons name="star" size={14} color="#c0392b" />
+                <Ionicons name="star" size={14} color={COLORS.promo} />
                 <Text style={styles.destaqueTituloTxt}>Em destaque</Text>
               </View>
             )}
@@ -173,7 +176,7 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
         ) : (
           <ScrollView
             contentContainerStyle={styles.listaLojas}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.navbar} colors={[COLORS.navbar]} />}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} colors={[COLORS.primary]} />}
             keyboardShouldPersistTaps="handled"
           >
             {lojas.map(l => (
@@ -208,7 +211,7 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
 
 const CARD_W = '48%';
 
-const styles = StyleSheet.create({
+const createStyles = (COLORS: Palette) => StyleSheet.create({
   buscaRow: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     backgroundColor: COLORS.surface, marginHorizontal: 16, marginTop: 12,
@@ -235,7 +238,7 @@ const styles = StyleSheet.create({
     padding: 16, paddingBottom: 90, gap: 12,
   },
   destaqueTitulo: { width: '100%', flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: -4 },
-  destaqueTituloTxt: { fontSize: 13, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.sans, textTransform: 'uppercase', letterSpacing: 0.4 },
+  destaqueTituloTxt: { fontSize: 13, fontWeight: '700', color: COLORS.promo, fontFamily: FONTS.sans, textTransform: 'uppercase', letterSpacing: 0.4 },
 
   card: {
     width: CARD_W, backgroundColor: COLORS.surface, borderRadius: 14, overflow: 'hidden',
@@ -244,7 +247,7 @@ const styles = StyleSheet.create({
   },
   destaqueBadge: {
     position: 'absolute', top: 8, right: 8, zIndex: 1,
-    width: 22, height: 22, borderRadius: 11, backgroundColor: '#c0392b',
+    width: 22, height: 22, borderRadius: 11, backgroundColor: COLORS.promo,
     alignItems: 'center', justifyContent: 'center',
   },
   imagem: { width: '100%', height: 120, backgroundColor: COLORS.border },
@@ -258,7 +261,7 @@ const styles = StyleSheet.create({
   preco: { fontSize: 15, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.sans, marginTop: 2 },
   precoPromoRow: { flexDirection: 'row', alignItems: 'baseline', gap: 6, marginTop: 2 },
   precoRiscado: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.sans, textDecorationLine: 'line-through' },
-  precoPromo: { fontSize: 15, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.sans },
+  precoPromo: { fontSize: 15, fontWeight: '700', color: COLORS.promo, fontFamily: FONTS.sans },
   lojaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
   lojaNome: { fontSize: 11.5, color: COLORS.textSecondary, fontFamily: FONTS.sans, flexShrink: 1 },
   distancia: { fontSize: 11, color: COLORS.primary, fontFamily: FONTS.sans, fontWeight: '600', marginTop: 1 },
