@@ -24,10 +24,7 @@ export default function LogoLob({ variant = 'navbar' }: Props) {
 
   return (
     <View style={styles.navWrap}>
-      <View style={styles.navMark}>
-        <Text style={styles.navMarkN}>N</Text>
-      </View>
-      <Text style={styles.navText}>Ndatava</Text>
+      <Text style={styles.navText}>NDATAVA</Text>
     </View>
   );
 }
@@ -37,30 +34,13 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   navWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 9,
-  },
-  navMark: {
-    width: 30,
-    height: 30,
-    borderRadius: 9,
-    backgroundColor: COLORS.navbar,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  navMarkN: {
-    color: MARK_GOLD,
-    fontSize: 19,
-    lineHeight: 24,
-    fontWeight: '700',
-    fontFamily: FONTS.display,
-    includeFontPadding: false,
   },
   navText: {
     color: COLORS.primary,
-    fontSize: 21,
+    fontSize: 18,
     fontWeight: '700',
-    fontFamily: FONTS.display,
-    letterSpacing: 0.2,
+    fontFamily: FONTS.sans,
+    letterSpacing: 4,
   },
 
   /* ── Lock-screen variant ── */
