@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Text from '../../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { getLoja, getProdutosPorLoja, type Loja, type Produto } from '../../api/loja';
 import { useLocalizacao } from '../../hooks/useLocalizacao';
@@ -143,9 +144,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface, margin: 16, marginTop: 12, padding: 16, borderRadius: 14, gap: 6,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2,
   },
-  nome: { fontSize: 19, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
-  categoria: { fontSize: 11.5, color: COLORS.textSecondary, fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.4 },
-  descricao: { fontSize: 13.5, color: COLORS.text, fontFamily: FONTS.serif, lineHeight: 20, marginTop: 4 },
+  nome: { fontSize: 19, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans },
+  categoria: { fontSize: 11.5, color: COLORS.textSecondary, fontFamily: FONTS.sans, textTransform: 'uppercase', letterSpacing: 0.4 },
+  descricao: { fontSize: 13.5, color: COLORS.text, fontFamily: FONTS.sans, lineHeight: 20, marginTop: 4 },
   linhaInfo: { flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginTop: 8 },
   infoItem: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   pagamentoRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 10 },
@@ -153,8 +154,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 4,
     backgroundColor: `${COLORS.primary}12`, borderRadius: 12, paddingVertical: 4, paddingHorizontal: 8,
   },
-  pagamentoChipTxt: { fontSize: 11, color: COLORS.primary, fontWeight: '600', fontFamily: FONTS.serif },
-  infoTxt: { fontSize: 12.5, color: COLORS.textSecondary, fontFamily: FONTS.serif },
+  pagamentoChipTxt: { fontSize: 11, color: COLORS.primary, fontWeight: '600', fontFamily: FONTS.sans },
+  infoTxt: { fontSize: 12.5, color: COLORS.textSecondary, fontFamily: FONTS.sans },
 
   grid: {
     flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between',
@@ -174,18 +175,18 @@ const styles = StyleSheet.create({
   imagemPlaceholder: { alignItems: 'center', justifyContent: 'center' },
   info: { padding: 10, gap: 3 },
   produtoCategoria: {
-    fontSize: 10.5, color: COLORS.textSecondary, fontFamily: FONTS.serif,
+    fontSize: 10.5, color: COLORS.textSecondary, fontFamily: FONTS.sans,
     textTransform: 'uppercase', letterSpacing: 0.4,
   },
-  produtoNome: { fontSize: 14, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif, minHeight: 34 },
-  preco: { fontSize: 15, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.serif, marginTop: 2 },
+  produtoNome: { fontSize: 14, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.sans, minHeight: 34 },
+  preco: { fontSize: 15, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.sans, marginTop: 2 },
   precoPromoRow: { flexDirection: 'row', alignItems: 'baseline', gap: 6, marginTop: 2 },
-  precoRiscado: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.serif, textDecorationLine: 'line-through' },
-  precoPromo: { fontSize: 15, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.serif },
+  precoRiscado: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.sans, textDecorationLine: 'line-through' },
+  precoPromo: { fontSize: 15, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.sans },
 
   emptyContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   empty: {
-    color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic',
+    color: COLORS.textSecondary, fontFamily: FONTS.sans, fontStyle: 'italic',
     fontSize: 16, textAlign: 'center',
   },
 });

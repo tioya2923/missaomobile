@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Text from '../../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { useCarrinho } from '../../context/useCarrinho';
 import { formatarPreco } from '../../constants/moeda';
@@ -120,38 +121,38 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 5, alignSelf: 'flex-start',
     backgroundColor: '#c0392b', borderRadius: 12, paddingVertical: 4, paddingHorizontal: 8, marginBottom: 8,
   },
-  destaqueBadgeTxt: { color: '#fff', fontSize: 11, fontWeight: '700', fontFamily: FONTS.serif, textTransform: 'uppercase' },
+  destaqueBadgeTxt: { color: '#fff', fontSize: 11, fontWeight: '700', fontFamily: FONTS.sans, textTransform: 'uppercase' },
   categoria: {
-    fontSize: 11, color: COLORS.textSecondary, fontFamily: FONTS.serif,
+    fontSize: 11, color: COLORS.textSecondary, fontFamily: FONTS.sans,
     textTransform: 'uppercase', letterSpacing: 0.5,
   },
-  nome: { fontSize: 20, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, marginTop: 4 },
-  preco: { fontSize: 22, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.serif, marginTop: 6 },
+  nome: { fontSize: 20, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans, marginTop: 4 },
+  preco: { fontSize: 22, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.sans, marginTop: 6 },
   precoPromoRow: { flexDirection: 'row', alignItems: 'baseline', gap: 8, marginTop: 6 },
-  precoRiscado: { fontSize: 15, color: COLORS.textSecondary, fontFamily: FONTS.serif, textDecorationLine: 'line-through' },
-  precoPromo: { fontSize: 22, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.serif },
+  precoRiscado: { fontSize: 15, color: COLORS.textSecondary, fontFamily: FONTS.sans, textDecorationLine: 'line-through' },
+  precoPromo: { fontSize: 22, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.sans },
   lojaBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 10,
     backgroundColor: `${COLORS.primary}12`, alignSelf: 'flex-start',
     borderRadius: 16, paddingVertical: 7, paddingHorizontal: 10,
   },
-  lojaBtnTxt: { fontSize: 12.5, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.serif },
-  lojaDistancia: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.serif },
+  lojaBtnTxt: { fontSize: 12.5, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.sans },
+  lojaDistancia: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.sans },
   separator: { height: 1, backgroundColor: COLORS.border, marginVertical: 16 },
-  descricao: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.serif, lineHeight: 23 },
+  descricao: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.sans, lineHeight: 23 },
 
   quantidadeRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  quantidadeLabel: { fontSize: 15, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif },
+  quantidadeLabel: { fontSize: 15, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.sans },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   stepperBtn: {
     width: 34, height: 34, borderRadius: 16, borderWidth: 1, borderColor: COLORS.borderDark,
     alignItems: 'center', justifyContent: 'center',
   },
-  stepperValor: { fontSize: 16, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, minWidth: 28, textAlign: 'center' },
+  stepperValor: { fontSize: 16, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans, minWidth: 28, textAlign: 'center' },
 
   btnAdicionar: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     backgroundColor: COLORS.navbar, borderRadius: 14, paddingVertical: 14, marginTop: 20,
   },
-  btnAdicionarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 15 },
+  btnAdicionarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 15 },
 });

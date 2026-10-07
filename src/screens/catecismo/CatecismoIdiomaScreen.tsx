@@ -1,64 +1,22 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { COLORS, FONTS } from '../../constants/theme';
+import IdiomaPicker from '../../components/IdiomaPicker';
 import type { CatecismoScreenProps } from '../../navigation/types';
 
-export default function CatecismoIdiomaScreen({ navigation }: CatecismoScreenProps<'CatecismoIdioma'>) {
-  const navegar = (idioma: 'pt' | 'ub' | 'lat' | 'otc') =>
-    navigation.navigate('CatecismoTopicos', { idioma });
+type Idioma = 'pt' | 'ub' | 'lat' | 'otc';
 
+const OPCOES = [
+  { codigo: 'pt' as Idioma,  nome: 'Português',    sigla: 'PT' },
+  { codigo: 'ub' as Idioma,  nome: 'Umbundu',      sigla: 'UMB' },
+  { codigo: 'lat' as Idioma, nome: 'Latim',        sigla: 'LAT' },
+  { codigo: 'otc' as Idioma, nome: 'Oshikwanhama', sigla: 'OSH' },
+];
+
+export default function CatecismoIdiomaScreen({ navigation }: CatecismoScreenProps<'CatecismoIdioma'>) {
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <TouchableOpacity style={styles.btn} onPress={() => navegar('pt')}>
-          <Text style={styles.btnText}>Português</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.btn} onPress={() => navegar('ub')}>
-          <Text style={styles.btnText}>Umbundu</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.btn} onPress={() => navegar('lat')}>
-          <Text style={styles.btnText}>Latim</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.btn} onPress={() => navegar('otc')}>
-          <Text style={styles.btnText}>Oshikwanhama</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <IdiomaPicker
+      titulo="Catecismo"
+      subtitulo="Escolha o idioma"
+      opcoes={OPCOES}
+      onEscolher={idioma => navigation.navigate('CatecismoTopicos', { idioma })}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.background,
-    padding: 24,
-  },
-  card: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 16,
-    padding: 32,
-    width: '100%',
-    maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-    gap: 14,
-    alignItems: 'center',
-  },
-  btn: {
-    width: '100%',
-    backgroundColor: COLORS.navbar,
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  btnText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '700',
-    fontFamily: FONTS.serif,
-  },
-});

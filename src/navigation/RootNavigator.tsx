@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS, RADIUS } from '../constants/theme';
 import NavBar from '../components/NavBar';
@@ -14,13 +14,16 @@ import type { RootTabParamList } from './types';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-const ICONS: Record<keyof RootTabParamList, keyof typeof Ionicons.glyphMap> = {
-  Calendario: 'calendar-outline',
-  Canticos:   'musical-notes-outline',
-  Catecismo:  'book-outline',
-  Eu:         'person-outline',
-  Pesquisa:   'search-outline',
-  Mais:       'ellipsis-horizontal-outline',
+type IconName = keyof typeof Ionicons.glyphMap;
+
+// [inactivo, activo] — o ícone passa a preenchido quando o separador está activo.
+const ICONS: Record<keyof RootTabParamList, [IconName, IconName]> = {
+  Calendario: ['calendar-outline',            'calendar'],
+  Canticos:   ['musical-notes-outline',       'musical-notes'],
+  Catecismo:  ['book-outline',                'book'],
+  Eu:         ['person-outline',              'person'],
+  Pesquisa:   ['search-outline',              'search'],
+  Mais:       ['ellipsis-horizontal-outline', 'ellipsis-horizontal'],
 };
 
 export default function RootNavigator() {
@@ -39,19 +42,20 @@ export default function RootNavigator() {
         tabBarInactiveTintColor: COLORS.textSecondary,
         tabBarStyle: {
           backgroundColor: COLORS.surface,
-          borderTopWidth: 0,
-          height: 60 + insets.bottom,
+          borderTopWidth: StyleSheet.hairlineWidth,
+          borderTopColor: COLORS.border,
+          height: 62 + insets.bottom,
           paddingTop: 8,
         },
-        tabBarLabelStyle: { fontSize: 10, fontWeight: '500', fontFamily: 'sans-serif' },
+        tabBarLabelStyle: { fontSize: 10, fontFamily: 'Inter_500Medium' },
         tabBarItemStyle: { paddingHorizontal: 0 },
         tabBarIcon: ({ color, size, focused }) => (
           <View style={{
-            width: 40, height: 28, borderRadius: RADIUS.pill,
+            width: 48, height: 30, borderRadius: RADIUS.pill,
             alignItems: 'center', justifyContent: 'center',
             backgroundColor: focused ? COLORS.primaryLight : 'transparent',
           }}>
-            <Ionicons name={ICONS[route.name as keyof RootTabParamList]} size={size} color={color} />
+            <Ionicons name={ICONS[route.name as keyof RootTabParamList][focused ? 1 : 0]} size={size} color={color} />
           </View>
         ),
       })}

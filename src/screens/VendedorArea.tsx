@@ -1,8 +1,7 @@
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
-import {
-  ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
-  Switch, Text, TextInput, TouchableOpacity, View, type TextInputProps,
-} from 'react-native';
+import { ActivityIndicator, Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Switch, TouchableOpacity, View, type TextInputProps } from 'react-native';
+import TextInput from '../components/AppTextInput';
+import Text from '../components/AppText';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONTS } from '../constants/theme';
@@ -945,24 +944,24 @@ const styles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 48, backgroundColor: COLORS.background },
 
   voltarBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 8 },
-  voltarTxt: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.serif, fontWeight: '600' },
+  voltarTxt: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.sans, fontWeight: '600' },
 
-  titulo: { fontSize: 20, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, marginTop: 8 },
-  subtitulo: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 4, marginBottom: 16, lineHeight: 19 },
+  titulo: { fontSize: 20, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans, marginTop: 8 },
+  subtitulo: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 4, marginBottom: 16, lineHeight: 19 },
 
-  erro: { color: COLORS.error, fontFamily: FONTS.serif, fontSize: 13, marginBottom: 12 },
-  erroInline: { color: COLORS.error, fontFamily: FONTS.serif, fontSize: 12, marginTop: 6 },
-  sucesso: { color: '#2e7d32', fontFamily: FONTS.serif, fontSize: 13, marginBottom: 12 },
+  erro: { color: COLORS.error, fontFamily: FONTS.sans, fontSize: 13, marginBottom: 12 },
+  erroInline: { color: COLORS.error, fontFamily: FONTS.sans, fontSize: 12, marginTop: 6 },
+  sucesso: { color: '#2e7d32', fontFamily: FONTS.sans, fontSize: 13, marginBottom: 12 },
 
   card: { backgroundColor: COLORS.surface, borderRadius: 14, padding: 16, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2 },
   campo: { marginBottom: 14 },
-  label: { fontSize: 11, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
-  input: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.serif, borderWidth: 1, borderColor: COLORS.border, borderRadius: 16, paddingVertical: 10, paddingHorizontal: 12 },
+  label: { fontSize: 11, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.sans, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
+  input: { fontSize: 15, color: COLORS.text, fontFamily: FONTS.sans, borderWidth: 1, borderColor: COLORS.border, borderRadius: 16, paddingVertical: 10, paddingHorizontal: 12 },
   inputMultilinha: { minHeight: 72, textAlignVertical: 'top' },
   senhaWrap: { position: 'relative', justifyContent: 'center' },
   senhaInput: { paddingRight: 44 },
   senhaBotao: { position: 'absolute', right: 4, height: '100%', paddingHorizontal: 10, alignItems: 'center', justifyContent: 'center' },
-  ajuda: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 6, lineHeight: 17 },
+  ajuda: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 6, lineHeight: 17 },
   previewImagem: { width: 96, height: 96, borderRadius: 16, marginTop: 10, backgroundColor: COLORS.border },
 
   btnPrimario: {
@@ -970,22 +969,22 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center', minHeight: 50,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.12, shadowRadius: 5, elevation: 2,
   },
-  btnPrimarioTxt: { color: '#fff', fontSize: 15, fontWeight: '700', fontFamily: FONTS.serif, letterSpacing: 0.2 },
+  btnPrimarioTxt: { color: '#fff', fontSize: 15, fontWeight: '700', fontFamily: FONTS.sans, letterSpacing: 0.2 },
   btnSecundario: {
     borderWidth: 1.5, borderColor: COLORS.borderDark, borderRadius: 14, paddingVertical: 14, paddingHorizontal: 24,
     alignItems: 'center', justifyContent: 'center', minHeight: 50, backgroundColor: COLORS.surface,
   },
-  btnSecundarioTxt: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, letterSpacing: 0.2 },
+  btnSecundarioTxt: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans, letterSpacing: 0.2 },
   formAcoesBtn: { flex: 1 },
 
   linkWrap: { marginTop: 18, alignItems: 'center' },
-  linkTxt: { fontSize: 14, color: COLORS.textSecondary, fontFamily: FONTS.serif },
+  linkTxt: { fontSize: 14, color: COLORS.textSecondary, fontFamily: FONTS.sans },
   linkTxtForte: { fontWeight: '700', color: COLORS.primary },
 
   chipsWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 4 },
   chip: { borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 20, paddingVertical: 7, paddingHorizontal: 13 },
   chipOn: { backgroundColor: COLORS.navbar, borderColor: COLORS.navbar },
-  chipTxt: { fontSize: 13, color: COLORS.text, fontFamily: FONTS.serif, fontWeight: '600' },
+  chipTxt: { fontSize: 13, color: COLORS.text, fontFamily: FONTS.sans, fontWeight: '600' },
   chipTxtOn: { color: '#fff' },
 
   linhaSwitch: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 6 },
@@ -993,45 +992,45 @@ const styles = StyleSheet.create({
 
   aviso: { borderRadius: 14, padding: 14, marginBottom: 16 },
   avisoOk: { backgroundColor: '#e8f5e9' },
-  avisoOkTxt: { color: '#2e7d32', fontFamily: FONTS.serif, fontSize: 13, lineHeight: 19 },
+  avisoOkTxt: { color: '#2e7d32', fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
   avisoPendente: { backgroundColor: '#fff3e0' },
-  avisoPendenteTxt: { color: '#e65100', fontFamily: FONTS.serif, fontSize: 13, lineHeight: 19 },
+  avisoPendenteTxt: { color: '#e65100', fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
   avisoInfo: { backgroundColor: '#eef4fc' },
-  avisoInfoTxt: { color: '#1c4a7a', fontFamily: FONTS.serif, fontSize: 13, lineHeight: 19 },
+  avisoInfoTxt: { color: '#1c4a7a', fontFamily: FONTS.sans, fontSize: 13, lineHeight: 19 },
 
   painelHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: 8 },
   painelTituloWrap: { paddingHorizontal: 16, marginBottom: 12 },
   abasRow: { flexDirection: 'row', gap: 8, paddingHorizontal: 16, marginBottom: 14 },
   abaBtn: { flex: 1, paddingVertical: 10, borderRadius: 16, alignItems: 'center', backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border },
   abaBtnOn: { backgroundColor: COLORS.navbar, borderColor: COLORS.navbar },
-  abaBtnTxt: { fontSize: 13, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif },
+  abaBtnTxt: { fontSize: 13, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.sans },
   abaBtnTxtOn: { color: '#fff' },
 
   abaContainer: { paddingHorizontal: 16, paddingBottom: 48 },
   linhaEntreTitulo: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 },
-  secaoTitulo: { fontSize: 16, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
+  secaoTitulo: { fontSize: 16, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans },
 
   btnPrimarioPequeno: { backgroundColor: COLORS.navbar, borderRadius: 16, paddingVertical: 8, paddingHorizontal: 14 },
-  btnPrimarioPequenoTxt: { color: '#fff', fontSize: 13, fontWeight: '700', fontFamily: FONTS.serif },
+  btnPrimarioPequenoTxt: { color: '#fff', fontSize: 13, fontWeight: '700', fontFamily: FONTS.sans },
   btnSecundarioPequeno: { borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 16, paddingVertical: 6, paddingHorizontal: 12 },
-  btnSecundarioPequenoTxt: { fontSize: 12, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif },
+  btnSecundarioPequenoTxt: { fontSize: 12, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.sans },
   btnPerigoPequeno: { borderWidth: 1, borderColor: COLORS.error, borderRadius: 16, paddingVertical: 6, paddingHorizontal: 12 },
-  btnPerigoPequenoTxt: { fontSize: 12, fontWeight: '600', color: COLORS.error, fontFamily: FONTS.serif },
+  btnPerigoPequenoTxt: { fontSize: 12, fontWeight: '600', color: COLORS.error, fontFamily: FONTS.sans },
   formAcoes: { flexDirection: 'row', gap: 10, marginTop: 4 },
 
-  vazio: { textAlign: 'center', color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', marginTop: 24 },
+  vazio: { textAlign: 'center', color: COLORS.textSecondary, fontFamily: FONTS.sans, fontStyle: 'italic', marginTop: 24 },
 
   itemCard: { flexDirection: 'row', gap: 12, backgroundColor: COLORS.surface, borderRadius: 14, padding: 14, marginBottom: 12, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 6, elevation: 1 },
-  itemTitulo: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, marginBottom: 4 },
-  itemDesc: { fontSize: 13, color: COLORS.text, fontFamily: FONTS.serif },
-  itemDescMuted: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 2 },
+  itemTitulo: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans, marginBottom: 4 },
+  itemDesc: { fontSize: 13, color: COLORS.text, fontFamily: FONTS.sans },
+  itemDescMuted: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 2 },
   precoRiscado: { textDecorationLine: 'line-through', color: COLORS.textSecondary },
   precoPromo: { color: '#c0392b', fontWeight: '700' },
 
   badge: { paddingVertical: 4, paddingHorizontal: 10, borderRadius: 20 },
-  badgeTxt: { fontSize: 11, fontWeight: '700', fontFamily: FONTS.serif },
+  badgeTxt: { fontSize: 11, fontWeight: '700', fontFamily: FONTS.sans },
 
   itensSep: { borderTopWidth: 1, borderTopColor: COLORS.border, marginTop: 10, paddingTop: 10, marginBottom: 12 },
   itemLinha: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 2 },
-  totalTxt: { fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, marginTop: 4 },
+  totalTxt: { fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans, marginTop: 4 },
 });

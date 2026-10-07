@@ -1,4 +1,5 @@
-import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Text from '../components/AppText';
 import { COLORS, FONTS } from '../constants/theme';
 
 export default function PrivacidadeScreen() {
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
   botaoEliminarTxt: {
     color: COLORS.error,
     fontWeight: '700',
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     fontSize: 14,
   },
   card: {
@@ -103,14 +104,14 @@ const styles = StyleSheet.create({
     fontSize: 19,
     fontWeight: '700',
     color: COLORS.text,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     textAlign: 'center',
     lineHeight: 26,
   },
   data: {
     fontSize: 12,
     color: COLORS.textSecondary,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     textAlign: 'center',
     marginTop: 4,
     marginBottom: 12,
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
   texto: {
     fontSize: 14,
     color: COLORS.text,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     lineHeight: 22,
     textAlign: 'justify',
   },

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import Text from '../../components/AppText';
 import { getCantico, type Cantico } from '../../api/canticos';
 import ErrorView from '../../components/ErrorView';
 import LoadingView from '../../components/LoadingView';
-import { COLORS, FONTS } from '../../constants/theme';
+import { COLORS, FONTS, RADIUS, SHADOW } from '../../constants/theme';
 import type { CanticosScreenProps } from '../../navigation/types';
 
 export default function CanticoDetalheScreen({ route, navigation }: CanticosScreenProps<'CanticoDetalhe'>) {
@@ -50,38 +51,40 @@ const styles = StyleSheet.create({
   container: { padding: 16, backgroundColor: COLORS.background },
   card: {
     backgroundColor: COLORS.surface,
-    borderRadius: 16,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 2,
+    borderRadius: RADIUS.lg,
+    paddingHorizontal: 24,
+    paddingVertical: 28,
+    ...SHADOW.card,
   },
   titulo: {
-    fontSize: 20,
+    fontSize: 24,
+    lineHeight: 31,
     fontWeight: '700',
-    color: COLORS.text,
-    fontFamily: FONTS.serif,
+    color: COLORS.primary,
+    fontFamily: FONTS.display,
     textAlign: 'center',
-    marginBottom: 12,
   },
   separator: {
-    height: 1,
-    backgroundColor: COLORS.borderDark,
-    marginBottom: 16,
+    width: 44,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: COLORS.gold,
+    alignSelf: 'center',
+    marginTop: 14,
+    marginBottom: 22,
   },
   letra: {
-    fontSize: 16,
+    fontSize: 17,
     color: COLORS.text,
-    fontFamily: FONTS.serif,
-    lineHeight: 28,
+    fontFamily: FONTS.sans,
+    lineHeight: 30,
   },
   autor: {
     fontSize: 13,
     color: COLORS.textSecondary,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
+    fontStyle: 'italic',
     textAlign: 'right',
-    marginTop: 12,
+    marginTop: 20,
   },
 });

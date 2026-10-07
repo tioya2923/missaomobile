@@ -1,4 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../constants/theme';
 import LogoLob from './LogoLob';
@@ -17,16 +18,22 @@ export default function NavBar({ canGoBack, onBack, onNavigate }: Props) {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.row}>
         {canGoBack ? (
-          <TouchableOpacity onPress={onBack} style={styles.backBtn} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Text style={styles.backText}>‹</Text>
+          <TouchableOpacity
+            onPress={onBack}
+            style={styles.backBtn}
+            accessibilityRole="button"
+            accessibilityLabel="Voltar"
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Ionicons name="chevron-back" size={20} color={COLORS.primary} />
           </TouchableOpacity>
         ) : (
-          <View style={styles.backBtn} />
+          <View style={styles.side} />
         )}
         <TouchableOpacity onPress={() => onNavigate('Calendario')} activeOpacity={0.8}>
           <LogoLob variant="navbar" />
         </TouchableOpacity>
-        <View style={styles.backBtn} />
+        <View style={styles.side} />
       </View>
     </View>
   );
@@ -35,23 +42,26 @@ export default function NavBar({ canGoBack, onBack, onNavigate }: Props) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.surface,
-    borderBottomWidth: 2,
-    borderBottomColor: COLORS.gold,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: COLORS.border,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+  },
+  side: {
+    width: 36,
+    height: 36,
   },
   backBtn: {
-    width: 32,
-  },
-  backText: {
-    color: COLORS.primary,
-    fontSize: 30,
-    lineHeight: 32,
-    fontWeight: '300',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: COLORS.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

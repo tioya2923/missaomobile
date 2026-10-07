@@ -1,4 +1,5 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import Text from './AppText';
 import { COLORS, FONTS } from '../constants/theme';
 
 export default function LoadingView() {
@@ -19,7 +20,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   text: {
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     fontStyle: 'italic',
     color: COLORS.textSecondary,
     fontSize: 15,

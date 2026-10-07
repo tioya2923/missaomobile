@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-  Image, Keyboard, KeyboardAvoidingView, Platform, RefreshControl, ScrollView,
-  StyleSheet, Text, TextInput, TouchableOpacity, View,
-} from 'react-native';
+import { Image, Keyboard, KeyboardAvoidingView, Platform, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/AppTextInput';
+import Text from '../../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { getLojas, getProdutos, type Loja, type Produto } from '../../api/loja';
 import { useLocalizacao } from '../../hooks/useLocalizacao';
@@ -216,12 +215,12 @@ const styles = StyleSheet.create({
     borderRadius: 14, paddingHorizontal: 12, paddingVertical: 9,
     borderWidth: 1, borderColor: COLORS.border,
   },
-  buscaInput: { flex: 1, fontSize: 14.5, fontFamily: FONTS.serif, color: COLORS.text, padding: 0 },
+  buscaInput: { flex: 1, fontSize: 14.5, fontFamily: FONTS.sans, color: COLORS.text, padding: 0 },
 
   abas: { flexDirection: 'row', gap: 8, marginHorizontal: 16, marginTop: 12 },
   aba: { flex: 1, paddingVertical: 9, borderRadius: 16, alignItems: 'center', backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border },
   abaAtiva: { backgroundColor: COLORS.navbar, borderColor: COLORS.navbar },
-  abaTxt: { fontSize: 13, fontWeight: '700', fontFamily: FONTS.serif, color: COLORS.textSecondary },
+  abaTxt: { fontSize: 13, fontWeight: '700', fontFamily: FONTS.sans, color: COLORS.textSecondary },
   abaTxtAtivo: { color: '#fff' },
 
   avisoLocalizacao: {
@@ -229,14 +228,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 16, marginTop: 12, padding: 10, borderRadius: 16,
     backgroundColor: `${COLORS.primary}12`,
   },
-  avisoLocalizacaoTxt: { flex: 1, fontSize: 12.5, fontFamily: FONTS.serif, color: COLORS.primary },
+  avisoLocalizacaoTxt: { flex: 1, fontSize: 12.5, fontFamily: FONTS.sans, color: COLORS.primary },
 
   grid: {
     flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between',
     padding: 16, paddingBottom: 90, gap: 12,
   },
   destaqueTitulo: { width: '100%', flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: -4 },
-  destaqueTituloTxt: { fontSize: 13, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.4 },
+  destaqueTituloTxt: { fontSize: 13, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.sans, textTransform: 'uppercase', letterSpacing: 0.4 },
 
   card: {
     width: CARD_W, backgroundColor: COLORS.surface, borderRadius: 14, overflow: 'hidden',
@@ -252,17 +251,17 @@ const styles = StyleSheet.create({
   imagemPlaceholder: { alignItems: 'center', justifyContent: 'center' },
   info: { padding: 10, gap: 3 },
   categoria: {
-    fontSize: 10.5, color: COLORS.textSecondary, fontFamily: FONTS.serif,
+    fontSize: 10.5, color: COLORS.textSecondary, fontFamily: FONTS.sans,
     textTransform: 'uppercase', letterSpacing: 0.4,
   },
-  nome: { fontSize: 14, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif, minHeight: 34 },
-  preco: { fontSize: 15, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.serif, marginTop: 2 },
+  nome: { fontSize: 14, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.sans, minHeight: 34 },
+  preco: { fontSize: 15, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.sans, marginTop: 2 },
   precoPromoRow: { flexDirection: 'row', alignItems: 'baseline', gap: 6, marginTop: 2 },
-  precoRiscado: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.serif, textDecorationLine: 'line-through' },
-  precoPromo: { fontSize: 15, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.serif },
+  precoRiscado: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.sans, textDecorationLine: 'line-through' },
+  precoPromo: { fontSize: 15, fontWeight: '700', color: '#c0392b', fontFamily: FONTS.sans },
   lojaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 },
-  lojaNome: { fontSize: 11.5, color: COLORS.textSecondary, fontFamily: FONTS.serif, flexShrink: 1 },
-  distancia: { fontSize: 11, color: COLORS.primary, fontFamily: FONTS.serif, fontWeight: '600', marginTop: 1 },
+  lojaNome: { fontSize: 11.5, color: COLORS.textSecondary, fontFamily: FONTS.sans, flexShrink: 1 },
+  distancia: { fontSize: 11, color: COLORS.primary, fontFamily: FONTS.sans, fontWeight: '600', marginTop: 1 },
 
   listaLojas: { padding: 16, paddingBottom: 90, gap: 10 },
   lojaCard: {
@@ -274,14 +273,14 @@ const styles = StyleSheet.create({
     width: 42, height: 42, borderRadius: 21, backgroundColor: `${COLORS.primary}15`,
     alignItems: 'center', justifyContent: 'center',
   },
-  lojaCardNome: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
-  lojaCardCategoria: { fontSize: 11.5, color: COLORS.textSecondary, fontFamily: FONTS.serif, textTransform: 'uppercase', marginTop: 1 },
-  lojaCardMorada: { fontSize: 12.5, color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 2 },
-  lojaCardDistancia: { fontSize: 12.5, color: COLORS.primary, fontWeight: '700', fontFamily: FONTS.serif },
+  lojaCardNome: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans },
+  lojaCardCategoria: { fontSize: 11.5, color: COLORS.textSecondary, fontFamily: FONTS.sans, textTransform: 'uppercase', marginTop: 1 },
+  lojaCardMorada: { fontSize: 12.5, color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 2 },
+  lojaCardDistancia: { fontSize: 12.5, color: COLORS.primary, fontWeight: '700', fontFamily: FONTS.sans },
 
   emptyContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24 },
   empty: {
-    color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic',
+    color: COLORS.textSecondary, fontFamily: FONTS.sans, fontStyle: 'italic',
     fontSize: 16, textAlign: 'center',
   },
 });

@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import Text from '../../components/AppText';
 import { getTopicos, type Topico } from '../../api/canticos';
 import ErrorView from '../../components/ErrorView';
 import ListItem from '../../components/ListItem';
 import LoadingView from '../../components/LoadingView';
-import { COLORS, FONTS } from '../../constants/theme';
+import { COLORS, FONTS, RADIUS, SHADOW } from '../../constants/theme';
 import type { CanticosScreenProps } from '../../navigation/types';
 
 export default function CanticosTopicosScreen({ route, navigation }: CanticosScreenProps<'CanticosTopicos'>) {
@@ -72,19 +73,15 @@ const styles = StyleSheet.create({
   container: { padding: 16 },
   group: {
     backgroundColor: COLORS.surface,
-    borderRadius: 16,
+    borderRadius: RADIUS.lg,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 2,
+    ...SHADOW.card,
   },
   emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background, padding: 32 },
   empty: {
     textAlign: 'center',
     color: COLORS.textSecondary,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     fontStyle: 'italic',
     fontSize: 16,
   },

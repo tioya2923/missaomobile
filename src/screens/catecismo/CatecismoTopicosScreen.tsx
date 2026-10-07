@@ -4,7 +4,7 @@ import { getCatecismoTopicos, type CatecismoTopico } from '../../api/catecismo';
 import ErrorView from '../../components/ErrorView';
 import ListItem from '../../components/ListItem';
 import LoadingView from '../../components/LoadingView';
-import { COLORS } from '../../constants/theme';
+import { COLORS, RADIUS, SHADOW } from '../../constants/theme';
 import type { CatecismoScreenProps } from '../../navigation/types';
 
 export default function CatecismoTopicosScreen({ route, navigation }: CatecismoScreenProps<'CatecismoTopicos'>) {
@@ -70,12 +70,8 @@ const styles = StyleSheet.create({
   container: { padding: 16 },
   group: {
     backgroundColor: COLORS.surface,
-    borderRadius: 16,
+    borderRadius: RADIUS.lg,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 2,
+    ...SHADOW.card,
   },
 });

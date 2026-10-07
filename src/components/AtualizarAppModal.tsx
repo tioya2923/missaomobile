@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Linking, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Text from './AppText';
 import Constants from 'expo-constants';
 import { getVersaoApp } from '../api/versaoApp';
 import { versaoEhMenorQue } from '../utils/versao';
@@ -82,13 +83,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: COLORS.text,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     textAlign: 'center',
   },
   texto: {
     fontSize: 14,
     color: COLORS.textSecondary,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     textAlign: 'center',
     lineHeight: 20,
   },
@@ -98,7 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     alignItems: 'center',
   },
-  btnPrimarioTxt: { color: '#fff', fontSize: 15, fontWeight: '700', fontFamily: FONTS.serif },
+  btnPrimarioTxt: { color: '#fff', fontSize: 15, fontWeight: '700', fontFamily: FONTS.sans },
   btnSecundario: { paddingVertical: 8, alignItems: 'center' },
-  btnSecundarioTxt: { color: COLORS.textSecondary, fontSize: 14, fontFamily: FONTS.serif },
+  btnSecundarioTxt: { color: COLORS.textSecondary, fontSize: 14, fontFamily: FONTS.sans },
 });

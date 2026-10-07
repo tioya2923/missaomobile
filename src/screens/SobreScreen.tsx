@@ -1,4 +1,5 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import Text from '../components/AppText';
 import { COLORS, FONTS } from '../constants/theme';
 
 export default function SobreScreen() {
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '700',
     color: COLORS.text,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     textAlign: 'center',
     marginBottom: 12,
     lineHeight: 24,
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
   texto: {
     fontSize: 15,
     color: COLORS.text,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     lineHeight: 26,
     textAlign: 'justify',
   },

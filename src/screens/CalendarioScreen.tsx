@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-  ActivityIndicator, FlatList, Modal, RefreshControl, ScrollView, StyleSheet,
-  Text, TouchableOpacity, View,
+  ActivityIndicator, FlatList, Modal, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View,
 } from 'react-native';
+import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { getEventosSemana, type Evento } from '../api/calendario';
 import { COLORS, FONTS } from '../constants/theme';
@@ -299,7 +299,7 @@ function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isTo
               <Text style={styles.cardTitulo}>{evento.titulo}</Text>
 
               {dupla && cor2 ? (
-                <View style={styles.badge}>
+                <View style={[styles.badge, { borderWidth: 1, borderColor: COLORS.border }]}>
                   <View style={[styles.badgeHalf, { backgroundColor: cor1.bg, borderTopLeftRadius: 19, borderBottomLeftRadius: 19 }]} />
                   <View style={[styles.badgeHalf, { backgroundColor: cor2.bg, borderTopRightRadius: 19, borderBottomRightRadius: 19 }]} />
                   <Text style={[styles.badgeText, { color: '#fff', textShadowColor: '#0005', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 }]}>
@@ -350,7 +350,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: COLORS.background,
   },
-  selectorText: { fontFamily: FONTS.serif, fontSize: 13, fontWeight: '700', color: COLORS.text },
+  selectorText: { fontFamily: FONTS.sans, fontSize: 13, fontWeight: '700', color: COLORS.text },
   selectorArrow: { fontSize: 9, color: COLORS.textSecondary, marginLeft: 4 },
   irBtn: {
     backgroundColor: COLORS.navbar,
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 8,
   },
-  irBtnText: { color: '#fff', fontFamily: FONTS.serif, fontWeight: '700', fontSize: 13 },
+  irBtnText: { color: '#fff', fontFamily: FONTS.sans, fontWeight: '700', fontSize: 13 },
 
   /* Anterior / Hoje / Próximo */
   navBtns: { flexDirection: 'row', justifyContent: 'center', gap: 8 },
@@ -366,12 +366,12 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: COLORS.border, borderRadius: 999,
     paddingHorizontal: 14, paddingVertical: 7,
   },
-  navBtnText: { fontFamily: FONTS.serif, fontSize: 13, fontWeight: '700', color: COLORS.text },
+  navBtnText: { fontFamily: FONTS.sans, fontSize: 13, fontWeight: '700', color: COLORS.text },
   navBtnHoje: { backgroundColor: COLORS.navbar, borderColor: COLORS.navbar },
   navBtnHojeText: { color: '#fff' },
 
   weekLabel: {
-    fontFamily: FONTS.serif, fontWeight: '700', fontSize: 13,
+    fontFamily: FONTS.sans, fontWeight: '700', fontSize: 13,
     color: COLORS.textSecondary, textAlign: 'center',
   },
 
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
   acessoBtnApoiar: {
     backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.navbar,
   },
-  acessoTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 14 },
+  acessoTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 14 },
   acessoTxtApoiar: { color: COLORS.navbar },
 
   /* Lista */
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
   cardTop: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 8 },
   cardTitulo: {
     flex: 1, fontSize: 15, fontWeight: '700',
-    fontFamily: FONTS.serif, color: COLORS.text, lineHeight: 21,
+    fontFamily: FONTS.sans, color: COLORS.text, lineHeight: 21,
   },
   badge: {
     width: 38, height: 38, borderRadius: 19,
@@ -414,12 +414,12 @@ const styles = StyleSheet.create({
     overflow: 'hidden', flexShrink: 0,
   },
   badgeHalf: { position: 'absolute', top: 0, bottom: 0, width: '50%' },
-  badgeText: { fontWeight: '700', fontFamily: FONTS.serif, fontSize: 15, zIndex: 1 },
+  badgeText: { fontWeight: '700', fontFamily: FONTS.sans, fontSize: 15, zIndex: 1 },
   cardDescricao: {
-    fontSize: 14, fontFamily: FONTS.serif, color: COLORS.text, lineHeight: 21, marginBottom: 4,
+    fontSize: 14, fontFamily: FONTS.sans, color: COLORS.text, lineHeight: 21, marginBottom: 4,
   },
   cardMeta: {
-    fontSize: 13, fontFamily: FONTS.serif, color: COLORS.textSecondary, lineHeight: 19, marginTop: 3,
+    fontSize: 13, fontFamily: FONTS.sans, color: COLORS.textSecondary, lineHeight: 19, marginTop: 3,
   },
 
   /* Modal */
@@ -436,13 +436,13 @@ const styles = StyleSheet.create({
   },
   modalItem: { height: 44, justifyContent: 'center', paddingHorizontal: 20 },
   modalItemActive: { backgroundColor: COLORS.navbar },
-  modalItemText: { fontFamily: FONTS.serif, fontSize: 15, color: COLORS.text },
+  modalItemText: { fontFamily: FONTS.sans, fontSize: 15, color: COLORS.text },
   modalItemTextActive: { color: '#fff', fontWeight: '700' },
 
   /* Estados */
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, gap: 16 },
-  loadingText: { fontFamily: FONTS.serif, fontStyle: 'italic', color: COLORS.textSecondary, fontSize: 15 },
-  errorText: { color: COLORS.error, fontFamily: FONTS.serif, fontSize: 16, textAlign: 'center' },
+  loadingText: { fontFamily: FONTS.sans, fontStyle: 'italic', color: COLORS.textSecondary, fontSize: 15 },
+  errorText: { color: COLORS.error, fontFamily: FONTS.sans, fontSize: 16, textAlign: 'center' },
   retryBtn: { backgroundColor: COLORS.primary, paddingHorizontal: 26, paddingVertical: 12, borderRadius: 999 },
-  retryText: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 15 },
+  retryText: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 15 },
 });

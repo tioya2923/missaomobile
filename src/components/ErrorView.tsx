@@ -1,4 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Text from './AppText';
 import { COLORS, FONTS } from '../constants/theme';
 
 interface Props {
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
   message: {
     color: COLORS.error,
     fontSize: 16,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: '700',
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     fontSize: 15,
   },
 });

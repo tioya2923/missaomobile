@@ -1,4 +1,5 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import Text from '../components/AppText';
 import { COLORS, FONTS } from '../constants/theme';
 
 export default function ContactoScreen() {
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
   intro: {
     fontSize: 15,
     color: COLORS.text,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     lineHeight: 24,
   },
 });

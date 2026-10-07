@@ -1,4 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Text from './AppText';
 import { COLORS, FONTS } from '../constants/theme';
 
 interface Props {
@@ -21,7 +23,7 @@ export default function ListItem({ title, prefix, titleBold, subtitle, onPress }
         <Text style={[styles.title, titleBold && styles.titleBold]}>{title}</Text>
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
       </View>
-      <Text style={styles.chevron}>›</Text>
+      <Ionicons name="chevron-forward" size={18} color="#b9b0a5" />
     </TouchableOpacity>
   );
 }
@@ -30,32 +32,35 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
+    minHeight: 56,
     paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
+    paddingHorizontal: 18,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: COLORS.border,
     backgroundColor: COLORS.surface,
     gap: 12,
   },
   badge: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    width: 44,
+    height: 28,
+    borderRadius: 14,
     backgroundColor: COLORS.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
   badgeText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: COLORS.primary,
-    fontFamily: FONTS.sansSerif,
+    fontFamily: FONTS.sans,
   },
   content: { flex: 1 },
   title: {
     fontSize: 16,
+    fontWeight: '500',
     color: COLORS.text,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
+    lineHeight: 22,
   },
   titleBold: {
     fontWeight: '700',
@@ -63,12 +68,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 13,
     color: COLORS.textSecondary,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     marginTop: 2,
-  },
-  chevron: {
-    fontSize: 20,
-    color: COLORS.textSecondary,
-    marginLeft: 4,
   },
 });

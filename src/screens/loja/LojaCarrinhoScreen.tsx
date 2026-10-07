@@ -1,8 +1,7 @@
 import { useRef, useState } from 'react';
-import {
-  KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
-  Text, TextInput, TouchableOpacity, View,
-} from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../../components/AppTextInput';
+import Text from '../../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { useCarrinho } from '../../context/useCarrinho';
 import { criarEncomenda } from '../../api/loja';
@@ -196,34 +195,34 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface, borderRadius: 14, padding: 18, marginBottom: 16,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2,
   },
-  cardTitulo: { fontSize: 13, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.5 },
+  cardTitulo: { fontSize: 13, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.sans, textTransform: 'uppercase', letterSpacing: 0.5 },
   separator: { height: 1, backgroundColor: COLORS.border, marginTop: 12, marginBottom: 4 },
 
   lojaHeader: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  lojaHeaderTxt: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
+  lojaHeaderTxt: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans },
   subtotalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 10, marginTop: 2 },
-  subtotalLabel: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.serif },
-  subtotalValor: { fontSize: 14, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
-  avisoSplit: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', marginTop: 8, lineHeight: 17 },
+  subtotalLabel: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.sans },
+  subtotalValor: { fontSize: 14, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans },
+  avisoSplit: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.sans, fontStyle: 'italic', marginTop: 8, lineHeight: 17 },
 
   item: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: COLORS.border },
-  itemNome: { fontSize: 15, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif },
-  itemPreco: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 2 },
+  itemNome: { fontSize: 15, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.sans },
+  itemPreco: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 2 },
 
   stepper: { flexDirection: 'row', alignItems: 'center', gap: 2 },
   stepperBtn: { width: 28, height: 28, borderRadius: 12, borderWidth: 1, borderColor: COLORS.borderDark, alignItems: 'center', justifyContent: 'center' },
-  stepperValor: { fontSize: 14, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, minWidth: 22, textAlign: 'center' },
+  stepperValor: { fontSize: 14, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans, minWidth: 22, textAlign: 'center' },
 
   totalRow: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: 8 },
-  totalLabel: { fontSize: 13, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.4 },
-  totalMoedaLabel: { fontSize: 16, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
-  totalValor: { fontSize: 18, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.serif },
-  avisoMoedas: { fontSize: 12, color: '#b45309', fontFamily: FONTS.serif, fontStyle: 'italic', marginTop: 10, lineHeight: 17 },
+  totalLabel: { fontSize: 13, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.sans, textTransform: 'uppercase', letterSpacing: 0.4 },
+  totalMoedaLabel: { fontSize: 16, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans },
+  totalValor: { fontSize: 18, fontWeight: '700', color: COLORS.primary, fontFamily: FONTS.sans },
+  avisoMoedas: { fontSize: 12, color: '#b45309', fontFamily: FONTS.sans, fontStyle: 'italic', marginTop: 10, lineHeight: 17 },
 
-  label: { fontSize: 12.5, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 12, marginBottom: 6, textTransform: 'uppercase' },
+  label: { fontSize: 12.5, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 12, marginBottom: 6, textTransform: 'uppercase' },
   input: {
     borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 10,
-    fontSize: 15, fontFamily: FONTS.serif, color: COLORS.text,
+    fontSize: 15, fontFamily: FONTS.sans, color: COLORS.text,
   },
   inputMultilinha: { minHeight: 70, textAlignVertical: 'top' },
 
@@ -231,14 +230,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 8,
     backgroundColor: '#c0392b15', borderRadius: 16, padding: 12, marginBottom: 12,
   },
-  erroTxt: { flex: 1, color: '#c0392b', fontFamily: FONTS.serif, fontSize: 13 },
+  erroTxt: { flex: 1, color: '#c0392b', fontFamily: FONTS.sans, fontSize: 13 },
 
   btnFinalizar: { backgroundColor: COLORS.navbar, borderRadius: 14, paddingVertical: 15, alignItems: 'center' },
-  btnFinalizarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 16 },
-  aviso: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', textAlign: 'center', marginTop: 12, lineHeight: 18 },
+  btnFinalizarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 16 },
+  aviso: { fontSize: 12, color: COLORS.textSecondary, fontFamily: FONTS.sans, fontStyle: 'italic', textAlign: 'center', marginTop: 12, lineHeight: 18 },
 
   emptyContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 14, backgroundColor: COLORS.background },
-  empty: { color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', fontSize: 16, textAlign: 'center' },
+  empty: { color: COLORS.textSecondary, fontFamily: FONTS.sans, fontStyle: 'italic', fontSize: 16, textAlign: 'center' },
   btnVoltar: { backgroundColor: COLORS.navbar, borderRadius: 16, paddingVertical: 12, paddingHorizontal: 24 },
-  btnVoltarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif },
+  btnVoltarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans },
 });

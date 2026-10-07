@@ -1,6 +1,7 @@
 import * as Clipboard from 'expo-clipboard';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, FONTS } from '../constants/theme';
 import { getFormasApoio, type FormaApoio } from '../api/apoio';
@@ -55,7 +56,7 @@ export default function ApoiarScreen() {
         <View style={styles.card}>
           <Text style={styles.emBreveTexto}>Não foi possível carregar as formas de apoio.</Text>
           <TouchableOpacity onPress={carregar} style={{ marginTop: 12, alignSelf: 'center' }}>
-            <Text style={{ color: COLORS.primary, fontFamily: FONTS.serif, fontWeight: '700' }}>
+            <Text style={{ color: COLORS.primary, fontFamily: FONTS.sans, fontWeight: '700' }}>
               Tentar novamente
             </Text>
           </TouchableOpacity>
@@ -105,9 +106,9 @@ const styles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 40, backgroundColor: COLORS.background },
 
   hero: { alignItems: 'center', paddingVertical: 24, paddingHorizontal: 8, gap: 10 },
-  heroTitulo: { fontSize: 20, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif, textAlign: 'center' },
+  heroTitulo: { fontSize: 20, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans, textAlign: 'center' },
   heroTexto: {
-    fontSize: 14.5, color: COLORS.textSecondary, fontFamily: FONTS.serif,
+    fontSize: 14.5, color: COLORS.textSecondary, fontFamily: FONTS.sans,
     textAlign: 'center', lineHeight: 22, marginTop: 4,
   },
 
@@ -123,31 +124,31 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   cardTitulo: {
-    fontSize: 13, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif,
+    fontSize: 13, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.sans,
     textTransform: 'uppercase', letterSpacing: 0.5,
   },
   separator: { height: 1, backgroundColor: COLORS.border, marginTop: 12, marginBottom: 4 },
 
   metodo: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, gap: 12 },
   metodoSep: { borderBottomWidth: 1, borderBottomColor: COLORS.border },
-  metodoLabel: { fontSize: 16, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif },
-  metodoDesc: { fontSize: 12.5, color: COLORS.textSecondary, fontFamily: FONTS.serif },
-  metodoValor: { fontSize: 15, color: COLORS.primary, fontFamily: FONTS.serif, marginTop: 4, fontWeight: '600' },
+  metodoLabel: { fontSize: 16, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.sans },
+  metodoDesc: { fontSize: 12.5, color: COLORS.textSecondary, fontFamily: FONTS.sans },
+  metodoValor: { fontSize: 15, color: COLORS.primary, fontFamily: FONTS.sans, marginTop: 4, fontWeight: '600' },
 
   copiarBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     backgroundColor: COLORS.navbar, borderRadius: 16,
     paddingVertical: 9, paddingHorizontal: 12,
   },
-  copiarTxt: { color: '#fff', fontSize: 13, fontWeight: '700', fontFamily: FONTS.serif },
+  copiarTxt: { color: '#fff', fontSize: 13, fontWeight: '700', fontFamily: FONTS.sans },
 
   emBreveTexto: {
-    fontSize: 15, color: COLORS.textSecondary, fontFamily: FONTS.serif,
+    fontSize: 15, color: COLORS.textSecondary, fontFamily: FONTS.sans,
     fontStyle: 'italic', textAlign: 'center', paddingVertical: 8,
   },
 
   rodape: {
-    fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.serif,
+    fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.sans,
     fontStyle: 'italic', textAlign: 'center', marginTop: 8, paddingHorizontal: 16, lineHeight: 20,
   },
 });

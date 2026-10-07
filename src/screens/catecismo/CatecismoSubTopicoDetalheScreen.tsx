@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import Text from '../../components/AppText';
 import { getCatecismoEntradas, type CatecismoEntrada } from '../../api/catecismo';
 import ErrorView from '../../components/ErrorView';
 import LoadingView from '../../components/LoadingView';
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     color: COLORS.text,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     lineHeight: 22,
   },
   separator: {
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
   resposta: {
     fontSize: 15,
     color: COLORS.text,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     lineHeight: 26,
   },
 });

@@ -2,10 +2,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import * as LocalAuth from 'expo-local-authentication';
 import { useCallback, useEffect, useRef, useState, RefObject } from 'react';
-import {
-  Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet,
-  Text, TextInput, TouchableOpacity, View,
-} from 'react-native';
+import { Alert, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../components/AppTextInput';
+import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { COLORS, FONTS } from '../constants/theme';
@@ -666,84 +665,84 @@ const styles = StyleSheet.create({
   hubAvatarWrap:   {width:HAV, height:HAV, marginBottom:16},
   hubAvatar:       {width:HAV, height:HAV, borderRadius:HAV/2, backgroundColor:COLORS.navbar, alignItems:'center', justifyContent:'center'},
   hubFoto:         {width:HAV, height:HAV, borderRadius:HAV/2},
-  hubLetra:        {color:'#fff', fontSize:40, fontWeight:'700', fontFamily:FONTS.serif},
+  hubLetra:        {color:'#fff', fontSize:40, fontWeight:'700', fontFamily:FONTS.sans},
   hubCameraOverlay:{position:'absolute', bottom:0, right:0, width:28, height:28, borderRadius:14, backgroundColor:COLORS.primary, alignItems:'center', justifyContent:'center', borderWidth:2, borderColor:COLORS.background},
-  hubNome:         {fontSize:20, fontWeight:'700', color:COLORS.text, fontFamily:FONTS.serif, textAlign:'center', marginBottom:36},
+  hubNome:         {fontSize:20, fontWeight:'700', color:COLORS.text, fontFamily:FONTS.sans, textAlign:'center', marginBottom:36},
   hubOpcoes:       {width:'100%', gap:12},
   hubCard:         {flexDirection:'row', alignItems:'center', gap:14, backgroundColor:COLORS.surface, borderRadius:16, paddingVertical:18, paddingHorizontal:18, shadowColor:'#000', shadowOffset:{width:0,height:2}, shadowOpacity:0.07, shadowRadius:8, elevation:2},
   hubIcone:        {width:44, height:44, borderRadius:14, backgroundColor:COLORS.background, alignItems:'center', justifyContent:'center'},
-  hubCardTxt:      {flex:1, fontSize:16, fontWeight:'600', color:COLORS.text, fontFamily:FONTS.serif},
+  hubCardTxt:      {flex:1, fontSize:16, fontWeight:'600', color:COLORS.text, fontFamily:FONTS.sans},
   hubSegCard:      {width:'100%', marginTop:12},
 
   /* ── Voltar (perfil) ── */
   voltarBtn: {flexDirection:'row', alignItems:'center', gap:6, padding:16},
-  voltarTxt: {fontSize:15, color:COLORS.text, fontFamily:FONTS.serif, fontWeight:'600'},
+  voltarTxt: {fontSize:15, color:COLORS.text, fontFamily:FONTS.sans, fontWeight:'600'},
 
   /* ── Bloqueio ── */
   lockScreen:  {flex:1, backgroundColor:COLORS.background, alignItems:'center', justifyContent:'center', paddingHorizontal:32},
-  lockLabel:   {fontSize:16, color:COLORS.textSecondary, fontFamily:FONTS.serif, textAlign:'center', marginBottom:24},
+  lockLabel:   {fontSize:16, color:COLORS.textSecondary, fontFamily:FONTS.sans, textAlign:'center', marginBottom:24},
   lockBtn:     {flexDirection:'row', alignItems:'center', gap:10, backgroundColor:COLORS.navbar, borderRadius:999, paddingVertical:14, paddingHorizontal:28, marginTop:8},
-  lockBtnTxt:  {color:'#fff', fontSize:16, fontWeight:'700', fontFamily:FONTS.serif},
+  lockBtnTxt:  {color:'#fff', fontSize:16, fontWeight:'700', fontFamily:FONTS.sans},
   lockCancelar:    {marginTop:28},
-  lockCancelarTxt: {color:COLORS.textSecondary, fontSize:14, fontFamily:FONTS.serif},
+  lockCancelarTxt: {color:COLORS.textSecondary, fontSize:14, fontFamily:FONTS.sans},
 
   /* ── PIN dots ── */
   pinDots: {flexDirection:'row', gap:18, marginBottom:8},
   pinDot:  {width:16, height:16, borderRadius:16, borderWidth:2, borderColor:COLORS.borderDark, backgroundColor:'transparent'},
   pinDotOn:{backgroundColor:COLORS.text, borderColor:COLORS.text},
-  pinErro: {color:COLORS.error, fontFamily:FONTS.serif, fontSize:13, textAlign:'center', minHeight:20, marginBottom:8},
+  pinErro: {color:COLORS.error, fontFamily:FONTS.sans, fontSize:13, textAlign:'center', minHeight:20, marginBottom:8},
 
   /* ── Numpad ── */
   numpad: {flexDirection:'row', flexWrap:'wrap', width:240, marginTop:8},
   numBtn: {width:80, height:72, alignItems:'center', justifyContent:'center'},
-  numTxt: {fontSize:26, fontFamily:FONTS.serif, color:COLORS.text, fontWeight:'400'},
+  numTxt: {fontSize:26, fontFamily:FONTS.sans, color:COLORS.text, fontWeight:'400'},
 
   /* ── Perfil ── */
   container: {padding:16, paddingBottom:48, backgroundColor:COLORS.background},
 
   avisoWrap:   {flexDirection:'row', alignItems:'flex-start', gap:10, backgroundColor:'#fef3c7', borderRadius:14, padding:14, marginBottom:16, borderWidth:1, borderColor:'#fde68a'},
-  avisoTitulo: {fontSize:14, fontWeight:'700', color:'#92400e', fontFamily:FONTS.serif},
-  avisoDesc:   {fontSize:12, color:'#b45309', fontFamily:FONTS.serif},
+  avisoTitulo: {fontSize:14, fontWeight:'700', color:'#92400e', fontFamily:FONTS.sans},
+  avisoDesc:   {fontSize:12, color:'#b45309', fontFamily:FONTS.sans},
 
   cabecalho:   {alignItems:'center', marginBottom:20, gap:10},
   avatarWrap:  {width:AV, height:AV},
   avatar:      {width:AV, height:AV, borderRadius:AV/2, backgroundColor:COLORS.navbar, alignItems:'center', justifyContent:'center'},
   avatarFoto:  {width:AV, height:AV, borderRadius:AV/2},
-  avatarLetra: {color:'#fff', fontSize:36, fontWeight:'700', fontFamily:FONTS.serif},
+  avatarLetra: {color:'#fff', fontSize:36, fontWeight:'700', fontFamily:FONTS.sans},
   cameraOverlay:{position:'absolute', bottom:0, right:0, width:26, height:26, borderRadius:13, backgroundColor:COLORS.primary, alignItems:'center', justifyContent:'center', borderWidth:2, borderColor:COLORS.background},
-  nomeDisplay: {fontSize:18, fontWeight:'700', color:COLORS.text, fontFamily:FONTS.serif, textAlign:'center'},
+  nomeDisplay: {fontSize:18, fontWeight:'700', color:COLORS.text, fontFamily:FONTS.sans, textAlign:'center'},
 
   card:    {backgroundColor:COLORS.surface, borderRadius:14, overflow:'hidden', shadowColor:'#000', shadowOffset:{width:0,height:2}, shadowOpacity:0.07, shadowRadius:8, elevation:2, marginBottom:20},
   row:     {paddingVertical:14, paddingHorizontal:16, gap:6},
   sep:     {borderBottomWidth:1, borderBottomColor:COLORS.border},
-  label:   {fontSize:11, fontWeight:'700', color:COLORS.textSecondary, fontFamily:FONTS.serif, textTransform:'uppercase', letterSpacing:0.5},
+  label:   {fontSize:11, fontWeight:'700', color:COLORS.textSecondary, fontFamily:FONTS.sans, textTransform:'uppercase', letterSpacing:0.5},
   valorRow:{flexDirection:'row', alignItems:'center', justifyContent:'space-between'},
-  valor:   {fontSize:16, color:COLORS.text, fontFamily:FONTS.serif, flex:1},
+  valor:   {fontSize:16, color:COLORS.text, fontFamily:FONTS.sans, flex:1},
 
-  inputTexto:{fontSize:16, color:COLORS.text, fontFamily:FONTS.serif, borderBottomWidth:1, borderBottomColor:COLORS.borderDark, paddingVertical:4},
+  inputTexto:{fontSize:16, color:COLORS.text, fontFamily:FONTS.sans, borderBottomWidth:1, borderBottomColor:COLORS.borderDark, paddingVertical:4},
   dataRow:   {flexDirection:'row', alignItems:'center', gap:4},
-  inputDia:  {width:44, fontSize:16, color:COLORS.text, fontFamily:FONTS.serif, borderBottomWidth:1, borderBottomColor:COLORS.borderDark, paddingVertical:4, textAlign:'center'},
-  inputMes:  {width:44, fontSize:16, color:COLORS.text, fontFamily:FONTS.serif, borderBottomWidth:1, borderBottomColor:COLORS.borderDark, paddingVertical:4, textAlign:'center'},
-  inputAno:  {width:64, fontSize:16, color:COLORS.text, fontFamily:FONTS.serif, borderBottomWidth:1, borderBottomColor:COLORS.borderDark, paddingVertical:4, textAlign:'center'},
-  barra:     {fontSize:18, color:COLORS.textSecondary, fontFamily:FONTS.serif},
+  inputDia:  {width:44, fontSize:16, color:COLORS.text, fontFamily:FONTS.sans, borderBottomWidth:1, borderBottomColor:COLORS.borderDark, paddingVertical:4, textAlign:'center'},
+  inputMes:  {width:44, fontSize:16, color:COLORS.text, fontFamily:FONTS.sans, borderBottomWidth:1, borderBottomColor:COLORS.borderDark, paddingVertical:4, textAlign:'center'},
+  inputAno:  {width:64, fontSize:16, color:COLORS.text, fontFamily:FONTS.sans, borderBottomWidth:1, borderBottomColor:COLORS.borderDark, paddingVertical:4, textAlign:'center'},
+  barra:     {fontSize:18, color:COLORS.textSecondary, fontFamily:FONTS.sans},
 
   inlineAcoes:     {flexDirection:'row', justifyContent:'flex-end', gap:8, marginTop:6},
   inlineCancelar:  {paddingVertical:5, paddingHorizontal:12, borderRadius:16, borderWidth:1, borderColor:COLORS.borderDark},
-  inlineCancelarTxt:{fontSize:13, color:COLORS.text, fontFamily:FONTS.serif, fontWeight:'600'},
+  inlineCancelarTxt:{fontSize:13, color:COLORS.text, fontFamily:FONTS.sans, fontWeight:'600'},
   inlineGuardar:   {paddingVertical:5, paddingHorizontal:14, borderRadius:16, backgroundColor:COLORS.navbar},
-  inlineGuardarTxt:{fontSize:13, color:'#fff', fontFamily:FONTS.serif, fontWeight:'700'},
+  inlineGuardarTxt:{fontSize:13, color:'#fff', fontFamily:FONTS.sans, fontWeight:'700'},
 
   botoesRow:    {flexDirection:'row', gap:10},
   btnCancelar:  {flex:1, borderWidth:1, borderColor:COLORS.border, borderRadius:999, paddingVertical:13, alignItems:'center'},
-  btnCancelarTxt:{fontSize:15, fontWeight:'600', color:COLORS.text, fontFamily:FONTS.serif},
+  btnCancelarTxt:{fontSize:15, fontWeight:'600', color:COLORS.text, fontFamily:FONTS.sans},
   btnGuardar:   {flex:2, backgroundColor:COLORS.navbar, borderRadius:999, paddingVertical:13, alignItems:'center'},
-  btnGuardarTxt:{fontSize:15, fontWeight:'700', color:'#fff', fontFamily:FONTS.serif},
+  btnGuardarTxt:{fontSize:15, fontWeight:'700', color:'#fff', fontFamily:FONTS.sans},
   btnEditar:    {backgroundColor:COLORS.navbar, borderRadius:999, paddingVertical:13, alignItems:'center'},
-  btnEditarTxt: {fontSize:15, fontWeight:'700', color:'#fff', fontFamily:FONTS.serif},
+  btnEditarTxt: {fontSize:15, fontWeight:'700', color:'#fff', fontFamily:FONTS.sans},
 
   segOpcao: {flexDirection:'row', alignItems:'center', paddingVertical:14, paddingHorizontal:16, gap:12},
-  segLabel: {fontSize:15, color:COLORS.text, fontFamily:FONTS.serif, fontWeight:'600'},
-  segDesc:  {fontSize:12, color:COLORS.textSecondary, fontFamily:FONTS.serif},
+  segLabel: {fontSize:15, color:COLORS.text, fontFamily:FONTS.sans, fontWeight:'600'},
+  segDesc:  {fontSize:12, color:COLORS.textSecondary, fontFamily:FONTS.sans},
   radio:    {width:22, height:22, borderRadius:11, borderWidth:2, borderColor:COLORS.borderDark, alignItems:'center', justifyContent:'center'},
   radioOn:  {borderColor:COLORS.navbar},
   radioPonto:{width:11, height:11, borderRadius:16, backgroundColor:COLORS.navbar},

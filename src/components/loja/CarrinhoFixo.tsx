@@ -1,4 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Text from '../AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { useCarrinho } from '../../context/useCarrinho';
 import { formatarPreco } from '../../constants/moeda';
@@ -49,8 +50,8 @@ const styles = StyleSheet.create({
     minWidth: 24, height: 24, borderRadius: 12, backgroundColor: '#fff',
     alignItems: 'center', justifyContent: 'center', paddingHorizontal: 6, flexShrink: 0,
   },
-  badgeTxt: { color: COLORS.navbar, fontWeight: '700', fontFamily: FONTS.serif, fontSize: 12.5 },
-  total: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 14.5, flexShrink: 1 },
+  badgeTxt: { color: COLORS.navbar, fontWeight: '700', fontFamily: FONTS.sans, fontSize: 12.5 },
+  total: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 14.5, flexShrink: 1 },
   verBtn: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  verBtnTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 13.5 },
+  verBtnTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 13.5 },
 });

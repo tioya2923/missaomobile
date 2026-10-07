@@ -1,9 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useRef, useState } from 'react';
-import {
-  ActivityIndicator, ScrollView, StyleSheet, Text,
-  TextInput, TouchableOpacity, View,
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextInput from '../components/AppTextInput';
+import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { search, type SearchResults } from '../api/search';
 import { COLORS, FONTS } from '../constants/theme';
@@ -246,11 +245,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 15,
     color: COLORS.text,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
   },
 
   error: {
-    color: COLORS.error, textAlign: 'center', fontFamily: FONTS.serif,
+    color: COLORS.error, textAlign: 'center', fontFamily: FONTS.sans,
     marginTop: 24, paddingHorizontal: 16,
   },
   hint: {
@@ -258,10 +257,10 @@ const styles = StyleSheet.create({
     gap: 8, marginTop: 56, paddingHorizontal: 32,
   },
   hintText: {
-    color: COLORS.text, fontFamily: FONTS.serif, fontWeight: '700', fontSize: 16,
+    color: COLORS.text, fontFamily: FONTS.sans, fontWeight: '700', fontSize: 16,
   },
   hintSub: {
-    color: COLORS.textSecondary, fontFamily: FONTS.serif, fontSize: 13,
+    color: COLORS.textSecondary, fontFamily: FONTS.sans, fontSize: 13,
     textAlign: 'center', lineHeight: 19,
   },
 
@@ -272,7 +271,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     color: COLORS.textSecondary,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     textTransform: 'uppercase',
     letterSpacing: 0.6,
     paddingHorizontal: 4,
@@ -301,7 +300,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     color: COLORS.text,
-    fontFamily: FONTS.serif,
+    fontFamily: FONTS.sans,
     lineHeight: 20,
   },
   resultChevron: {

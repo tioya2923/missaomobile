@@ -1,6 +1,7 @@
 import * as Clipboard from 'expo-clipboard';
 import { useState } from 'react';
-import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Text from '../../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { labelMetodoPagamento, iconeMetodoPagamento } from '../../constants/metodosPagamento';
 import { formatarPreco } from '../../constants/moeda';
@@ -167,45 +168,45 @@ const styles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 40, backgroundColor: COLORS.background },
 
   hero: { alignItems: 'center', paddingVertical: 20, gap: 8 },
-  heroTitulo: { fontSize: 19, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
-  heroTexto: { fontSize: 14.5, color: COLORS.textSecondary, fontFamily: FONTS.serif, textAlign: 'center', lineHeight: 22 },
+  heroTitulo: { fontSize: 19, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans },
+  heroTexto: { fontSize: 14.5, color: COLORS.textSecondary, fontFamily: FONTS.sans, textAlign: 'center', lineHeight: 22 },
 
   card: {
     backgroundColor: COLORS.surface, borderRadius: 14, padding: 20, marginBottom: 16,
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.07, shadowRadius: 8, elevation: 2,
   },
   cardHeader: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  cardTitulo: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.serif },
-  cardTexto: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 6 },
+  cardTitulo: { fontSize: 15, fontWeight: '700', color: COLORS.text, fontFamily: FONTS.sans },
+  cardTexto: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 6 },
   separator: { height: 1, backgroundColor: COLORS.border, marginTop: 12, marginBottom: 4 },
-  emBreve: { fontSize: 13.5, color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', paddingVertical: 6 },
+  emBreve: { fontSize: 13.5, color: COLORS.textSecondary, fontFamily: FONTS.sans, fontStyle: 'italic', paddingVertical: 6 },
 
   itemRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 },
-  itemTxt: { fontSize: 13.5, color: COLORS.text, fontFamily: FONTS.serif, flex: 1, marginRight: 8 },
-  itemValor: { fontSize: 13.5, color: COLORS.textSecondary, fontFamily: FONTS.serif },
+  itemTxt: { fontSize: 13.5, color: COLORS.text, fontFamily: FONTS.sans, flex: 1, marginRight: 8 },
+  itemValor: { fontSize: 13.5, color: COLORS.textSecondary, fontFamily: FONTS.sans },
 
-  pagamentoTitulo: { fontSize: 12, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.serif, textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 8 },
+  pagamentoTitulo: { fontSize: 12, fontWeight: '700', color: COLORS.textSecondary, fontFamily: FONTS.sans, textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 8 },
   metodo: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: COLORS.border },
-  metodoLabel: { fontSize: 14, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.serif },
-  metodoValor: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.serif, marginTop: 2 },
-  infoAdicional: { fontSize: 12.5, color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', marginTop: 10, lineHeight: 18 },
+  metodoLabel: { fontSize: 14, fontWeight: '600', color: COLORS.text, fontFamily: FONTS.sans },
+  metodoValor: { fontSize: 13, color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 2 },
+  infoAdicional: { fontSize: 12.5, color: COLORS.textSecondary, fontFamily: FONTS.sans, fontStyle: 'italic', marginTop: 10, lineHeight: 18 },
 
   copiarBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: COLORS.navbar, borderRadius: 16, paddingVertical: 9, paddingHorizontal: 12 },
-  copiarTxt: { color: '#fff', fontSize: 13, fontWeight: '700', fontFamily: FONTS.serif },
+  copiarTxt: { color: '#fff', fontSize: 13, fontWeight: '700', fontFamily: FONTS.sans },
 
   comprovativoBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     backgroundColor: '#25D366', borderRadius: 14, paddingVertical: 12, marginTop: 4,
   },
-  comprovativoBtnTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.serif, fontSize: 14 },
+  comprovativoBtnTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 14 },
   ligarBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
     borderWidth: 1, borderColor: COLORS.primary, borderRadius: 14, paddingVertical: 10, marginTop: 8,
   },
-  ligarBtnTxt: { color: COLORS.primary, fontWeight: '700', fontFamily: FONTS.serif, fontSize: 13.5 },
+  ligarBtnTxt: { color: COLORS.primary, fontWeight: '700', fontFamily: FONTS.sans, fontSize: 13.5 },
 
-  aviso: { fontSize: 11.5, color: COLORS.textSecondary, fontFamily: FONTS.serif, fontStyle: 'italic', marginTop: 10, lineHeight: 17 },
+  aviso: { fontSize: 11.5, color: COLORS.textSecondary, fontFamily: FONTS.sans, fontStyle: 'italic', marginTop: 10, lineHeight: 17 },
 
   btnVoltar: { borderWidth: 1, borderColor: COLORS.borderDark, borderRadius: 14, paddingVertical: 13, alignItems: 'center' },
-  btnVoltarTxt: { color: COLORS.text, fontWeight: '700', fontFamily: FONTS.serif, fontSize: 15 },
+  btnVoltarTxt: { color: COLORS.text, fontWeight: '700', fontFamily: FONTS.sans, fontSize: 15 },
 });
