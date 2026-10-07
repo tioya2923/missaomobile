@@ -14,23 +14,21 @@ export type RootTabParamList = {
 
 // --- Stack: Cânticos ---
 export type CanticosStackParamList = {
-  CanticosIdioma: undefined;
-  CanticosTopicos: { idioma: 'pt' | 'ub' | 'lat' | 'kmb' | 'otc' };
-  CanticosLista: { idioma: 'pt' | 'ub' | 'lat' | 'kmb' | 'otc'; topicoSlug: string; topicoNome: string };
-  CanticoDetalhe: { idioma: 'pt' | 'ub' | 'lat' | 'kmb' | 'otc'; slug: string; titulo: string };
+  CanticosTopicos: undefined;
+  CanticosLista: { idioma: string; topicoSlug: string; topicoNome: string };
+  CanticoDetalhe: { idioma: string; slug: string; titulo: string };
 };
 
 // --- Stack: Catecismo ---
 export type CatecismoStackParamList = {
-  CatecismoIdioma: undefined;
-  CatecismoTopicos: { idioma: 'pt' | 'ub' | 'lat' | 'otc' };
+  CatecismoTopicos: undefined;
   // Nível intermédio: subtópicos do Compêndio
-  CatecismoSubTopicos: { idioma: 'pt' | 'ub' | 'lat' | 'otc'; topicoId: number; topicoTitulo: string };
+  CatecismoSubTopicos: { idioma: string; topicoId: number; topicoTitulo: string };
   // Detalhe: todas as Q&A de um subtópico numa só página
-  CatecismoSubTopicoDetalhe: { idioma: 'pt' | 'ub' | 'lat' | 'otc'; subTopicoId: number; subTopicoTitulo: string };
+  CatecismoSubTopicoDetalhe: { idioma: string; subTopicoId: number; subTopicoTitulo: string };
   // Orações / Latim / Otchikwama: lista de títulos → texto individual
-  CatecismoTitulos: { idioma: 'pt' | 'ub' | 'lat' | 'otc'; topicoId: number; topicoTitulo: string };
-  CatecismoTexto: { idioma: 'pt' | 'ub' | 'lat' | 'otc'; id: number; titulo: string };
+  CatecismoTitulos: { idioma: string; topicoId: number; topicoTitulo: string };
+  CatecismoTexto: { idioma: string; id: number; titulo: string };
 };
 
 // --- Stack: Mais ---

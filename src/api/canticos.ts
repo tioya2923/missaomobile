@@ -22,14 +22,16 @@ export interface Cantico {
   pdfUrl?: string;
 }
 
-// Ordem litúrgica dos tópicos PT
+// Ordem litúrgica dos tópicos
 const ORDEM_TOPICOS_PT = [
   'Procissão', 'Entrada', 'Kyrie', 'Glória', 'Entronização da Palavra', 'Aleluia',
   'Oração dos Fiéis', 'Ofertório', 'Elevação', 'Santo', 'Saudação',
   'Cordeiro de Deus', 'Comunhão', 'Acção de Graças', 'Saída',
 ];
 
-type Idioma = 'pt' | 'ub' | 'lat' | 'kmb' | 'otc';
+// Código do idioma tal como vem de /api/idiomas (ex.: 'pt', 'umb', 'kik'). 'ub' ainda é aceite
+// por compatibilidade com a pesquisa.
+type Idioma = string;
 
 // O admin gere Cânticos de todos os idiomas através das mesmas tabelas
 // genéricas do backend (/api/topicos, /api/canticos, ?idioma=<código>) —
@@ -42,16 +44,14 @@ function codigoBackend(idioma: Idioma): string {
 export async function getTopicos(idioma: Idioma): Promise<Topico[]> {
   return cachedFetch(`canticos:topicos:${idioma}`, async () => {
     const { data } = await client.get<Topico[]>('/api/topicos', { params: { idioma: codigoBackend(idioma) } });
-    if (idioma === 'pt') {
-      const ordenados = ORDEM_TOPICOS_PT
-        .map(nome => data.find(t => t.nome === nome))
-        .filter((t): t is Topico => t !== undefined);
-      // Qualquer tópico que o admin crie e que ainda não conste da ordem acima
-      // continua a aparecer (no fim da lista) em vez de ser omitido em silêncio.
-      const outros = data.filter(t => !ORDEM_TOPICOS_PT.includes(t.nome));
-      return [...ordenados, ...outros];
-    }
-    return data;
+    // Ordem litúrgica em todos os idiomas (os nomes dos tópicos são os mesmos). Qualquer tópico
+    // que não conste da lista (ex.: criado pelo admin) aparece a seguir, em vez de ser omitido.
+    const visiveis = data.filter(t => t.nome.toLowerCase() !== 'geral');
+    const ordenados = ORDEM_TOPICOS_PT
+      .map(nome => visiveis.find(t => t.nome === nome))
+      .filter((t): t is Topico => t !== undefined);
+    const outros = visiveis.filter(t => !ORDEM_TOPICOS_PT.includes(t.nome));
+    return [...ordenados, ...outros];
   });
 }
 

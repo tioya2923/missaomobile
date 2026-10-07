@@ -25,7 +25,7 @@ export interface CatecismoTexto {
   texto: string;
 }
 
-type Idioma = 'pt' | 'ub' | 'lat' | 'otc';
+type Idioma = string;
 
 // O admin gere Catecismo/Orações de todos os idiomas através das mesmas
 // tabelas genéricas do backend (/api/catecismopttopicos, /api/catecismopt,

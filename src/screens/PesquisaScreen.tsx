@@ -58,19 +58,19 @@ export default function PesquisaScreen() {
   const hasResults = results && Object.values(results).some(v => v.length > 0);
 
   // ── Navegação por tipo de resultado ──────────────────────────────────────
-  const irCantico = (idioma: 'pt' | 'ub', slug: string, titulo: string) =>
+  const irCantico = (idioma: string, slug: string, titulo: string) =>
     navigation.navigate('Canticos', {
       screen: 'CanticoDetalhe',
       params: { idioma, slug, titulo },
     });
 
-  const irCatecismo = (idioma: 'pt' | 'ub', id: number, titulo: string) =>
+  const irCatecismo = (idioma: string, id: number, titulo: string) =>
     navigation.navigate('Catecismo', {
       screen: 'CatecismoTexto',
       params: { idioma, id, titulo },
     });
 
-  const irTopico = (idioma: 'pt' | 'ub', topicoSlug: string, topicoNome: string) =>
+  const irTopico = (idioma: string, topicoSlug: string, topicoNome: string) =>
     navigation.navigate('Canticos', {
       screen: 'CanticosLista',
       params: { idioma, topicoSlug, topicoNome },

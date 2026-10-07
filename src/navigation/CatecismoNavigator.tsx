@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import NavBar from '../components/NavBar';
-import CatecismoIdiomaScreen from '../screens/catecismo/CatecismoIdiomaScreen';
 import CatecismoSubTopicoDetalheScreen from '../screens/catecismo/CatecismoSubTopicoDetalheScreen';
 import CatecismoSubTopicosScreen from '../screens/catecismo/CatecismoSubTopicosScreen';
 import CatecismoTextoScreen from '../screens/catecismo/CatecismoTextoScreen';
@@ -24,7 +23,6 @@ export default function CatecismoNavigator() {
         ),
       })}
     >
-      <Stack.Screen name="CatecismoIdioma"          component={CatecismoIdiomaScreen}          />
       <Stack.Screen name="CatecismoTopicos"          component={CatecismoTopicosScreen}          />
       <Stack.Screen name="CatecismoSubTopicos"       component={CatecismoSubTopicosScreen}       />
       <Stack.Screen name="CatecismoSubTopicoDetalhe" component={CatecismoSubTopicoDetalheScreen} />
