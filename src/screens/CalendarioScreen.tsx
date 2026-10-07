@@ -306,9 +306,9 @@ function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isTo
 
               {dupla && cor2 ? (
                 <View style={[styles.badge, { borderWidth: 1, borderColor: COLORS.border }]}>
-                  <View style={[styles.badgeHalf, { backgroundColor: cor1.bg, borderTopLeftRadius: 19, borderBottomLeftRadius: 19 }]} />
-                  <View style={[styles.badgeHalf, { backgroundColor: cor2.bg, borderTopRightRadius: 19, borderBottomRightRadius: 19 }]} />
-                  <Text style={[styles.badgeText, { color: '#fff', textShadowColor: '#0005', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 }]}>
+                  <View style={[styles.badgeHalf, { left: 0, backgroundColor: cor1.bg }]} />
+                  <View style={[styles.badgeHalf, { right: 0, backgroundColor: cor2.bg }]} />
+                  <Text style={[styles.badgeText, cor1.bg === '#ffffff' || cor2.bg === '#ffffff' ? { color: '#222222' } : { color: '#fff', textShadowColor: '#0005', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 }]}>
                     {dia.getDate()}
                   </Text>
                 </View>
