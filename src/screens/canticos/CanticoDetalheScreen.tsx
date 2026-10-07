@@ -50,12 +50,12 @@ export default function CanticoDetalheScreen({ route, navigation }: CanticosScre
 }
 
 const createStyles = (COLORS: Palette) => StyleSheet.create({
-  container: { padding: 16, backgroundColor: COLORS.background },
+  container: { padding: 12, backgroundColor: COLORS.background },
   card: {
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
-    paddingHorizontal: 24,
-    paddingVertical: 28,
+    paddingHorizontal: 18,
+    paddingVertical: 26,
     ...SHADOW.card,
   },
   titulo: {
@@ -76,10 +76,10 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
     marginBottom: 22,
   },
   letra: {
-    fontSize: 17,
+    fontSize: 16,
     color: COLORS.text,
     fontFamily: FONTS.sans,
-    lineHeight: 30,
+    lineHeight: 27,
   },
   autor: {
     fontSize: 13,
