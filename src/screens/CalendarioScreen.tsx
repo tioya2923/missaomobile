@@ -310,7 +310,6 @@ function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isTo
   if (eventos.length === 0) {
     return (
       <View style={[styles.card, { borderColor: COLORS.border }, isToday && styles.cardToday]}>
-        {isToday && <View style={styles.hojeSelo}><Text style={styles.hojeSeloTxt}>HOJE</Text></View>}
         <View style={styles.cardTop}>
           <Text style={[styles.cardTitulo, { color: COLORS.textSecondary }]}>{nomeDia}</Text>
           <View style={[styles.badge, { backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border }]}>
@@ -329,7 +328,6 @@ function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isTo
 
         return (
           <View key={evento.id} style={[styles.card, isToday ? styles.cardToday : { borderColor: cor1.border }, { borderLeftColor: cor1.border }]}>
-            {isToday && <View style={styles.hojeSelo}><Text style={styles.hojeSeloTxt}>HOJE</Text></View>}
             <View style={styles.cardTop}>
               <Text style={styles.cardTitulo}>{evento.titulo}</Text>
 
@@ -442,8 +440,6 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
     shadowOpacity: 0.06, shadowRadius: 8, elevation: 2,
   },
   cardToday: { shadowOpacity: 0.16, elevation: 5, borderWidth: 1.5, borderColor: COLORS.primary },
-  hojeSelo: { alignSelf: 'flex-start', backgroundColor: COLORS.primary, borderRadius: 999, paddingHorizontal: 9, paddingVertical: 2, marginBottom: 6 },
-  hojeSeloTxt: { color: '#fff', fontSize: 10.5, fontWeight: '700', letterSpacing: 0.8, fontFamily: FONTS.sans },
   cardTop: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 8 },
   cardTitulo: {
     flex: 1, fontSize: 15, fontWeight: '700',
