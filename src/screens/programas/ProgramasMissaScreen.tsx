@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Text from '../../components/AppText';
 import ConfirmarModal from '../../components/ConfirmarModal';
@@ -34,15 +34,17 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
   const [confirmar, setConfirmar] = useState<{ titulo: string; mensagem: string; rotulo: string; acao: () => void } | null>(null);
 
   useEffect(() => {
-    carregarProgramas().then(l => { setProgramas(l); setCarregado(true); });
+    carregarProgramas().then(l => { programasRef.current = l; setProgramas(l); setCarregado(true); });
   }, []);
 
+  // Referência sempre actual, para várias alterações seguidas não se perderem umas às outras.
+  const programasRef = useRef<Programa[]>([]);
+
   const aplicar = useCallback((fn: (l: Programa[]) => Programa[]) => {
-    setProgramas(anterior => {
-      const nova = fn(anterior);
-      guardarProgramas(nova).catch(() => Alert.alert('Programas', 'Não foi possível guardar as alterações.'));
-      return nova;
-    });
+    const nova = fn(programasRef.current);
+    programasRef.current = nova;
+    setProgramas(nova);
+    guardarProgramas(nova).catch(() => Alert.alert('Programas', 'Não foi possível guardar as alterações.'));
   }, []);
 
   const guardado = programas.find(p => p.id === abertoId) ?? null;

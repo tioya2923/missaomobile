@@ -7,6 +7,14 @@ export interface SearchResults {
   topicosUmb:   Array<{ id: number; nome: string;   slug: string }>;
   catecismosPt: Array<{ id: number; titulo: string; slug: string }>;
   catecismosUb: Array<{ id: number; titulo: string }>;
+  // Latim, Kimbundu, Oshikwanhama e outros idiomas criados no admin (servidor novo; ausente em servidores antigos).
+  outrosIdiomas?: Array<{
+    codigo: string;
+    nome: string;
+    canticos:   Array<{ id: number; titulo: string; slug: string }>;
+    topicos:    Array<{ id: number; nome: string;   slug: string }>;
+    catecismos: Array<{ id: number; titulo: string }>;
+  }>;
   eventos:      Array<{ id: number; titulo: string; data: string }>;
 }
 

@@ -55,7 +55,10 @@ export default function PesquisaScreen() {
     executarPesquisa(termo);
   };
 
-  const hasResults = results && Object.values(results).some(v => v.length > 0);
+  const hasResults = results && (
+    Object.entries(results).some(([k, v]) => k !== 'outrosIdiomas' && Array.isArray(v) && v.length > 0)
+    || (results.outrosIdiomas ?? []).length > 0
+  );
 
   // ── Navegação por tipo de resultado ──────────────────────────────────────
   const irCantico = (idioma: string, slug: string, titulo: string) =>
@@ -138,7 +141,7 @@ export default function PesquisaScreen() {
               <ResultItem
                 key={item.id}
                 label={item.titulo}
-                onPress={() => irCantico('ub', item.slug, item.titulo)}
+                onPress={() => irCantico('umb', item.slug, item.titulo)}
               />
             ))}
           </Section>
@@ -158,7 +161,7 @@ export default function PesquisaScreen() {
               <ResultItem
                 key={item.id}
                 label={item.nome}
-                onPress={() => irTopico('ub', item.slug, item.nome)}
+                onPress={() => irTopico('umb', item.slug, item.nome)}
               />
             ))}
           </Section>
@@ -178,10 +181,42 @@ export default function PesquisaScreen() {
               <ResultItem
                 key={item.id}
                 label={item.titulo}
-                onPress={() => irCatecismo('ub', item.id, item.titulo)}
+                onPress={() => irCatecismo('umb', item.id, item.titulo)}
               />
             ))}
           </Section>
+
+          {(results!.outrosIdiomas ?? []).map(idioma => (
+            <View key={idioma.codigo}>
+              <Section title={`Cânticos (${idioma.nome})`}>
+                {idioma.canticos.map(item => (
+                  <ResultItem
+                    key={item.id}
+                    label={item.titulo}
+                    onPress={() => irCantico(idioma.codigo, item.slug, item.titulo)}
+                  />
+                ))}
+              </Section>
+              <Section title={`Tópicos — Cânticos (${idioma.nome})`}>
+                {idioma.topicos.map(item => (
+                  <ResultItem
+                    key={item.id}
+                    label={item.nome}
+                    onPress={() => irTopico(idioma.codigo, item.slug, item.nome)}
+                  />
+                ))}
+              </Section>
+              <Section title={`Catecismo (${idioma.nome})`}>
+                {idioma.catecismos.map(item => (
+                  <ResultItem
+                    key={item.id}
+                    label={item.titulo}
+                    onPress={() => irCatecismo(idioma.codigo, item.id, item.titulo)}
+                  />
+                ))}
+              </Section>
+            </View>
+          ))}
 
           <Section title="Calendário">
             {results!.eventos.map(item => (

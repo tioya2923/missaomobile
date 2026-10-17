@@ -49,7 +49,6 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
   const [titulo, setTitulo] = useState(inicial?.titulo ?? '');
   const [letra, setLetra] = useState(inicial?.letra ?? '');
   const [audioUri, setAudioUri] = useState<string | undefined>(inicial?.audioUri);
-  const [audioNovo, setAudioNovo] = useState(false);   // gravado nesta sessão (ainda não confirmado)
   const [langVoz, setLangVoz] = useState('pt-PT');
   const [guardarAudioVoz, setGuardarAudioVoz] = useState(true);
 
@@ -66,16 +65,24 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
   const [modo, setModo] = useState<ModoVoz>('ao-vivo');
   const [parcial, setParcial] = useState('');
   const audioDaVoz = useRef<string | null>(null);
+  const pendente = useRef<Promise<void> | null>(null);   // gravação da voz ainda a ser guardada
+  const audioActual = useRef<string | undefined>(inicial?.audioUri);
+  const audioNovoActual = useRef(false);
 
   // Só gravações feitas pelo reconhecimento de voz (WAV) podem ser convertidas depois em texto.
   const podeConverterGravacao = !!audioUri && audioUri.toLowerCase().endsWith('.wav') && suportaGravacao();
 
+  const definirAudio = (uri: string | undefined, novo: boolean) => {
+    audioActual.current = uri;
+    audioNovoActual.current = novo;
+    setAudioUri(uri);
+  };
+
   const guardarGravacaoDaVoz = async (uriTemporario: string) => {
     try {
       const fixo = await guardarAudio(uriTemporario);
-      if (audioNovo) await apagarAudio(audioUri);
-      setAudioUri(fixo);
-      setAudioNovo(true);
+      if (audioNovoActual.current) await apagarAudio(audioActual.current);
+      definirAudio(fixo, true);
     } catch {
       Alert.alert('Gravação', 'O texto foi escrito, mas não foi possível guardar a gravação de áudio.');
     }
@@ -98,7 +105,7 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
     setParcial('');
     const uri = audioDaVoz.current;
     audioDaVoz.current = null;
-    if (uri) guardarGravacaoDaVoz(uri);
+    if (uri) pendente.current = guardarGravacaoDaVoz(uri);
   });
   useSpeechRecognitionEvent('error', ev => {
     setAOuvir(false);
@@ -198,9 +205,8 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
       const temporario = gravador.uri;
       if (temporario) {
         const fixo = await guardarAudio(temporario);
-        if (audioNovo) await apagarAudio(audioUri);   // substitui uma gravação ainda não confirmada
-        setAudioUri(fixo);
-        setAudioNovo(true);
+        if (audioNovoActual.current) await apagarAudio(audioActual.current);   // substitui uma gravação ainda não confirmada
+        definirAudio(fixo, true);
       }
     } catch {
       Alert.alert('Gravação', 'Não foi possível guardar a gravação.');
@@ -209,9 +215,8 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
 
   const removerAudio = () => {
     player.pause();
-    if (audioNovo) apagarAudio(audioUri);
-    setAudioUri(undefined);
-    setAudioNovo(false);
+    if (audioNovoActual.current) apagarAudio(audioActual.current);
+    definirAudio(undefined, false);
   };
 
   const tocar = () => {
@@ -223,12 +228,15 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
   const cancelar = async () => {
     if (gravando) { try { await gravador.stop(); } catch { /* ignorar */ } }
     if (aOuvir) { try { ExpoSpeechRecognitionModule.abort(); } catch { /* ignorar */ } }
-    if (audioNovo) await apagarAudio(audioUri);
+    await pendente.current;
+    if (audioNovoActual.current) await apagarAudio(audioActual.current);
     onCancelar();
   };
 
   const guardar = async () => {
     if (gravando) await pararGravacao();
+    await pendente.current;   // espera que a gravação da voz acabe de ser guardada
+    const audioUri = audioActual.current;
     if (!titulo.trim()) { Alert.alert('Título', 'Escreva o título do cântico.'); return; }
     if (!letra.trim() && !audioUri) { Alert.alert('Cântico', 'Escreva a letra ou grave a voz.'); return; }
     if (inicial?.audioUri && inicial.audioUri !== audioUri) await apagarAudio(inicial.audioUri);
