@@ -17,7 +17,7 @@ export default function PrivacidadeScreen() {
 
       <View style={styles.card}>
         <Text style={styles.titulo}>Política de Privacidade</Text>
-        <Text style={styles.data}>Última atualização: 24 de agosto de 2026</Text>
+        <Text style={styles.data}>Última atualização: 17 de outubro de 2026</Text>
         <View style={styles.separator} />
 
         <Text style={styles.texto}>
@@ -34,6 +34,12 @@ export default function PrivacidadeScreen() {
           usada no momento do pedido.{'\n\n'}
           <Text style={styles.bold}>Biometria (impressão digital / Face ID):</Text> usada apenas para desbloquear a
           aplicação no seu próprio dispositivo. Nunca sai do telemóvel nem chega aos nossos servidores.{'\n\n'}
+          <Text style={styles.bold}>Microfone e voz (opcional):</Text> nos programas de cânticos da Missa pode gravar
+          a sua voz e/ou converter a sua voz em texto. As gravações e os programas ficam guardados apenas no seu
+          telemóvel e não são enviados para os nossos servidores. A conversão de voz em texto usa o serviço de
+          reconhecimento de voz do próprio sistema (Google ou Apple), que pode processar o áudio nos servidores deles,
+          segundo as respetivas políticas. Só é usada quando você o pede, e pode retirar a permissão do microfone a
+          qualquer momento nas definições do telemóvel.{'\n\n'}
           <Text style={styles.bold}>Fotografias:</Text> se optar por carregar uma foto de perfil, ou se for dono de
           uma loja parceira e carregar fotos de produtos, essas imagens ficam guardadas nos nossos servidores.{'\n\n'}
           <Text style={styles.bold}>Marketplace:</Text> se comprar através da Ndatava, guardamos os dados da

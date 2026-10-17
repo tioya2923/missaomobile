@@ -10,6 +10,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FONTS, type Palette } from '../constants/theme';
 import LogoLob from '../components/LogoLob';
 import MinhasActividadesScreen from './MinhasActividadesScreen';
+import ProgramasMissaScreen from './programas/ProgramasMissaScreen';
 import VendedorArea from './VendedorArea';
 import { useColors, useThemedStyles } from '../context/ThemeContext';
 
@@ -22,7 +23,7 @@ type CampoData     = 'nascimento' | 'baptismo' | 'comunhao' | 'crisma' | 'casame
 type CampoTexto    = 'diocese' | 'paroquia';
 type CampoAtivo    = 'nome' | CampoData | CampoTexto;
 type TipoSeguranca = 'nenhuma' | 'sistema' | 'pin';
-type Vista         = 'hub' | 'perfil' | 'actividades' | 'vendedor';
+type Vista         = 'hub' | 'perfil' | 'actividades' | 'programas' | 'vendedor';
 type Perfil = {
   foto: string; nome: string;
   nascimento: DataCampo; baptismo: DataCampo; comunhao: DataCampo;
@@ -441,6 +442,14 @@ export default function EuScreen() {
           <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.hubCard} onPress={()=>setVista('programas')} activeOpacity={0.8}>
+          <View style={styles.hubIcone}>
+            <Ionicons name="musical-notes-outline" size={26} color={COLORS.primary}/>
+          </View>
+          <Text style={styles.hubCardTxt}>Programas da Missa</Text>
+          <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.hubCard} onPress={()=>setVista('vendedor')} activeOpacity={0.8}>
           <View style={styles.hubIcone}>
             <Ionicons name="storefront-outline" size={26} color={COLORS.primary}/>
@@ -487,6 +496,11 @@ export default function EuScreen() {
   // 5. Actividades
   if (vista === 'actividades') return (
     <MinhasActividadesScreen onVoltar={() => setVista('hub')}/>
+  );
+
+  // 5a. Programas de cânticos da Missa
+  if (vista === 'programas') return (
+    <ProgramasMissaScreen onVoltar={() => setVista('hub')}/>
   );
 
   // 5b. Vender no Ndatava (área nativa das lojas parceiras)

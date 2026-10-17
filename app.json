@@ -53,6 +53,22 @@
         {
           "locationWhenInUsePermission": "A aplicação usa a sua localização para mostrar as lojas e os artigos mais próximos de si."
         }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "A aplicação usa o microfone para gravar a sua voz nos cânticos próprios dos programas da Missa."
+        }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "A aplicação usa o microfone para converter a sua voz em texto, só quando você o pede.",
+          "speechRecognitionPermission": "A aplicação usa o reconhecimento de voz do telemóvel para escrever a letra do cântico a partir da sua voz, só quando você o pede.",
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox"
+          ]
+        }
       ]
     ],
     "extra": {
