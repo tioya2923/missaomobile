@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-  ActivityIndicator, FlatList, Modal, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View,
+  ActivityIndicator, AppState, FlatList, Modal, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View,
 } from 'react-native';
 import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
-import { getEventosSemana, type Evento } from '../api/calendario';
+import { DIAS_MOSTRADOS, getEventosJanela, type Evento } from '../api/calendario';
 import { FONTS, type Palette } from '../constants/theme';
 import type { RootScreenProps } from '../navigation/types';
 import { useColors, useThemedStyles } from '../context/ThemeContext';
@@ -52,18 +52,14 @@ const MESES = [
   'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro',
 ];
 
-const ANO_MIN = 2020;
+// O calendário só mostra de hoje em diante, por isso os anos começam no ano atual.
 const ANO_MAX = 2035;
-const ANOS = Array.from({ length: ANO_MAX - ANO_MIN + 1 }, (_, i) => ANO_MIN + i);
 
 function startOfDay(d: Date): Date {
   const r = new Date(d); r.setHours(0, 0, 0, 0); return r;
 }
 function addDays(d: Date, n: number): Date {
   const r = new Date(d); r.setDate(r.getDate() + n); return r;
-}
-function startOfWeek(d: Date): Date {
-  const r = startOfDay(d); r.setDate(r.getDate() - r.getDay()); return r;
 }
 function isSameDay(a: Date, b: Date): boolean {
   return a.getFullYear() === b.getFullYear()
@@ -77,7 +73,7 @@ function fmtLocal(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 function weekLabel(inicio: Date): string {
-  const fim = addDays(inicio, 6);
+  const fim = addDays(inicio, DIAS_MOSTRADOS - 1);
   return inicio.getMonth() === fim.getMonth()
     ? `${MESES[inicio.getMonth()]} ${inicio.getFullYear()}`
     : `${MESES[inicio.getMonth()]} – ${MESES[fim.getMonth()]} ${fim.getFullYear()}`;
@@ -125,9 +121,22 @@ function PickerModal<T extends string | number>({
 export default function CalendarioScreen({ navigation }: RootScreenProps<'Calendario'>) {
   const COLORS = useColors();
   const styles = useThemedStyles(createStyles);
-  const today = startOfDay(new Date());
+  // Contador que força a actualização quando a app volta ao primeiro plano (o "hoje" pode ter mudado).
+  const [, setTique] = useState(0);
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', estado => { if (estado === 'active') setTique(t => t + 1); });
+    return () => sub.remove();
+  }, []);
 
-  const [semanaInicio, setSemanaInicio] = useState<Date>(startOfWeek(today));
+  const today = startOfDay(new Date());
+  const ANOS = Array.from({ length: ANO_MAX - today.getFullYear() + 1 }, (_, i) => today.getFullYear() + i);
+
+  // Primeiro dia mostrado: nunca antes de hoje.
+  const [inicioEscolhido, setInicioEscolhido] = useState<Date>(today);
+  const inicio = inicioEscolhido < today ? today : inicioEscolhido;
+  const inicioChave = fmtLocal(inicio);
+  const naoHaAnterior = inicioChave === fmtLocal(today);
+
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -139,10 +148,10 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
   const [showMes, setShowMes] = useState(false);
   const [showAno, setShowAno] = useState(false);
 
-  const load = useCallback(async (inicio: Date) => {
+  const load = useCallback(async (de: Date) => {
     try {
       setLoading(true); setError(null);
-      setEventos(await getEventosSemana(inicio));
+      setEventos(await getEventosJanela(de));
     } catch {
       setError('Não foi possível carregar os eventos.');
     } finally {
@@ -150,29 +159,31 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
     }
   }, []);
 
-  useEffect(() => { load(semanaInicio); }, [semanaInicio, load]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { load(inicio); }, [inicioChave, load]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      setEventos(await getEventosSemana(semanaInicio));
+      setEventos(await getEventosJanela(inicio));
       setError(null);
     } catch {
       setError('Não foi possível carregar os eventos.');
     } finally {
       setRefreshing(false);
     }
-  }, [semanaInicio]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inicioChave]);
 
-  const irParaData = () => setSemanaInicio(startOfWeek(startOfDay(new Date(selAno, selMes, 1))));
-  const navSemana = (n: number) => setSemanaInicio(prev => addDays(prev, n));
+  const irParaData = () => setInicioEscolhido(startOfDay(new Date(selAno, selMes, 1)));
+  const navegar = (n: number) => setInicioEscolhido(addDays(inicio, n));
   const hoje = () => {
-    setSemanaInicio(startOfWeek(today));
+    setInicioEscolhido(today);
     setSelMes(today.getMonth());
     setSelAno(today.getFullYear());
   };
 
-  const dias = Array.from({ length: 7 }, (_, i) => addDays(semanaInicio, i));
+  const dias = Array.from({ length: DIAS_MOSTRADOS }, (_, i) => addDays(inicio, i));
 
   return (
     <View style={styles.root}>
@@ -198,18 +209,18 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
 
         {/* Linha 2: Anterior / Hoje / Próximo */}
         <View style={styles.navBtns}>
-          <TouchableOpacity style={styles.navBtn} onPress={() => navSemana(-7)}>
+          <TouchableOpacity style={[styles.navBtn, naoHaAnterior && { opacity: 0.35 }]} onPress={() => navegar(-DIAS_MOSTRADOS)} disabled={naoHaAnterior}>
             <Text style={styles.navBtnText}>‹ Anterior</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.navBtn, styles.navBtnHoje]} onPress={hoje}>
             <Text style={[styles.navBtnText, styles.navBtnHojeText]}>Hoje</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.navBtn} onPress={() => navSemana(7)}>
+          <TouchableOpacity style={styles.navBtn} onPress={() => navegar(DIAS_MOSTRADOS)}>
             <Text style={styles.navBtnText}>Próximo ›</Text>
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.weekLabel}>{weekLabel(semanaInicio)}</Text>
+        <Text style={styles.weekLabel}>{weekLabel(inicio)}</Text>
       </View>
 
       {/* ── Conteúdo ── */}
@@ -221,7 +232,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
       ) : error ? (
         <View style={styles.center}>
           <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity style={styles.retryBtn} onPress={() => load(semanaInicio)}>
+          <TouchableOpacity style={styles.retryBtn} onPress={() => load(inicio)}>
             <Text style={styles.retryText}>Tentar novamente</Text>
           </TouchableOpacity>
         </View>
@@ -233,7 +244,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
           }
         >
           {eventos.length === 0 && (
-            <Text style={styles.semDados}>Ainda não há dados do calendário litúrgico para esta semana.</Text>
+            <Text style={styles.semDados}>Ainda não há dados do calendário litúrgico para estes dias.</Text>
           )}
           {dias.map(dia => {
             const evs = eventos.filter(e => e.data?.slice(0, 10) === fmtLocal(dia));

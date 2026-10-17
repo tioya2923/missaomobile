@@ -16,9 +16,12 @@ function fmt(date: Date): string {
   return `${y}-${m}-${d}`;
 }
 
-export async function getEventosSemana(inicio: Date): Promise<Evento[]> {
+/** Número de dias mostrados no calendário: hoje e os 7 seguintes. */
+export const DIAS_MOSTRADOS = 8;
+
+export async function getEventosJanela(inicio: Date): Promise<Evento[]> {
   const fim = new Date(inicio);
-  fim.setDate(fim.getDate() + 6);
+  fim.setDate(fim.getDate() + DIAS_MOSTRADOS - 1);
   const { data } = await client.get<Evento[]>('/api/calendario', {
     params: { inicio: fmt(inicio), fim: fmt(fim) },
   });
