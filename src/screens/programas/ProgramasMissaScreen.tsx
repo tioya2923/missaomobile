@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useCallback, useEffect, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Text from '../../components/AppText';
+import ConfirmarModal from '../../components/ConfirmarModal';
 import TextInput from '../../components/AppTextInput';
 import { FONTS, RADIUS, SHADOW, type Palette } from '../../constants/theme';
 import { useColors, useThemedStyles } from '../../context/ThemeContext';
@@ -28,6 +29,7 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
   const [carregado, setCarregado] = useState(false);
   const [abertoId, setAbertoId] = useState<string | null>(null);
   const [sub, setSub] = useState<Sub>(null);
+  const [confirmar, setConfirmar] = useState<{ titulo: string; mensagem: string; rotulo: string; acao: () => void } | null>(null);
 
   useEffect(() => {
     carregarProgramas().then(l => { setProgramas(l); setCarregado(true); });
@@ -70,17 +72,16 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
   };
 
   const eliminar = (p: Programa) => {
-    Alert.alert('Eliminar programa', `Eliminar "${p.titulo}"? As gravações próprias deste programa também são apagadas.`, [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Eliminar', style: 'destructive',
-        onPress: async () => {
-          await Promise.all(todasAsEscolhas(p).map(e => (e.tipo === 'proprio' ? apagarAudio(e.audioUri) : Promise.resolve())));
-          aplicar(l => l.filter(x => x.id !== p.id));
-          if (abertoId === p.id) setAbertoId(null);
-        },
+    setConfirmar({
+      titulo: 'Eliminar programa',
+      mensagem: `Eliminar "${p.titulo || 'Sem título'}"? As gravações próprias deste programa também são apagadas.`,
+      rotulo: 'Eliminar',
+      acao: async () => {
+        await Promise.all(todasAsEscolhas(p).map(e => (e.tipo === 'proprio' ? apagarAudio(e.audioUri) : Promise.resolve())));
+        aplicar(l => l.filter(x => x.id !== p.id));
+        setAbertoId(atual => (atual === p.id ? null : atual));
       },
-    ]);
+    });
   };
 
   const partilhar = (p: Programa) => {
@@ -104,16 +105,15 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
     });
 
   const remover = (momento: Momento, e: Escolha) => {
-    Alert.alert('Remover cântico', `Remover "${e.titulo}" do programa?`, [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Remover', style: 'destructive',
-        onPress: async () => {
-          if (e.tipo === 'proprio') await apagarAudio(e.audioUri);
-          alterarAberto(p => ({ ...p, itens: { ...p.itens, [momento]: (p.itens[momento] ?? []).filter(x => x.id !== e.id) } }));
-        },
+    setConfirmar({
+      titulo: 'Remover cântico',
+      mensagem: `Remover "${e.titulo}" do programa?`,
+      rotulo: 'Remover',
+      acao: async () => {
+        if (e.tipo === 'proprio') await apagarAudio(e.audioUri);
+        alterarAberto(p => ({ ...p, itens: { ...p.itens, [momento]: (p.itens[momento] ?? []).filter(x => x.id !== e.id) } }));
       },
-    ]);
+    });
   };
 
   /* ── sub-ecrãs ── */
@@ -244,6 +244,15 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
             <Text style={styles.eliminarProgramaTxt}>Eliminar este programa</Text>
           </TouchableOpacity>
         </ScrollView>
+      <ConfirmarModal
+        visivel={!!confirmar}
+        titulo={confirmar?.titulo ?? ''}
+        mensagem={confirmar?.mensagem ?? ''}
+        rotuloConfirmar={confirmar?.rotulo ?? ''}
+        perigoso
+        onCancelar={() => setConfirmar(null)}
+        onConfirmar={() => { const acao = confirmar?.acao; setConfirmar(null); acao?.(); }}
+      />
       </KeyboardAvoidingView>
     );
   }
@@ -301,6 +310,15 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
           );
         })}
       </ScrollView>
+      <ConfirmarModal
+        visivel={!!confirmar}
+        titulo={confirmar?.titulo ?? ''}
+        mensagem={confirmar?.mensagem ?? ''}
+        rotuloConfirmar={confirmar?.rotulo ?? ''}
+        perigoso
+        onCancelar={() => setConfirmar(null)}
+        onConfirmar={() => { const acao = confirmar?.acao; setConfirmar(null); acao?.(); }}
+      />
     </View>
   );
 }
