@@ -94,6 +94,15 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
   const substituir = (momento: Momento, e: Escolha) =>
     alterarAberto(p => ({ ...p, itens: { ...p.itens, [momento]: (p.itens[momento] ?? []).map(x => (x.id === e.id ? e : x)) } }));
 
+  const mover = (momento: Momento, indice: number, delta: -1 | 1) =>
+    alterarAberto(p => {
+      const lista = [...(p.itens[momento] ?? [])];
+      const destino = indice + delta;
+      if (destino < 0 || destino >= lista.length) return p;
+      [lista[indice], lista[destino]] = [lista[destino], lista[indice]];
+      return { ...p, itens: { ...p.itens, [momento]: lista } };
+    });
+
   const remover = (momento: Momento, e: Escolha) => {
     Alert.alert('Remover cântico', `Remover "${e.titulo}" do programa?`, [
       { text: 'Cancelar', style: 'cancel' },
@@ -150,20 +159,31 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
         </View>
 
         <ScrollView contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
-          <TextInput
-            style={styles.tituloInput}
-            value={aberto.titulo}
-            onChangeText={v => alterarAberto(p => ({ ...p, titulo: v }))}
-            placeholder="Título do programa"
-            placeholderTextColor={COLORS.textSecondary}
-          />
-          <TextInput
-            style={styles.celebracaoInput}
-            value={aberto.celebracao}
-            onChangeText={v => alterarAberto(p => ({ ...p, celebracao: v }))}
-            placeholder="Celebração (ex.: XXVII Domingo do Tempo Comum, 4 de outubro)"
-            placeholderTextColor={COLORS.textSecondary}
-          />
+          <View style={styles.dados}>
+            <Text style={styles.rotulo}>TÍTULO DO PROGRAMA</Text>
+            <View style={styles.campo}>
+              <TextInput
+                style={styles.campoInput}
+                value={aberto.titulo}
+                onChangeText={v => alterarAberto(p => ({ ...p, titulo: v }))}
+                placeholder="Ex.: Missa de domingo"
+                placeholderTextColor={COLORS.textSecondary}
+              />
+              <Ionicons name="pencil-outline" size={17} color={COLORS.textSecondary} />
+            </View>
+            <Text style={styles.rotulo}>CELEBRAÇÃO</Text>
+            <View style={styles.campo}>
+              <TextInput
+                style={styles.campoInput}
+                value={aberto.celebracao}
+                onChangeText={v => alterarAberto(p => ({ ...p, celebracao: v }))}
+                placeholder="Ex.: XXVII Domingo do Tempo Comum, 4 de outubro"
+                placeholderTextColor={COLORS.textSecondary}
+              />
+              <Ionicons name="pencil-outline" size={17} color={COLORS.textSecondary} />
+            </View>
+            <Text style={styles.dica}>As alterações guardam-se automaticamente.</Text>
+          </View>
 
           {MOMENTOS.map(momento => {
             const lista = aberto.itens[momento] ?? [];
@@ -171,7 +191,7 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
               <View key={momento} style={styles.momento}>
                 <Text style={styles.momentoNome}>{momento}</Text>
 
-                {lista.map(e => (
+                {lista.map((e, indice) => (
                   <View key={e.id} style={styles.item}>
                     <TouchableOpacity style={styles.itemPrincipal} onPress={() => setSub({ tipo: 'ler', escolha: e })} activeOpacity={0.7}>
                       <Ionicons
@@ -184,6 +204,16 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
                         <Text style={styles.itemSub}>{e.tipo === 'app' ? 'Cântico da Ndatava' : 'Cântico próprio'}</Text>
                       </View>
                     </TouchableOpacity>
+                    {lista.length > 1 && (
+                      <View style={styles.ordem}>
+                        <TouchableOpacity onPress={() => mover(momento, indice, -1)} disabled={indice === 0} hitSlop={{ top: 6, bottom: 2, left: 8, right: 8 }} accessibilityLabel="Subir">
+                          <Ionicons name="chevron-up" size={18} color={indice === 0 ? COLORS.border : COLORS.textSecondary} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => mover(momento, indice, 1)} disabled={indice === lista.length - 1} hitSlop={{ top: 2, bottom: 6, left: 8, right: 8 }} accessibilityLabel="Descer">
+                          <Ionicons name="chevron-down" size={18} color={indice === lista.length - 1 ? COLORS.border : COLORS.textSecondary} />
+                        </TouchableOpacity>
+                      </View>
+                    )}
                     {e.tipo === 'proprio' && (
                       <TouchableOpacity onPress={() => setSub({ tipo: 'proprio', momento, editar: e })} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} accessibilityLabel="Editar">
                         <Ionicons name="pencil-outline" size={19} color={COLORS.textSecondary} />
@@ -208,6 +238,11 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
               </View>
             );
           })}
+
+          <TouchableOpacity style={styles.eliminarPrograma} onPress={() => eliminar(aberto)} activeOpacity={0.8}>
+            <Ionicons name="trash-outline" size={19} color={COLORS.error} />
+            <Text style={styles.eliminarProgramaTxt}>Eliminar este programa</Text>
+          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     );
@@ -249,6 +284,10 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
                 <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary} />
               </TouchableOpacity>
               <View style={styles.cartaoAcoes}>
+                <TouchableOpacity style={styles.acaoTxt} onPress={() => setAbertoId(p.id)} activeOpacity={0.7}>
+                  <Ionicons name="create-outline" size={17} color={COLORS.primary} />
+                  <Text style={[styles.acaoLabel, { color: COLORS.primary }]}>Editar</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.acaoTxt} onPress={() => duplicar(p)} activeOpacity={0.7}>
                   <Ionicons name="copy-outline" size={17} color={COLORS.textSecondary} />
                   <Text style={styles.acaoLabel}>Duplicar</Text>
@@ -292,14 +331,20 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   },
   acaoTxt: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   acaoLabel: { fontSize: 13, fontWeight: '600', fontFamily: FONTS.sans, color: COLORS.textSecondary },
-  tituloInput: {
-    fontSize: 22, fontWeight: '700', fontFamily: FONTS.display, color: COLORS.primary,
-    borderBottomWidth: 1, borderBottomColor: COLORS.border, paddingVertical: 6,
+  dados: { backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: 16, gap: 6, ...SHADOW.card },
+  rotulo: { fontSize: 11, fontWeight: '700', letterSpacing: 0.8, color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 4 },
+  campo: {
+    flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: COLORS.background,
+    borderRadius: RADIUS.md, borderWidth: 1, borderColor: COLORS.border, paddingHorizontal: 12,
   },
-  celebracaoInput: {
-    fontSize: 14, fontFamily: FONTS.sans, color: COLORS.text,
-    borderBottomWidth: 1, borderBottomColor: COLORS.border, paddingVertical: 8,
+  campoInput: { flex: 1, paddingVertical: 11, fontSize: 15, color: COLORS.text, fontFamily: FONTS.sans },
+  dica: { fontSize: 12, fontStyle: 'italic', color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 4 },
+  ordem: { alignItems: 'center', gap: 2 },
+  eliminarPrograma: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8,
+    paddingVertical: 14, borderRadius: RADIUS.pill, borderWidth: 1.5, borderColor: COLORS.error,
   },
+  eliminarProgramaTxt: { fontSize: 15, fontWeight: '700', fontFamily: FONTS.sans, color: COLORS.error },
   momento: { backgroundColor: COLORS.surface, borderRadius: RADIUS.md, padding: 14, gap: 8, ...SHADOW.card },
   momentoNome: { fontSize: 12, fontWeight: '700', letterSpacing: 0.8, textTransform: 'uppercase', fontFamily: FONTS.sans, color: COLORS.textSecondary },
   item: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 6 },
