@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
-  CONTA_TOKEN_KEY, contarPedidosRecebidos, definirAoExpirarConta, eliminarContaNoServidor, entrarConta, listarRecebidas,
+  CONTA_TOKEN_KEY, contarPedidosRecebidos, resumoGrupos, definirAoExpirarConta, eliminarContaNoServidor, entrarConta, listarRecebidas,
   obterMeuCodigo, registarConta, type SessaoConta,
 } from '../api/conta';
 
@@ -15,6 +15,8 @@ interface ContaValue {
   codigo: string | null;
   /** cânticos por ler + pedidos de contacto por responder */
   naoLidas: number;
+  /** publicações novas, convites e pedidos de entrada em grupos */
+  gruposNovidades: number;
   entrar: (email: string, password: string) => Promise<void>;
   registar: (nome: string, email: string, password: string) => Promise<void>;
   sair: () => Promise<void>;
@@ -31,10 +33,11 @@ export function ContaProvider({ children }: { children: ReactNode }) {
   const [email, setEmail] = useState<string | null>(null);
   const [codigo, setCodigo] = useState<string | null>(null);
   const [naoLidas, setNaoLidas] = useState(0);
+  const [gruposNovidades, setGruposNovidades] = useState(0);
 
   const limpar = useCallback(async () => {
     await AsyncStorage.multiRemove([CONTA_TOKEN_KEY, DADOS_KEY]);
-    setToken(null); setNome(null); setEmail(null); setCodigo(null); setNaoLidas(0);
+    setToken(null); setNome(null); setEmail(null); setCodigo(null); setNaoLidas(0); setGruposNovidades(0);
   }, []);
 
   const guardar = useCallback(async (s: SessaoConta) => {
@@ -65,17 +68,18 @@ export function ContaProvider({ children }: { children: ReactNode }) {
   const eliminar = useCallback(async () => { await eliminarContaNoServidor(); await limpar(); }, [limpar]);
 
   const atualizarNaoLidas = useCallback(async () => {
-    if (!token) { setNaoLidas(0); return; }
+    if (!token) { setNaoLidas(0); setGruposNovidades(0); return; }
     try {
-      const [recebidas, pedidos] = await Promise.all([listarRecebidas(), contarPedidosRecebidos()]);
+      const [recebidas, pedidos, grupos] = await Promise.all([listarRecebidas(), contarPedidosRecebidos(), resumoGrupos()]);
       setNaoLidas(recebidas.filter(r => !r.lido).length + pedidos);
+      setGruposNovidades(grupos.naoLidas + grupos.pedidos + grupos.convites);
     } catch { /* sem ligação: mantém */ }
   }, [token]);
 
   const value = useMemo<ContaValue>(() => ({
-    carregado, autenticado: !!token, nome, email, codigo, naoLidas,
+    carregado, autenticado: !!token, nome, email, codigo, naoLidas, gruposNovidades,
     entrar, registar, sair, eliminar, atualizarNaoLidas,
-  }), [carregado, token, nome, email, codigo, naoLidas, entrar, registar, sair, eliminar, atualizarNaoLidas]);
+  }), [carregado, token, nome, email, codigo, naoLidas, gruposNovidades, entrar, registar, sair, eliminar, atualizarNaoLidas]);
 
   return <ContaContext.Provider value={value}>{children}</ContaContext.Provider>;
 }

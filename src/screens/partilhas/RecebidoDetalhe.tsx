@@ -12,9 +12,7 @@ import ErrorView from '../../components/ErrorView';
 import LoadingView from '../../components/LoadingView';
 import { FONTS, RADIUS, SHADOW, type Palette } from '../../constants/theme';
 import { useColors, useThemedStyles } from '../../context/ThemeContext';
-import {
-  carregarProgramas, guardarAudio, guardarProgramas, MOMENTOS, novoId, type Momento, type Programa,
-} from '../../utils/programasMissa';
+import JuntarAPrograma from './JuntarAPrograma';
 
 type Acao = 'apagar' | 'denunciar' | 'bloquear';
 
@@ -44,13 +42,6 @@ export default function RecebidoDetalheScreen({ id, onFechar }: { id: number; on
   const [aDescarregar, setADescarregar] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);
   const [confirmar, setConfirmar] = useState<Acao | null>(null);
-  const [aGuardar, setAGuardar] = useState(false);
-
-  // Juntar a um programa
-  const [escolhendo, setEscolhendo] = useState(false);
-  const [programas, setProgramas] = useState<Programa[]>([]);
-  const [programaId, setProgramaId] = useState<string>('novo');
-  const [momento, setMomento] = useState<Momento>('Entrada');
 
   const player = useAudioPlayer(audioUri ? { uri: audioUri } : null);
   const estado = useAudioPlayerStatus(player);
@@ -61,8 +52,6 @@ export default function RecebidoDetalheScreen({ id, onFechar }: { id: number; on
       setErro(null);
       const r = await detalheRecebida(id);
       setD(r);
-      const sugerido = MOMENTOS.find(m => m === r.momento);
-      if (sugerido) setMomento(sugerido);
     } catch (e) {
       setErro(mensagemDeErro(e, 'Não foi possível abrir este cântico. Verifique a ligação.'));
     } finally {
@@ -95,35 +84,10 @@ export default function RecebidoDetalheScreen({ id, onFechar }: { id: number; on
 
   useEffect(() => { if (audioUri) player.play(); }, [audioUri, player]);
 
-  const abrirEscolha = async () => {
-    setProgramas(await carregarProgramas());
-    setProgramaId('novo');
-    setEscolhendo(true);
-    setMensagem(null);
-  };
-
-  const juntarAoPrograma = async () => {
-    if (!d) return;
-    try {
-      setAGuardar(true);
-      const lista = await carregarProgramas();
-      const copia = audioUri ?? (d.temAudio ? await descarregarAudioRecebido(d.id).catch(() => null) : null);
-      const permanente = copia ? await guardarAudio(copia).catch(() => undefined) : undefined;
-      const escolha = { id: novoId(), tipo: 'proprio' as const, titulo: d.titulo, letra: d.letra, audioUri: permanente };
-      let alvo = lista.find(p => p.id === programaId);
-      if (!alvo) {
-        alvo = { id: novoId(), titulo: 'Novo programa', celebracao: '', criadoEm: Date.now(), itens: {} };
-        lista.unshift(alvo);
-      }
-      alvo.itens = { ...alvo.itens, [momento]: [...(alvo.itens[momento] ?? []), escolha] };
-      await guardarProgramas(lista);
-      setEscolhendo(false);
-      setMensagem(`Adicionado a "${alvo.titulo || 'Sem título'}", em ${momento}.`);
-    } catch {
-      setMensagem('Não foi possível adicionar ao programa.');
-    } finally {
-      setAGuardar(false);
-    }
+  // Gravação a juntar ao programa: a já descarregada ou, se ainda não houve, descarrega-a agora.
+  const obterAudio = async (): Promise<string | null> => {
+    if (!d?.temAudio) return null;
+    return audioUri ?? descarregarAudioRecebido(d.id);
   };
 
   const executar = async (acao: Acao) => {
@@ -171,37 +135,13 @@ export default function RecebidoDetalheScreen({ id, onFechar }: { id: number; on
 
           {!!mensagem && <Text style={styles.mensagem}>{mensagem}</Text>}
 
-          {escolhendo ? (
-            <View style={styles.cartao}>
-              <Text style={styles.rotulo}>JUNTAR A UM PROGRAMA</Text>
-              <View style={styles.chips}>
-                {[{ id: 'novo', titulo: '+ Novo programa' }, ...programas.map(p => ({ id: p.id, titulo: p.titulo || 'Sem título' }))].map(p => (
-                  <TouchableOpacity key={p.id} style={[styles.chip, programaId === p.id && styles.chipActivo]} onPress={() => setProgramaId(p.id)} activeOpacity={0.8}>
-                    <Text style={[styles.chipTxt, programaId === p.id && styles.chipTxtActivo]} numberOfLines={1}>{p.titulo}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              <Text style={[styles.rotulo, { marginTop: 8 }]}>MOMENTO DA MISSA</Text>
-              <View style={styles.chips}>
-                {MOMENTOS.map(m => (
-                  <TouchableOpacity key={m} style={[styles.chip, momento === m && styles.chipActivo]} onPress={() => setMomento(m)} activeOpacity={0.8}>
-                    <Text style={[styles.chipTxt, momento === m && styles.chipTxtActivo]}>{m}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-              <View style={styles.linhaBotoes}>
-                <TouchableOpacity style={styles.secundario} onPress={() => setEscolhendo(false)} activeOpacity={0.8}><Text style={styles.secundarioTxt}>Cancelar</Text></TouchableOpacity>
-                <TouchableOpacity style={[styles.principal, aGuardar && { opacity: 0.6 }]} onPress={juntarAoPrograma} disabled={aGuardar} activeOpacity={0.85}>
-                  <Text style={styles.principalTxt}>{aGuardar ? 'A juntar…' : 'Juntar'}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ) : (
-            <TouchableOpacity style={styles.principal} onPress={abrirEscolha} activeOpacity={0.85}>
-              <Ionicons name="add-circle-outline" size={19} color="#fff" />
-              <Text style={styles.principalTxt}>Juntar a um programa da Missa</Text>
-            </TouchableOpacity>
-          )}
+          <JuntarAPrograma
+            titulo={d.titulo}
+            letra={d.letra}
+            momentoInicial={d.momento}
+            obterAudio={obterAudio}
+            onConcluido={setMensagem}
+          />
 
           <View style={styles.acoes}>
             <TouchableOpacity style={styles.acao} onPress={() => setConfirmar('apagar')} activeOpacity={0.7}>
@@ -247,17 +187,6 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   letra: { fontSize: 16, lineHeight: 27, fontFamily: FONTS.sans, color: COLORS.text },
   semLetra: { fontStyle: 'italic', color: COLORS.textSecondary, fontFamily: FONTS.sans },
   mensagem: { textAlign: 'center', fontSize: 13.5, fontFamily: FONTS.sans, color: COLORS.primary },
-  rotulo: { fontSize: 11, fontWeight: '700', letterSpacing: 0.8, color: COLORS.textSecondary, fontFamily: FONTS.sans },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip: { paddingVertical: 7, paddingHorizontal: 12, borderRadius: RADIUS.pill, borderWidth: 1, borderColor: COLORS.border, maxWidth: '100%' },
-  chipActivo: { backgroundColor: COLORS.navbar, borderColor: COLORS.navbar },
-  chipTxt: { fontSize: 13, fontWeight: '600', fontFamily: FONTS.sans, color: COLORS.text },
-  chipTxtActivo: { color: '#fff' },
-  linhaBotoes: { flexDirection: 'row', gap: 10, marginTop: 10 },
-  principal: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: COLORS.navbar, borderRadius: RADIUS.pill, paddingVertical: 14 },
-  principalTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 15 },
-  secundario: { flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: RADIUS.pill, borderWidth: 1, borderColor: COLORS.border, paddingVertical: 14 },
-  secundarioTxt: { fontWeight: '700', fontFamily: FONTS.sans, fontSize: 15, color: COLORS.text },
   acoes: { flexDirection: 'row', justifyContent: 'center', gap: 22, marginTop: 6 },
   acao: { flexDirection: 'row', alignItems: 'center', gap: 6, padding: 6 },
   acaoTxt: { fontSize: 14, fontWeight: '600', fontFamily: FONTS.sans, color: COLORS.textSecondary },

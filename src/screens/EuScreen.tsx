@@ -10,6 +10,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FONTS, type Palette } from '../constants/theme';
 import LogoLob from '../components/LogoLob';
 import MinhasActividadesScreen from './MinhasActividadesScreen';
+import GruposScreen from './grupos/GruposScreen';
 import PartilhasScreen from './partilhas/PartilhasScreen';
 import ProgramasMissaScreen from './programas/ProgramasMissaScreen';
 import VendedorArea from './VendedorArea';
@@ -25,7 +26,7 @@ type CampoData     = 'nascimento' | 'baptismo' | 'comunhao' | 'crisma' | 'casame
 type CampoTexto    = 'diocese' | 'paroquia';
 type CampoAtivo    = 'nome' | CampoData | CampoTexto;
 type TipoSeguranca = 'nenhuma' | 'sistema' | 'pin';
-type Vista         = 'hub' | 'perfil' | 'actividades' | 'programas' | 'partilhas' | 'vendedor';
+type Vista         = 'hub' | 'perfil' | 'actividades' | 'programas' | 'partilhas' | 'grupos' | 'vendedor';
 type Perfil = {
   foto: string; nome: string;
   nascimento: DataCampo; baptismo: DataCampo; comunhao: DataCampo;
@@ -73,7 +74,7 @@ function validarData(d: DataCampo, label: string): string | null {
 export default function EuScreen() {
   const COLORS = useColors();
   const styles = useThemedStyles(createStyles);
-  const { autenticado, naoLidas, atualizarNaoLidas } = useConta();
+  const { autenticado, naoLidas, gruposNovidades, atualizarNaoLidas } = useConta();
   useEffect(() => { if (autenticado) atualizarNaoLidas(); }, [autenticado, atualizarNaoLidas]);
 
   /* ── perfil ── */
@@ -465,6 +466,17 @@ export default function EuScreen() {
           <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.hubCard} onPress={()=>setVista('grupos')} activeOpacity={0.8}>
+          <View style={styles.hubIcone}>
+            <Ionicons name="people-circle-outline" size={26} color={COLORS.primary}/>
+          </View>
+          <Text style={styles.hubCardTxt}>Grupos</Text>
+          {gruposNovidades > 0 && (
+            <View style={styles.hubBadge}><Text style={styles.hubBadgeTxt}>{gruposNovidades > 9 ? '9+' : gruposNovidades}</Text></View>
+          )}
+          <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.hubCard} onPress={()=>setVista('vendedor')} activeOpacity={0.8}>
           <View style={styles.hubIcone}>
             <Ionicons name="storefront-outline" size={26} color={COLORS.primary}/>
@@ -521,6 +533,11 @@ export default function EuScreen() {
   // 5a'. Partilhas de cânticos entre utilizadores
   if (vista === 'partilhas') return (
     <PartilhasScreen onVoltar={() => setVista('hub')}/>
+  );
+
+  // 5a''. Grupos (coral, oração, pastoral…)
+  if (vista === 'grupos') return (
+    <GruposScreen onVoltar={() => setVista('hub')}/>
   );
 
   // 5b. Vender no Ndatava (área nativa das lojas parceiras)
