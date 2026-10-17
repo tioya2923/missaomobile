@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { carregarAudio, enviarCantico, mensagemDeErro } from '../../api/conta';
+import { carregarAudio, enviarCantico, listarContactos, mensagemDeErro, type Pessoa } from '../../api/conta';
 import Text from '../../components/AppText';
 import TextInput from '../../components/AppTextInput';
 import { FONTS, RADIUS, SHADOW, type Palette } from '../../constants/theme';
@@ -28,7 +28,17 @@ export default function PartilharCantico({ titulo, letra, audioUri, momento, onF
   const [comAudio, setComAudio] = useState(!!audioUri);
   const [aEnviar, setAEnviar] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
-  const [resultado, setResultado] = useState<{ enviados: number; naoEnviados: string[] } | null>(null);
+  const [resultado, setResultado] = useState<{ enviados: number; naoEnviados: string[]; contactosNaoEnviados: number[] } | null>(null);
+  const [contactos, setContactos] = useState<Pessoa[]>([]);
+  const [escolhidos, setEscolhidos] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (!autenticado) return;
+    listarContactos().then(l => setContactos(l.contactos)).catch(() => {});
+  }, [autenticado]);
+
+  const alternar = (id: number) => setEscolhidos(l => (l.includes(id) ? l.filter(x => x !== id) : [...l, id]));
+  const falhados = resultado ? resultado.naoEnviados.length + resultado.contactosNaoEnviados.length : 0;
 
   const adicionarCodigos = (texto: string) => {
     const novos = texto.split(/[\s,;]+/).map(c => c.trim().toUpperCase()).filter(Boolean)
@@ -48,16 +58,17 @@ export default function PartilharCantico({ titulo, letra, audioUri, momento, onF
         return u.startsWith('NDT-') ? u : u.startsWith('NDT') ? `NDT-${u.slice(3)}` : `NDT-${u}`;
       })),
     ]));
-    if (!todos.length) { setErro('Escreva o código de quem vai receber.'); return; }
+    if (!todos.length && !escolhidos.length) { setErro('Escolha um contacto ou escreva o código de quem vai receber.'); return; }
     if (codigo && todos.includes(codigo)) { setErro('Esse é o seu próprio código. Escreva o de outra pessoa.'); return; }
     try {
       setAEnviar(true);
       setErro(null);
       let audioId: number | undefined;
       if (comAudio && audioUri) audioId = await carregarAudio(audioUri);
-      const r = await enviarCantico({ titulo, letra, momento, audioId, codigos: todos });
+      const r = await enviarCantico({ titulo, letra, momento, audioId, codigos: todos, contactos: escolhidos });
       setResultado(r);
       setCodigos(r.naoEnviados);
+      setEscolhidos(r.contactosNaoEnviados);
       setEntrada('');
     } catch (e) {
       setErro(mensagemDeErro(e));
@@ -78,7 +89,7 @@ export default function PartilharCantico({ titulo, letra, audioUri, momento, onF
   if (!carregado) return <View style={styles.ecra}>{cabecalho}</View>;
   if (!autenticado) return <View style={styles.ecra}>{cabecalho}<ContaAuth /></View>;
 
-  if (resultado && resultado.enviados > 0 && resultado.naoEnviados.length === 0) {
+  if (resultado && resultado.enviados > 0 && falhados === 0) {
     return (
       <View style={styles.ecra}>
         {cabecalho}
@@ -108,7 +119,23 @@ export default function PartilharCantico({ titulo, letra, audioUri, momento, onF
         </View>
 
         <View style={styles.cartao}>
-          <Text style={styles.rotulo}>PARA QUEM</Text>
+          <Text style={styles.rotulo}>OS MEUS CONTACTOS</Text>
+          {contactos.length === 0 ? (
+            <Text style={styles.ajuda}>Ainda não tem contactos. Adicione pessoas em Eu › Partilhas › Contactos, ou use o código abaixo.</Text>
+          ) : contactos.map(c => {
+            const marcado = escolhidos.includes(c.utilizadorId);
+            return (
+              <TouchableOpacity key={c.utilizadorId} style={styles.opcao} onPress={() => alternar(c.utilizadorId)} activeOpacity={0.7}
+                accessibilityRole="checkbox" accessibilityState={{ checked: marcado }}>
+                <Ionicons name={marcado ? 'checkbox' : 'square-outline'} size={22} color={resultado?.contactosNaoEnviados.includes(c.utilizadorId) ? COLORS.error : COLORS.primary} />
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.opcaoTxt}>{c.nome}</Text>
+                  {!!c.paroquia && <Text style={styles.ajuda}>{c.paroquia}</Text>}
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+          <Text style={[styles.rotulo, { marginTop: 10 }]}>OU PELO CÓDIGO</Text>
           <Text style={styles.ajuda}>Escreva o código de cada pessoa (ex.: NDT-7K4PQ). Cada pessoa vê o seu em Eu › Partilhas.</Text>
           <View style={styles.linhaCodigo}>
             <TextInput
@@ -140,10 +167,10 @@ export default function PartilharCantico({ titulo, letra, audioUri, momento, onF
             </View>
           )}
 
-          {!!resultado && resultado.naoEnviados.length > 0 && (
+          {!!resultado && falhados > 0 && (
             <Text style={styles.aviso}>
               {resultado.enviados > 0 ? `Enviado a ${resultado.enviados}. ` : ''}
-              Não foi possível enviar a {resultado.naoEnviados.length === 1 ? 'este código' : 'estes códigos'} (marcados a vermelho): confirme se estão certos.
+              Não foi possível enviar a {falhados === 1 ? 'uma pessoa' : `${falhados} pessoas`} (a vermelho). Confirme os códigos ou se ainda são seus contactos.
             </Text>
           )}
           {!!erro && <Text style={styles.erro}>{erro}</Text>}

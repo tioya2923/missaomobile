@@ -1,16 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { useCallback, useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, Share, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { RefreshControl, ScrollView, Share, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 import {
-  desbloquear, listarBloqueados, listarRecebidas, mensagemDeErro, type Bloqueado, type Recebida,
+  desbloquear, guardarDefinicoes, listarBloqueados, listarRecebidas, mensagemDeErro, obterDefinicoes, type Bloqueado, type Recebida,
 } from '../../api/conta';
 import Text from '../../components/AppText';
+import TextInput from '../../components/AppTextInput';
 import ConfirmarModal from '../../components/ConfirmarModal';
 import { FONTS, RADIUS, SHADOW, type Palette } from '../../constants/theme';
 import { useConta } from '../../context/ContaContext';
 import { useColors, useThemedStyles } from '../../context/ThemeContext';
 import ContaAuth from './ContaAuth';
+import ContactosPanel from './ContactosPanel';
 import RecebidoDetalheScreen from './RecebidoDetalhe';
 
 // "Eu › Partilhas": o código pessoal, os cânticos recebidos e a gestão da conta.
@@ -19,22 +21,29 @@ export default function PartilhasScreen({ onVoltar }: { onVoltar: () => void }) 
   const styles = useThemedStyles(createStyles);
   const { carregado, autenticado, nome, email, codigo, sair, eliminar, atualizarNaoLidas } = useConta();
 
-  const [separador, setSeparador] = useState<'recebidos' | 'conta'>('recebidos');
+  const [separador, setSeparador] = useState<'recebidos' | 'contactos' | 'conta'>('recebidos');
   const [recebidas, setRecebidas] = useState<Recebida[] | null>(null);
   const [bloqueados, setBloqueados] = useState<Bloqueado[]>([]);
   const [aActualizar, setAActualizar] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
   const [aberta, setAberta] = useState<number | null>(null);
   const [copiado, setCopiado] = useState(false);
+  const [visivel, setVisivel] = useState(true);
+  const [paroquia, setParoquia] = useState('');
+  const [defGuardadas, setDefGuardadas] = useState<{ visivel: boolean; paroquia: string } | null>(null);
+  const [aGuardarDef, setAGuardarDef] = useState(false);
   const [confirmar, setConfirmar] = useState<'sair' | 'eliminar' | null>(null);
 
   const recarregar = useCallback(async () => {
     try {
       setAActualizar(true);
       setErro(null);
-      const [r, b] = await Promise.all([listarRecebidas(), listarBloqueados()]);
+      const [r, b, d] = await Promise.all([listarRecebidas(), listarBloqueados(), obterDefinicoes()]);
       setRecebidas(r);
       setBloqueados(b);
+      setVisivel(d.visivelPesquisa);
+      setParoquia(d.paroquia);
+      setDefGuardadas({ visivel: d.visivelPesquisa, paroquia: d.paroquia });
       atualizarNaoLidas();
     } catch (e) {
       setErro(mensagemDeErro(e, 'Não foi possível carregar. Verifique a ligação e puxe para actualizar.'));
@@ -56,6 +65,19 @@ export default function PartilhasScreen({ onVoltar }: { onVoltar: () => void }) 
     if (!codigo) return;
     Share.share({ message: `Envie-me cânticos na app Ndatava. O meu código é ${codigo}` }).catch(() => {});
   };
+
+  const guardarDef = async () => {
+    try {
+      setAGuardarDef(true);
+      setErro(null);
+      const d = await guardarDefinicoes({ visivelPesquisa: visivel, paroquia: paroquia.trim() });
+      setDefGuardadas({ visivel: d.visivelPesquisa, paroquia: d.paroquia });
+      setParoquia(d.paroquia);
+    } catch (e) { setErro(mensagemDeErro(e)); }
+    finally { setAGuardarDef(false); }
+  };
+
+  const defAlteradas = !!defGuardadas && (defGuardadas.visivel !== visivel || defGuardadas.paroquia !== paroquia.trim());
 
   const quitar = async (id: number) => {
     try { await desbloquear(id); setBloqueados(l => l.filter(b => b.utilizadorId !== id)); }
@@ -102,16 +124,18 @@ export default function PartilhasScreen({ onVoltar }: { onVoltar: () => void }) 
         </View>
 
         <View style={styles.separadores}>
-          {(['recebidos', 'conta'] as const).map(s => (
+          {(['recebidos', 'contactos', 'conta'] as const).map(s => (
             <TouchableOpacity key={s} style={[styles.sep, separador === s && styles.sepActivo]} onPress={() => setSeparador(s)} activeOpacity={0.8}>
-              <Text style={[styles.sepTxt, separador === s && styles.sepTxtActivo]}>{s === 'recebidos' ? 'Recebidos' : 'Conta'}</Text>
+              <Text style={[styles.sepTxt, separador === s && styles.sepTxtActivo]}>{s === 'recebidos' ? 'Recebidos' : s === 'contactos' ? 'Contactos' : 'Conta'}</Text>
             </TouchableOpacity>
           ))}
         </View>
 
         {!!erro && <Text style={styles.erro}>{erro}</Text>}
 
-        {separador === 'recebidos' ? (
+        {separador === 'contactos' ? (
+          <ContactosPanel onMudou={atualizarNaoLidas} />
+        ) : separador === 'recebidos' ? (
           <>
             {recebidas && recebidas.length === 0 && (
               <Text style={styles.vazio}>Ainda não recebeu cânticos. Quando alguém lhos enviar com o seu código, aparecem aqui.</Text>
@@ -136,6 +160,31 @@ export default function PartilhasScreen({ onVoltar }: { onVoltar: () => void }) 
               <Text style={styles.rotulo}>CONTA</Text>
               <Text style={styles.contaNome}>{nome}</Text>
               <Text style={styles.contaEmail}>{email}</Text>
+            </View>
+
+            <View style={styles.cartao}>
+              <Text style={styles.rotulo}>VISIBILIDADE</Text>
+              <View style={styles.linhaSwitch}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.contaNomePeq}>Aparecer nas pesquisas</Text>
+                  <Text style={styles.itemData}>Outras pessoas encontram-me pelo nome. Desligado, só me encontram pelo meu código.</Text>
+                </View>
+                <Switch value={visivel} onValueChange={setVisivel} trackColor={{ true: COLORS.navbar }} accessibilityLabel="Aparecer nas pesquisas" />
+              </View>
+              <Text style={[styles.rotulo, { marginTop: 8 }]}>PARÓQUIA (OPCIONAL)</Text>
+              <TextInput
+                style={styles.input}
+                value={paroquia}
+                onChangeText={setParoquia}
+                placeholder="Ajuda a distinguir pessoas com o mesmo nome"
+                placeholderTextColor={COLORS.textSecondary}
+                maxLength={100}
+              />
+              {defAlteradas && (
+                <TouchableOpacity style={[styles.botaoGuardar, aGuardarDef && { opacity: 0.6 }]} onPress={guardarDef} disabled={aGuardarDef} activeOpacity={0.85}>
+                  <Text style={styles.botaoGuardarTxt}>{aGuardarDef ? 'A guardar…' : 'Guardar'}</Text>
+                </TouchableOpacity>
+              )}
             </View>
 
             <View style={styles.cartao}>
@@ -164,7 +213,7 @@ export default function PartilhasScreen({ onVoltar }: { onVoltar: () => void }) 
               <Text style={[styles.botaoContornoTxt, { color: COLORS.error }]}>Eliminar conta</Text>
             </TouchableOpacity>
             <Text style={styles.nota}>
-              Eliminar a conta apaga o seu nome, email, código e todos os cânticos que enviou e recebeu. Os seus programas, que estão só neste telemóvel, não são afectados.
+              Eliminar a conta apaga o seu nome, email, código, contactos e todos os cânticos que enviou e recebeu. Os seus programas, que estão só neste telemóvel, não são afectados.
             </Text>
           </>
         )}
@@ -222,6 +271,13 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   contaNomePeq: { fontSize: 15, fontWeight: '600', fontFamily: FONTS.sans, color: COLORS.text },
   contaEmail: { fontSize: 14, fontFamily: FONTS.sans, color: COLORS.textSecondary },
   linhaBloq: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 6 },
+  linhaSwitch: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  input: {
+    backgroundColor: COLORS.background, borderRadius: RADIUS.md, borderWidth: 1, borderColor: COLORS.border,
+    paddingHorizontal: 14, paddingVertical: 11, fontSize: 15, color: COLORS.text, fontFamily: FONTS.sans,
+  },
+  botaoGuardar: { backgroundColor: COLORS.navbar, borderRadius: RADIUS.pill, paddingVertical: 12, alignItems: 'center', marginTop: 8 },
+  botaoGuardarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 15 },
   link: { fontSize: 14, fontWeight: '700', fontFamily: FONTS.sans, color: COLORS.primary },
   botaoContorno: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,

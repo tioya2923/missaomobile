@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
-  CONTA_TOKEN_KEY, definirAoExpirarConta, eliminarContaNoServidor, entrarConta, listarRecebidas,
+  CONTA_TOKEN_KEY, contarPedidosRecebidos, definirAoExpirarConta, eliminarContaNoServidor, entrarConta, listarRecebidas,
   obterMeuCodigo, registarConta, type SessaoConta,
 } from '../api/conta';
 
@@ -13,6 +13,7 @@ interface ContaValue {
   nome: string | null;
   email: string | null;
   codigo: string | null;
+  /** cânticos por ler + pedidos de contacto por responder */
   naoLidas: number;
   entrar: (email: string, password: string) => Promise<void>;
   registar: (nome: string, email: string, password: string) => Promise<void>;
@@ -65,7 +66,10 @@ export function ContaProvider({ children }: { children: ReactNode }) {
 
   const atualizarNaoLidas = useCallback(async () => {
     if (!token) { setNaoLidas(0); return; }
-    try { setNaoLidas((await listarRecebidas()).filter(r => !r.lido).length); } catch { /* sem ligação: mantém */ }
+    try {
+      const [recebidas, pedidos] = await Promise.all([listarRecebidas(), contarPedidosRecebidos()]);
+      setNaoLidas(recebidas.filter(r => !r.lido).length + pedidos);
+    } catch { /* sem ligação: mantém */ }
   }, [token]);
 
   const value = useMemo<ContaValue>(() => ({

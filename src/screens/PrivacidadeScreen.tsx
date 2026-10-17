@@ -42,10 +42,12 @@ export default function PrivacidadeScreen() {
           qualquer momento nas definições do telemóvel.{'\n\n'}
           <Text style={styles.bold}>Partilha de cânticos (opcional):</Text> para enviar cânticos a outras pessoas
           dentro da app pode criar uma conta com nome, email e palavra-passe (guardada de forma cifrada). Cada conta
-          tem um código pessoal; só quem tiver o seu código lhe pode enviar cânticos. Quando partilha um cântico,
+          tem um código pessoal e pode ser encontrada por outras pessoas pelo nome (e pela paróquia, se a indicar); quem
+          desligar «Aparecer nas pesquisas» só é encontrado pelo código. Para ser contacto é preciso aceitar o pedido, e o
+          email nunca é mostrado a outras pessoas. Só quem tem o seu código ou é seu contacto lhe pode enviar cânticos. Quando partilha um cântico,
           guardamos nos nossos servidores o título, a letra, a gravação de voz (se a incluir) e o seu nome, para que
           as pessoas escolhidas o recebam. Cada destinatário pode apagar, denunciar ou bloquear. Os cânticos
-          denunciados são analisados pela nossa equipa. Ao eliminar a conta, apagamos o seu nome, email, código e
+          denunciados são analisados pela nossa equipa. Ao eliminar a conta, apagamos o seu nome, email, código, contactos e
           todos os cânticos enviados e recebidos. Sem criar conta, nada disto é enviado.{'\n\n'}
           <Text style={styles.bold}>Fotografias:</Text> se optar por carregar uma foto de perfil, ou se for dono de
           uma loja parceira e carregar fotos de produtos, essas imagens ficam guardadas nos nossos servidores.{'\n\n'}

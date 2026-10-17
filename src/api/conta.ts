@@ -81,10 +81,14 @@ export interface EnvioPayload {
   momento?: string;
   audioId?: number;
   codigos: string[];
+  /** ids de contactos (utilizadorId) que já aceitaram */
+  contactos?: number[];
 }
 
-export async function enviarCantico(p: EnvioPayload): Promise<{ enviados: number; naoEnviados: string[] }> {
-  const { data } = await contaClient.post<{ enviados: number; naoEnviados: string[] }>('/api/partilhas', p);
+export interface EnvioResultado { enviados: number; naoEnviados: string[]; contactosNaoEnviados: number[] }
+
+export async function enviarCantico(p: EnvioPayload): Promise<EnvioResultado> {
+  const { data } = await contaClient.post<EnvioResultado>('/api/partilhas', p);
   return data;
 }
 
@@ -152,4 +156,59 @@ export async function listarBloqueados(): Promise<Bloqueado[]> {
 
 export async function desbloquear(utilizadorId: number): Promise<void> {
   await contaClient.delete(`/api/partilhas/bloqueados/${utilizadorId}`);
+}
+
+// ── Contactos: pesquisar pessoas, pedidos e lista ─────────────────────────────
+
+export type EstadoLigacao = 'nenhum' | 'enviado' | 'recebido' | 'contacto';
+
+export interface PessoaPesquisa { utilizadorId: number; nome: string; paroquia: string | null; estado: EstadoLigacao }
+
+export interface Pessoa { id: number; utilizadorId: number; nome: string; paroquia: string | null; codigo: string | null }
+
+export interface ListaContactos { contactos: Pessoa[]; recebidos: Pessoa[]; enviados: Pessoa[] }
+
+export async function pesquisarPessoas(q: string): Promise<PessoaPesquisa[]> {
+  const { data } = await contaClient.get<PessoaPesquisa[]>('/api/contactos/pesquisa', { params: { q } });
+  return data;
+}
+
+export async function listarContactos(): Promise<ListaContactos> {
+  const { data } = await contaClient.get<ListaContactos>('/api/contactos');
+  return data;
+}
+
+export async function pedirContacto(utilizadorId: number): Promise<EstadoLigacao> {
+  const { data } = await contaClient.post<{ estado: EstadoLigacao }>('/api/contactos/pedidos', { utilizadorId });
+  return data.estado;
+}
+
+export async function aceitarPedido(id: number): Promise<void> {
+  await contaClient.post(`/api/contactos/pedidos/${id}/aceitar`);
+}
+
+/** Recusa um pedido recebido ou cancela um pedido enviado. */
+export async function recusarPedido(id: number): Promise<void> {
+  await contaClient.delete(`/api/contactos/pedidos/${id}`);
+}
+
+export async function removerContacto(utilizadorId: number): Promise<void> {
+  await contaClient.delete(`/api/contactos/${utilizadorId}`);
+}
+
+export async function contarPedidosRecebidos(): Promise<number> {
+  const { data } = await contaClient.get<{ recebidos: number }>('/api/contactos/pedidos/contagem');
+  return data.recebidos;
+}
+
+export interface Definicoes { visivelPesquisa: boolean; paroquia: string }
+
+export async function obterDefinicoes(): Promise<Definicoes> {
+  const { data } = await contaClient.get<Definicoes>('/api/contactos/definicoes');
+  return data;
+}
+
+export async function guardarDefinicoes(d: Definicoes): Promise<Definicoes> {
+  const { data } = await contaClient.put<Definicoes>('/api/contactos/definicoes', d);
+  return data;
 }
