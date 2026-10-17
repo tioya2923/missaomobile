@@ -9,6 +9,7 @@ import LoadingView from '../../components/LoadingView';
 import { FONTS, RADIUS, SHADOW, type Palette } from '../../constants/theme';
 import { useColors, useThemedStyles } from '../../context/ThemeContext';
 import type { Escolha } from '../../utils/programasMissa';
+import PartilharCantico from '../partilhas/PartilharCantico';
 
 // Mostra a letra de um cântico do programa (da app ou próprio) para cantar ou ensaiar.
 export default function LeitorCantico({ escolha, onFechar }: { escolha: Escolha; onFechar: () => void }) {
@@ -18,6 +19,7 @@ export default function LeitorCantico({ escolha, onFechar }: { escolha: Escolha;
   const [cantico, setCantico] = useState<Cantico | null>(null);
   const [aCarregar, setACarregar] = useState(escolha.tipo === 'app');
   const [erro, setErro] = useState<string | null>(null);
+  const [aEnviar, setAEnviar] = useState(false);
 
   const audioUri = escolha.tipo === 'proprio' ? escolha.audioUri : undefined;
   const player = useAudioPlayer(audioUri ? { uri: audioUri } : null);
@@ -46,6 +48,10 @@ export default function LeitorCantico({ escolha, onFechar }: { escolha: Escolha;
     if (estado.didJustFinish) player.seekTo(0);
     player.play();
   };
+
+  if (aEnviar && escolha.tipo === 'proprio') {
+    return <PartilharCantico titulo={escolha.titulo} letra={escolha.letra} audioUri={escolha.audioUri} onFechar={() => setAEnviar(false)} />;
+  }
 
   return (
     <View style={styles.ecra}>
@@ -78,6 +84,12 @@ export default function LeitorCantico({ escolha, onFechar }: { escolha: Escolha;
             )}
             {!!autor && <Text style={styles.autor}>Letra e Música: {autor}</Text>}
           </View>
+          {escolha.tipo === 'proprio' && (
+            <TouchableOpacity style={styles.enviar} onPress={() => setAEnviar(true)} activeOpacity={0.85}>
+              <Ionicons name="paper-plane-outline" size={19} color={COLORS.primary} />
+              <Text style={styles.enviarTxt}>Enviar a outras pessoas</Text>
+            </TouchableOpacity>
+          )}
         </ScrollView>
       )}
     </View>
@@ -98,6 +110,8 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
     backgroundColor: COLORS.navbar, borderRadius: RADIUS.pill, paddingVertical: 10, paddingHorizontal: 20, marginBottom: 18,
   },
   tocarTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 14 },
+  enviar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 16, paddingVertical: 13, borderRadius: RADIUS.pill, borderWidth: 1.5, borderColor: COLORS.primary },
+  enviarTxt: { fontSize: 15, fontWeight: '700', fontFamily: FONTS.sans, color: COLORS.primary },
   letra: { fontSize: 16, lineHeight: 27, fontFamily: FONTS.sans, color: COLORS.text },
   semLetra: { textAlign: 'center', fontStyle: 'italic', color: COLORS.textSecondary, fontFamily: FONTS.sans },
   autor: { fontSize: 13, fontStyle: 'italic', textAlign: 'right', marginTop: 20, color: COLORS.textSecondary, fontFamily: FONTS.sans },
