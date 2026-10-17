@@ -25,9 +25,23 @@ const COR_MAP: Record<string, { bg: string; border: string; text: string }> = {
 };
 const DEFAULT_COR = { bg: '#555555', border: '#555555', text: '#ffffff' };
 
+// A cor vem no início da descrição ("Verde ou branco – Ofício da féria…", "Verde ou verm. – …").
+// Devolve as cores pela ordem em que aparecem no texto, aceitando as abreviaturas "verm." e "br.".
+const RAIZES_COR: [RegExp, string][] = [
+  [/^branc/, 'branco'], [/^br$/, 'branco'],
+  [/^vermelh/, 'vermelho'], [/^verm$/, 'vermelho'],
+  [/^verd/, 'verde'],
+  [/^rox/, 'roxo'], [/^morad/, 'morado'],
+  [/^ros/, 'rosa'], [/^pret/, 'preto'], [/^dourad/, 'dourado'],
+];
+
 function parseCores(descricao: string) {
   const parte = descricao.split(/[–\-]/)[0].toLowerCase();
-  const nomes = Object.keys(COR_MAP).filter(k => parte.includes(k));
+  const nomes: string[] = [];
+  for (const palavra of parte.match(/[a-zçãé]+/g) ?? []) {
+    const nome = RAIZES_COR.find(([re]) => re.test(palavra))?.[1];
+    if (nome && !nomes.includes(nome)) nomes.push(nome);
+  }
   if (nomes.length === 0) return { cores: [DEFAULT_COR], dupla: false };
   return { cores: nomes.map(n => COR_MAP[n]), dupla: nomes.length >= 2 };
 }
@@ -218,6 +232,9 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} colors={[COLORS.primary]} />
           }
         >
+          {eventos.length === 0 && (
+            <Text style={styles.semDados}>Ainda não há dados do calendário litúrgico para esta semana.</Text>
+          )}
           {dias.map(dia => {
             const evs = eventos.filter(e => e.data?.slice(0, 10) === fmtLocal(dia));
             return (
@@ -282,6 +299,7 @@ function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isTo
   if (eventos.length === 0) {
     return (
       <View style={[styles.card, { borderColor: COLORS.border }, isToday && styles.cardToday]}>
+        {isToday && <View style={styles.hojeSelo}><Text style={styles.hojeSeloTxt}>HOJE</Text></View>}
         <View style={styles.cardTop}>
           <Text style={[styles.cardTitulo, { color: COLORS.textSecondary }]}>{nomeDia}</Text>
           <View style={[styles.badge, { backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border }]}>
@@ -297,18 +315,22 @@ function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isTo
       {eventos.map(evento => {
         const { cores, dupla } = parseCores(evento.descricao ?? '');
         const cor1 = cores[0];
-        const cor2 = dupla ? cores[1] : null;
 
         return (
-          <View key={evento.id} style={[styles.card, { borderColor: cor1.border }, isToday && styles.cardToday]}>
+          <View key={evento.id} style={[styles.card, isToday ? styles.cardToday : { borderColor: cor1.border }, { borderLeftColor: cor1.border }]}>
+            {isToday && <View style={styles.hojeSelo}><Text style={styles.hojeSeloTxt}>HOJE</Text></View>}
             <View style={styles.cardTop}>
               <Text style={styles.cardTitulo}>{evento.titulo}</Text>
 
-              {dupla && cor2 ? (
+              {dupla ? (
                 <View style={[styles.badge, { borderWidth: 1, borderColor: COLORS.border }]}>
-                  <View style={[styles.badgeHalf, { left: 0, backgroundColor: cor1.bg }]} />
-                  <View style={[styles.badgeHalf, { right: 0, backgroundColor: cor2.bg }]} />
-                  <Text style={[styles.badgeText, cor1.bg === '#ffffff' || cor2.bg === '#ffffff' ? { color: '#222222' } : { color: '#fff', textShadowColor: '#0005', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 }]}>
+                  {cores.map((c, i) => (
+                    <View
+                      key={i}
+                      style={[styles.badgeFatia, { left: `${(100 / cores.length) * i}%`, width: `${100 / cores.length}%`, backgroundColor: c.bg }]}
+                    />
+                  ))}
+                  <Text style={[styles.badgeText, cores.length === 2 && cores.some(c => c.bg === '#ffffff') ? { color: '#222222' } : { color: '#fff', textShadowColor: '#000a', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }]}>
                     {dia.getDate()}
                   </Text>
                 </View>
@@ -408,7 +430,9 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
     padding: 14, shadowColor: '#3a2a1f', shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06, shadowRadius: 8, elevation: 2,
   },
-  cardToday: { shadowOpacity: 0.16, elevation: 5 },
+  cardToday: { shadowOpacity: 0.16, elevation: 5, borderWidth: 1.5, borderColor: COLORS.primary },
+  hojeSelo: { alignSelf: 'flex-start', backgroundColor: COLORS.primary, borderRadius: 999, paddingHorizontal: 9, paddingVertical: 2, marginBottom: 6 },
+  hojeSeloTxt: { color: '#fff', fontSize: 10.5, fontWeight: '700', letterSpacing: 0.8, fontFamily: FONTS.sans },
   cardTop: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 8 },
   cardTitulo: {
     flex: 1, fontSize: 15, fontWeight: '700',
@@ -419,7 +443,7 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
     overflow: 'hidden', flexShrink: 0,
   },
-  badgeHalf: { position: 'absolute', top: 0, bottom: 0, width: '50%' },
+  badgeFatia: { position: 'absolute', top: 0, bottom: 0 },
   badgeText: { fontWeight: '700', fontFamily: FONTS.sans, fontSize: 15, zIndex: 1 },
   cardDescricao: {
     fontSize: 14, fontFamily: FONTS.sans, color: COLORS.text, lineHeight: 21, marginBottom: 4,
@@ -444,6 +468,8 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   modalItemActive: { backgroundColor: COLORS.navbar },
   modalItemText: { fontFamily: FONTS.sans, fontSize: 15, color: COLORS.text },
   modalItemTextActive: { color: '#fff', fontWeight: '700' },
+
+  semDados: { textAlign: 'center', fontStyle: 'italic', color: COLORS.textSecondary, fontFamily: FONTS.sans, fontSize: 14, lineHeight: 20, paddingHorizontal: 12 },
 
   /* Estados */
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, gap: 16 },
