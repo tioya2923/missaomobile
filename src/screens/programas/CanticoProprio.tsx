@@ -3,8 +3,8 @@ import {
   AudioModule, RecordingPresets, setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus,
   useAudioRecorder, useAudioRecorderState,
 } from 'expo-audio';
-import { ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition';
-import { useState } from 'react';
+import { AudioEncodingAndroid, ExpoSpeechRecognitionModule, useSpeechRecognitionEvent } from 'expo-speech-recognition';
+import { useRef, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Text from '../../components/AppText';
 import TextInput from '../../components/AppTextInput';
@@ -31,9 +31,15 @@ const IDIOMAS_VOZ = [
   { codigo: 'it-IT', nome: 'Italiano' },
 ];
 
+type ModoVoz = 'ao-vivo' | 'ficheiro';
+
 function formatar(ms: number): string {
   const s = Math.floor(ms / 1000);
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+function suportaGravacao(): boolean {
+  try { return ExpoSpeechRecognitionModule.supportsRecording(); } catch { return false; }
 }
 
 export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar }: Props) {
@@ -45,8 +51,9 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
   const [audioUri, setAudioUri] = useState<string | undefined>(inicial?.audioUri);
   const [audioNovo, setAudioNovo] = useState(false);   // gravado nesta sessão (ainda não confirmado)
   const [langVoz, setLangVoz] = useState('pt-PT');
+  const [guardarAudioVoz, setGuardarAudioVoz] = useState(true);
 
-  /* ── gravação de voz (guarda o áudio do cântico) ── */
+  /* ── gravação só de áudio (expo-audio) — funciona em qualquer telemóvel ── */
   const gravador = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const estadoGravador = useAudioRecorderState(gravador, 300);
   const gravando = estadoGravador.isRecording;
@@ -54,10 +61,29 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
   const player = useAudioPlayer(audioUri ? { uri: audioUri } : null);
   const estadoPlayer = useAudioPlayerStatus(player);
 
-  /* ── voz → texto (opcional, só quando o utilizador pede) ── */
-  const [ditando, setDitando] = useState(false);
+  /* ── voz → texto (opcional), com ou sem guardar o áudio ── */
+  const [aOuvir, setAOuvir] = useState(false);
+  const [modo, setModo] = useState<ModoVoz>('ao-vivo');
   const [parcial, setParcial] = useState('');
+  const audioDaVoz = useRef<string | null>(null);
 
+  // Só gravações feitas pelo reconhecimento de voz (WAV) podem ser convertidas depois em texto.
+  const podeConverterGravacao = !!audioUri && audioUri.toLowerCase().endsWith('.wav') && suportaGravacao();
+
+  const guardarGravacaoDaVoz = async (uriTemporario: string) => {
+    try {
+      const fixo = await guardarAudio(uriTemporario);
+      if (audioNovo) await apagarAudio(audioUri);
+      setAudioUri(fixo);
+      setAudioNovo(true);
+    } catch {
+      Alert.alert('Gravação', 'O texto foi escrito, mas não foi possível guardar a gravação de áudio.');
+    }
+  };
+
+  useSpeechRecognitionEvent('audioend', ev => {
+    if (ev.uri) audioDaVoz.current = ev.uri;
+  });
   useSpeechRecognitionEvent('result', ev => {
     const texto = ev.results[0]?.transcript ?? '';
     if (ev.isFinal) {
@@ -67,17 +93,89 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
       setParcial(texto);
     }
   });
-  useSpeechRecognitionEvent('end', () => { setDitando(false); setParcial(''); });
+  useSpeechRecognitionEvent('end', () => {
+    setAOuvir(false);
+    setParcial('');
+    const uri = audioDaVoz.current;
+    audioDaVoz.current = null;
+    if (uri) guardarGravacaoDaVoz(uri);
+  });
   useSpeechRecognitionEvent('error', ev => {
-    setDitando(false);
+    setAOuvir(false);
     setParcial('');
     if (ev.error !== 'aborted' && ev.error !== 'no-speech') {
-      Alert.alert('Não foi possível converter a voz', 'Verifique a ligação e as permissões e tente de novo.');
+      Alert.alert('Não foi possível converter a voz', 'Verifique a ligação à internet e as permissões e tente de novo.');
     }
   });
 
+  const pedirPermissoesVoz = async (): Promise<boolean> => {
+    const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert('Permissões', 'Sem permissão para o microfone ou para o reconhecimento de voz. Pode activá-las nas definições do telemóvel.');
+      return false;
+    }
+    return true;
+  };
+
+  const iniciarVoz = async (m: ModoVoz) => {
+    if (gravando) return;
+    try {
+      if (!(await pedirPermissoesVoz())) return;
+      player.pause();
+      setModo(m);
+      setAOuvir(true);
+      if (m === 'ao-vivo') {
+        const gravarAudio = guardarAudioVoz && suportaGravacao();
+        ExpoSpeechRecognitionModule.start({
+          lang: langVoz,
+          interimResults: true,
+          continuous: true,
+          addsPunctuation: true,
+          // Ficheiro de 16 kHz, 16 bits: o mesmo formato que o telemóvel aceita para converter depois em texto.
+          recordingOptions: gravarAudio
+            ? { persist: true, outputSampleRate: 16000, outputEncoding: 'pcmFormatInt16' }
+            : undefined,
+        });
+      } else if (audioUri) {
+        ExpoSpeechRecognitionModule.start({
+          lang: langVoz,
+          interimResults: true,
+          continuous: true,
+          addsPunctuation: true,
+          requiresOnDeviceRecognition: Platform.OS === 'ios',
+          audioSource: {
+            uri: audioUri,
+            audioChannels: 1,
+            audioEncoding: AudioEncodingAndroid.ENCODING_PCM_16BIT,
+            sampleRate: 16000,
+          },
+        });
+      }
+    } catch {
+      setAOuvir(false);
+      Alert.alert('Voz em texto', 'Esta funcionalidade não está disponível neste dispositivo.');
+    }
+  };
+
+  const confirmarVoz = (m: ModoVoz) => {
+    const gravacao = m === 'ao-vivo' && guardarAudioVoz && suportaGravacao();
+    Alert.alert(
+      'Converter voz em texto',
+      'Vai usar o reconhecimento de voz do seu telemóvel (Google ou Apple), que pode enviar o áudio para os servidores deles para o converter em texto. A Ndatava não guarda esse áudio.'
+      + (gravacao ? ' A gravação fica só neste telemóvel.' : '')
+      + ' Funciona melhor falando devagar; ao cantar, com música ou coro, o texto costuma ter erros. Pode corrigi-lo depois.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Continuar', onPress: () => iniciarVoz(m) },
+      ],
+    );
+  };
+
+  const pararVoz = () => { try { ExpoSpeechRecognitionModule.stop(); } catch { setAOuvir(false); } };
+
+  /* ── gravação só de áudio ── */
   const comecarGravacao = async () => {
-    if (ditando) return;
+    if (aOuvir) return;
     try {
       const perm = await AudioModule.requestRecordingPermissionsAsync();
       if (!perm.granted) {
@@ -122,40 +220,9 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
     player.play();
   };
 
-  const comecarDitado = () => {
-    if (gravando) return;
-    Alert.alert(
-      'Converter voz em texto',
-      'Vai usar o reconhecimento de voz do seu telemóvel (Google ou Apple), que pode enviar o áudio para os servidores deles para o converter em texto. A Ndatava não guarda esse áudio. Pode corrigir o texto depois.',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Continuar',
-          onPress: async () => {
-            try {
-              const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
-              if (!perm.granted) {
-                Alert.alert('Permissões', 'Sem permissão para o microfone ou para o reconhecimento de voz.');
-                return;
-              }
-              player.pause();
-              setDitando(true);
-              ExpoSpeechRecognitionModule.start({ lang: langVoz, interimResults: true, continuous: true, addsPunctuation: true });
-            } catch {
-              setDitando(false);
-              Alert.alert('Voz em texto', 'Esta funcionalidade não está disponível neste dispositivo.');
-            }
-          },
-        },
-      ],
-    );
-  };
-
-  const pararDitado = () => { try { ExpoSpeechRecognitionModule.stop(); } catch { setDitando(false); } };
-
   const cancelar = async () => {
     if (gravando) { try { await gravador.stop(); } catch { /* ignorar */ } }
-    if (ditando) { try { ExpoSpeechRecognitionModule.abort(); } catch { /* ignorar */ } }
+    if (aOuvir) { try { ExpoSpeechRecognitionModule.abort(); } catch { /* ignorar */ } }
     if (audioNovo) await apagarAudio(audioUri);
     onCancelar();
   };
@@ -167,6 +234,8 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
     if (inicial?.audioUri && inicial.audioUri !== audioUri) await apagarAudio(inicial.audioUri);
     onGuardar({ id: inicial?.id ?? novoId(), tipo: 'proprio', titulo: titulo.trim(), letra: letra.trim(), audioUri });
   };
+
+  const gravacaoSuportada = suportaGravacao();
 
   return (
     <KeyboardAvoidingView style={styles.ecra} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -207,66 +276,98 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
 
         {/* Voz → texto */}
         <View style={styles.cartao}>
-          <Text style={styles.cartaoTitulo}>Converter voz em texto</Text>
+          <Text style={styles.cartaoTitulo}>Voz em texto</Text>
           <Text style={styles.cartaoDesc}>
-            Opcional. Fale ou cante devagar e o telemóvel escreve a letra. Depois pode corrigir.
+            Opcional. Fale ou cante e o telemóvel escreve a letra. Funciona melhor falando devagar; ao cantar, com música ou coro, costuma errar palavras. Depois pode corrigir o texto.
           </Text>
+
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsScroll} contentContainerStyle={styles.chips}>
             {IDIOMAS_VOZ.map(i => (
               <TouchableOpacity
                 key={i.codigo}
                 style={[styles.chip, langVoz === i.codigo && styles.chipActivo]}
-                onPress={() => !ditando && setLangVoz(i.codigo)}
+                onPress={() => !aOuvir && setLangVoz(i.codigo)}
                 activeOpacity={0.8}
               >
                 <Text style={[styles.chipTxt, langVoz === i.codigo && styles.chipTxtActivo]}>{i.nome}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
+
+          {gravacaoSuportada && (
+            <TouchableOpacity
+              style={styles.opcao}
+              onPress={() => !aOuvir && setGuardarAudioVoz(v => !v)}
+              activeOpacity={0.7}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: guardarAudioVoz }}
+            >
+              <Ionicons name={guardarAudioVoz ? 'checkbox' : 'square-outline'} size={22} color={COLORS.primary} />
+              <Text style={styles.opcaoTxt}>Guardar também a gravação de áudio</Text>
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity
-            style={[styles.botao, ditando && styles.botaoParar, gravando && styles.botaoOff]}
-            onPress={ditando ? pararDitado : comecarDitado}
+            style={[styles.botao, aOuvir && styles.botaoParar, gravando && styles.botaoOff]}
+            onPress={aOuvir ? pararVoz : () => confirmarVoz('ao-vivo')}
             disabled={gravando}
             activeOpacity={0.85}
           >
-            <Ionicons name={ditando ? 'stop-circle-outline' : 'text-outline'} size={20} color="#fff" />
-            <Text style={styles.botaoTxt}>{ditando ? 'Parar de ouvir' : 'Ditar a letra'}</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Gravação de voz */}
-        <View style={styles.cartao}>
-          <Text style={styles.cartaoTitulo}>Gravar a voz</Text>
-          <Text style={styles.cartaoDesc}>
-            Grave o cântico para o ouvir de novo. A gravação fica só neste telemóvel.
-          </Text>
-
-          <TouchableOpacity
-            style={[styles.botao, gravando && styles.botaoParar, ditando && styles.botaoOff]}
-            onPress={gravando ? pararGravacao : comecarGravacao}
-            disabled={ditando}
-            activeOpacity={0.85}
-          >
-            <Ionicons name={gravando ? 'stop-circle-outline' : 'mic-outline'} size={20} color="#fff" />
+            <Ionicons name={aOuvir ? 'stop-circle-outline' : 'mic-outline'} size={20} color="#fff" />
             <Text style={styles.botaoTxt}>
-              {gravando ? `A gravar… ${formatar(estadoGravador.durationMillis)}` : audioUri ? 'Gravar de novo' : 'Gravar voz'}
+              {aOuvir
+                ? (modo === 'ficheiro' ? 'A converter… toque para parar' : 'A ouvir… toque para parar')
+                : gravacaoSuportada && guardarAudioVoz ? 'Gravar e converter em texto' : 'Falar e converter em texto'}
             </Text>
           </TouchableOpacity>
 
-          {!!audioUri && !gravando && (
+          {podeConverterGravacao && !aOuvir && (
+            <TouchableOpacity style={styles.botaoContorno} onPress={() => confirmarVoz('ficheiro')} activeOpacity={0.85}>
+              <Ionicons name="document-text-outline" size={19} color={COLORS.primary} />
+              <Text style={styles.botaoContornoTxt}>Converter a gravação em texto</Text>
+            </TouchableOpacity>
+          )}
+          {!gravacaoSuportada && (
+            <Text style={styles.nota}>
+              Neste telemóvel a conversão só escreve o texto; para ter também o áudio use "Gravar só o áudio" abaixo.
+            </Text>
+          )}
+        </View>
+
+        {/* Gravação só de áudio */}
+        <View style={styles.cartao}>
+          <Text style={styles.cartaoTitulo}>Gravar só o áudio</Text>
+          <Text style={styles.cartaoDesc}>
+            Serve para qualquer língua (também latim e línguas angolanas) e para ouvir o cântico de novo. Fica só neste telemóvel; não gera texto.
+          </Text>
+
+          <TouchableOpacity
+            style={[styles.botao, gravando && styles.botaoParar, aOuvir && styles.botaoOff]}
+            onPress={gravando ? pararGravacao : comecarGravacao}
+            disabled={aOuvir}
+            activeOpacity={0.85}
+          >
+            <Ionicons name={gravando ? 'stop-circle-outline' : 'radio-button-on-outline'} size={20} color="#fff" />
+            <Text style={styles.botaoTxt}>
+              {gravando ? `A gravar… ${formatar(estadoGravador.durationMillis)}` : audioUri ? 'Gravar de novo' : 'Gravar só o áudio'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {!!audioUri && !gravando && (
+          <View style={styles.cartao}>
+            <Text style={styles.cartaoTitulo}>Gravação guardada</Text>
             <View style={styles.audioLinha}>
-              <TouchableOpacity style={styles.tocar} onPress={tocar} activeOpacity={0.85}>
+              <TouchableOpacity style={styles.tocar} onPress={tocar} activeOpacity={0.85} accessibilityLabel={estadoPlayer.playing ? 'Parar' : 'Ouvir'}>
                 <Ionicons name={estadoPlayer.playing ? 'pause' : 'play'} size={20} color="#fff" />
               </TouchableOpacity>
-              <Text style={styles.audioTxt}>
-                Gravação {formatar((estadoPlayer.duration || 0) * 1000)}
-              </Text>
+              <Text style={styles.audioTxt}>Duração {formatar((estadoPlayer.duration || 0) * 1000)}</Text>
               <TouchableOpacity onPress={removerAudio} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }} accessibilityLabel="Apagar gravação">
                 <Ionicons name="trash-outline" size={22} color={COLORS.error} />
               </TouchableOpacity>
             </View>
-          )}
-        </View>
+          </View>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -291,12 +392,15 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   cartao: { backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: 16, marginTop: 14, gap: 10, ...SHADOW.card },
   cartaoTitulo: { fontSize: 16, fontWeight: '700', fontFamily: FONTS.sans, color: COLORS.text },
   cartaoDesc: { fontSize: 13, lineHeight: 19, fontFamily: FONTS.sans, color: COLORS.textSecondary },
+  nota: { fontSize: 12.5, lineHeight: 18, fontStyle: 'italic', fontFamily: FONTS.sans, color: COLORS.textSecondary },
   chipsScroll: { flexGrow: 0, flexShrink: 0, minHeight: 36 },
   chips: { gap: 8, alignItems: 'center' },
   chip: { paddingVertical: 7, paddingHorizontal: 12, borderRadius: RADIUS.pill, borderWidth: 1, borderColor: COLORS.border },
   chipActivo: { backgroundColor: COLORS.navbar, borderColor: COLORS.navbar },
   chipTxt: { fontSize: 12.5, fontWeight: '600', fontFamily: FONTS.sans, color: COLORS.text },
   chipTxtActivo: { color: '#fff' },
+  opcao: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 2 },
+  opcaoTxt: { flex: 1, fontSize: 14, fontFamily: FONTS.sans, color: COLORS.text },
   botao: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     backgroundColor: COLORS.navbar, borderRadius: RADIUS.pill, paddingVertical: 12,
@@ -304,7 +408,12 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   botaoParar: { backgroundColor: COLORS.error },
   botaoOff: { opacity: 0.45 },
   botaoTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 15 },
-  audioLinha: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 4 },
+  botaoContorno: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
+    borderRadius: RADIUS.pill, paddingVertical: 11, borderWidth: 1.5, borderColor: COLORS.primary,
+  },
+  botaoContornoTxt: { color: COLORS.primary, fontWeight: '700', fontFamily: FONTS.sans, fontSize: 14 },
+  audioLinha: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   tocar: { width: 40, height: 40, borderRadius: 20, backgroundColor: COLORS.navbar, alignItems: 'center', justifyContent: 'center' },
   audioTxt: { flex: 1, fontSize: 14, fontFamily: FONTS.sans, color: COLORS.text },
 });
