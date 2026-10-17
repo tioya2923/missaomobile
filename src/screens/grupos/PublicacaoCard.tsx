@@ -89,7 +89,7 @@ export default function PublicacaoCard({ grupoId, pub, administrador, onMudou, o
     finally { setACopiar(false); }
   };
 
-  const itensPorMomento = (pub.itens ?? []).reduce<Record<string, ItemProgramaGrupo[]>>((acc, it, i) => {
+  const itensPorMomento = (pub.itens ?? []).reduce<Record<string, ItemProgramaGrupo[]>>((acc, it) => {
     (acc[it.momento] ??= []).push({ ...it, audioId: it.audioId ?? null });
     return acc;
   }, {});

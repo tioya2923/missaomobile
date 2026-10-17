@@ -26,7 +26,7 @@ export default function ContaAuth({ onFeito }: { onFeito?: () => void }) {
     setErro(null);
     if (modo === 'criar' && !nome.trim()) { setErro('Escreva o seu nome.'); return; }
     if (!email.trim() || !password) { setErro('Preencha o email e a palavra-passe.'); return; }
-    if (modo === 'criar' && password.length < 6) { setErro('A palavra-passe deve ter pelo menos 6 caracteres.'); return; }
+    if (modo === 'criar' && password.length < 8) { setErro('A palavra-passe deve ter pelo menos 8 caracteres.'); return; }
     try {
       setAEnviar(true);
       if (modo === 'criar') await registar(nome, email, password);
@@ -69,7 +69,7 @@ export default function ContaAuth({ onFeito }: { onFeito?: () => void }) {
             keyboardType="email-address" autoCapitalize="none" autoCorrect={false} />
           <Text style={styles.rotulo}>PALAVRA-PASSE</Text>
           <View style={styles.linhaSenha}>
-            <TextInput style={[styles.input, { flex: 1 }]} value={password} onChangeText={setPassword} placeholder="Pelo menos 6 caracteres"
+            <TextInput style={[styles.input, { flex: 1 }]} value={password} onChangeText={setPassword} placeholder="Pelo menos 8 caracteres"
               placeholderTextColor={COLORS.textSecondary} secureTextEntry={!ver} autoCapitalize="none" autoCorrect={false} />
             <TouchableOpacity onPress={() => setVer(v => !v)} style={styles.olho} accessibilityLabel={ver ? 'Esconder palavra-passe' : 'Mostrar palavra-passe'}>
               <Ionicons name={ver ? 'eye-off-outline' : 'eye-outline'} size={22} color={COLORS.textSecondary} />
