@@ -10,8 +10,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import { FONTS, type Palette } from '../constants/theme';
 import LogoLob from '../components/LogoLob';
 import MinhasActividadesScreen from './MinhasActividadesScreen';
+import PartilhasScreen from './partilhas/PartilhasScreen';
 import ProgramasMissaScreen from './programas/ProgramasMissaScreen';
 import VendedorArea from './VendedorArea';
+import { useConta } from '../context/ContaContext';
 import { useColors, useThemedStyles } from '../context/ThemeContext';
 
 const STORAGE_KEY  = '@ndatava_perfil';
@@ -23,7 +25,7 @@ type CampoData     = 'nascimento' | 'baptismo' | 'comunhao' | 'crisma' | 'casame
 type CampoTexto    = 'diocese' | 'paroquia';
 type CampoAtivo    = 'nome' | CampoData | CampoTexto;
 type TipoSeguranca = 'nenhuma' | 'sistema' | 'pin';
-type Vista         = 'hub' | 'perfil' | 'actividades' | 'programas' | 'vendedor';
+type Vista         = 'hub' | 'perfil' | 'actividades' | 'programas' | 'partilhas' | 'vendedor';
 type Perfil = {
   foto: string; nome: string;
   nascimento: DataCampo; baptismo: DataCampo; comunhao: DataCampo;
@@ -71,6 +73,8 @@ function validarData(d: DataCampo, label: string): string | null {
 export default function EuScreen() {
   const COLORS = useColors();
   const styles = useThemedStyles(createStyles);
+  const { autenticado, naoLidas, atualizarNaoLidas } = useConta();
+  useEffect(() => { if (autenticado) atualizarNaoLidas(); }, [autenticado, atualizarNaoLidas]);
 
   /* ── perfil ── */
   const [perfil,    setPerfil]    = useState<Perfil>(perfilVazio());
@@ -450,6 +454,17 @@ export default function EuScreen() {
           <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.hubCard} onPress={()=>setVista('partilhas')} activeOpacity={0.8}>
+          <View style={styles.hubIcone}>
+            <Ionicons name="paper-plane-outline" size={26} color={COLORS.primary}/>
+          </View>
+          <Text style={styles.hubCardTxt}>Partilhas</Text>
+          {naoLidas > 0 && (
+            <View style={styles.hubBadge}><Text style={styles.hubBadgeTxt}>{naoLidas > 9 ? '9+' : naoLidas}</Text></View>
+          )}
+          <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.hubCard} onPress={()=>setVista('vendedor')} activeOpacity={0.8}>
           <View style={styles.hubIcone}>
             <Ionicons name="storefront-outline" size={26} color={COLORS.primary}/>
@@ -501,6 +516,11 @@ export default function EuScreen() {
   // 5a. Programas de cânticos da Missa
   if (vista === 'programas') return (
     <ProgramasMissaScreen onVoltar={() => setVista('hub')}/>
+  );
+
+  // 5a'. Partilhas de cânticos entre utilizadores
+  if (vista === 'partilhas') return (
+    <PartilhasScreen onVoltar={() => setVista('hub')}/>
   );
 
   // 5b. Vender no Ndatava (área nativa das lojas parceiras)
@@ -688,6 +708,8 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   hubOpcoes:       {width:'100%', gap:12},
   hubCard:         {flexDirection:'row', alignItems:'center', gap:14, backgroundColor:COLORS.surface, borderRadius:16, paddingVertical:18, paddingHorizontal:18, shadowColor:'#000', shadowOffset:{width:0,height:2}, shadowOpacity:0.07, shadowRadius:8, elevation:2},
   hubIcone:        {width:44, height:44, borderRadius:14, backgroundColor:COLORS.background, alignItems:'center', justifyContent:'center'},
+  hubBadge:        {minWidth:22, height:22, borderRadius:11, paddingHorizontal:6, backgroundColor:COLORS.primary, alignItems:'center', justifyContent:'center'},
+  hubBadgeTxt:     {fontSize:12, fontWeight:'700', color:'#fff', fontFamily:FONTS.sans},
   hubCardTxt:      {flex:1, fontSize:16, fontWeight:'600', color:COLORS.text, fontFamily:FONTS.sans},
   hubSegCard:      {width:'100%', marginTop:12},
 

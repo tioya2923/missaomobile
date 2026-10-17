@@ -13,12 +13,14 @@ import {
 import CanticoProprio from './CanticoProprio';
 import EscolherCantico from './EscolherCantico';
 import LeitorCantico from './LeitorCantico';
+import PartilharCantico from '../partilhas/PartilharCantico';
 
 type Sub =
   | null
   | { tipo: 'escolher'; momento: Momento }
   | { tipo: 'proprio'; momento: Momento; editar?: Extract<Escolha, { tipo: 'proprio' }> }
-  | { tipo: 'ler'; escolha: Escolha };
+  | { tipo: 'ler'; escolha: Escolha }
+  | { tipo: 'enviar'; escolha: Extract<Escolha, { tipo: 'proprio' }>; momento: Momento };
 
 // "Eu › Programas da Missa": o utilizador monta um ou mais programas de cânticos para a celebração.
 export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => void }) {
@@ -160,6 +162,11 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
     return <LeitorCantico escolha={sub.escolha} onFechar={() => setSub(null)} />;
   }
 
+  if (sub?.tipo === 'enviar') {
+    const e = sub.escolha;
+    return <PartilharCantico titulo={e.titulo} letra={e.letra} audioUri={e.audioUri} momento={sub.momento} onFechar={() => setSub(null)} />;
+  }
+
   /* ── um programa aberto ── */
   if (aberto) {
     const total = todasAsEscolhas(aberto).length;
@@ -230,6 +237,11 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
                           <Ionicons name="chevron-down" size={18} color={indice === lista.length - 1 ? COLORS.border : COLORS.textSecondary} />
                         </TouchableOpacity>
                       </View>
+                    )}
+                    {e.tipo === 'proprio' && (
+                      <TouchableOpacity onPress={() => setSub({ tipo: 'enviar', escolha: e, momento })} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} accessibilityLabel="Enviar a outras pessoas">
+                        <Ionicons name="paper-plane-outline" size={19} color={COLORS.primary} />
+                      </TouchableOpacity>
                     )}
                     {e.tipo === 'proprio' && (
                       <TouchableOpacity onPress={() => setSub({ tipo: 'proprio', momento, editar: e })} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} accessibilityLabel="Editar">

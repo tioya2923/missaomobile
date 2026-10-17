@@ -13,6 +13,7 @@ import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { CarrinhoProvider } from './src/context/CarrinhoContext';
 import { LojaAuthProvider } from './src/context/LojaAuthContext';
+import { ContaProvider } from './src/context/ContaContext';
 import { IdiomaProvider } from './src/context/IdiomaContext';
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 import RootNavigator from './src/navigation/RootNavigator';
@@ -51,11 +52,13 @@ function Raiz() {
       <LojaAuthProvider>
         <CarrinhoProvider>
           <IdiomaProvider>
+           <ContaProvider>
             <NavigationContainer theme={navTheme}>
               <StatusBar style={isDark ? 'light' : 'dark'} />
               <RootNavigator />
               <AtualizarAppModal />
             </NavigationContainer>
+           </ContaProvider>
           </IdiomaProvider>
         </CarrinhoProvider>
       </LojaAuthProvider>
