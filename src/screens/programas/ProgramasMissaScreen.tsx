@@ -28,6 +28,8 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
   const [programas, setProgramas] = useState<Programa[]>([]);
   const [carregado, setCarregado] = useState(false);
   const [abertoId, setAbertoId] = useState<string | null>(null);
+  // Programa novo ainda por guardar: só entra na lista quando o utilizador escreve ou adiciona algo.
+  const [rascunho, setRascunho] = useState<Programa | null>(null);
   const [sub, setSub] = useState<Sub>(null);
   const [confirmar, setConfirmar] = useState<{ titulo: string; mensagem: string; rotulo: string; acao: () => void } | null>(null);
 
@@ -43,14 +45,26 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
     });
   }, []);
 
-  const aberto = programas.find(p => p.id === abertoId) ?? null;
-  const alterarAberto = (fn: (p: Programa) => Programa) =>
-    aplicar(l => l.map(p => (p.id === abertoId ? fn(p) : p)));
+  const guardado = programas.find(p => p.id === abertoId) ?? null;
+  const aberto = guardado ?? (rascunho && rascunho.id === abertoId ? rascunho : null);
+  const ehNovo = !!aberto && !guardado;
+
+  const alterarAberto = (fn: (p: Programa) => Programa) => {
+    if (guardado) {
+      aplicar(l => l.map(p => (p.id === abertoId ? fn(p) : p)));
+    } else if (rascunho) {
+      const novo = fn(rascunho);   // primeira alteração: o programa passa a existir
+      setRascunho(null);
+      aplicar(l => [novo, ...l]);
+    }
+  };
+
+  const fecharPrograma = () => { setAbertoId(null); setRascunho(null); };
 
   /* ── ações sobre programas ── */
   const criar = () => {
     const p: Programa = { id: novoId(), titulo: 'Novo programa', celebracao: '', criadoEm: Date.now(), itens: {} };
-    aplicar(l => [p, ...l]);
+    setRascunho(p);
     setAbertoId(p.id);
   };
 
@@ -80,6 +94,7 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
         await Promise.all(todasAsEscolhas(p).map(e => (e.tipo === 'proprio' ? apagarAudio(e.audioUri) : Promise.resolve())));
         aplicar(l => l.filter(x => x.id !== p.id));
         setAbertoId(atual => (atual === p.id ? null : atual));
+        setRascunho(null);
       },
     });
   };
@@ -149,7 +164,7 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
     return (
       <KeyboardAvoidingView style={styles.ecra} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.barra}>
-          <TouchableOpacity style={styles.voltar} onPress={() => setAbertoId(null)} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.voltar} onPress={fecharPrograma} activeOpacity={0.7}>
             <Ionicons name="arrow-back" size={22} color={COLORS.text} />
             <Text style={styles.voltarTxt}>Programas</Text>
           </TouchableOpacity>
@@ -239,10 +254,14 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
             );
           })}
 
-          <TouchableOpacity style={styles.eliminarPrograma} onPress={() => eliminar(aberto)} activeOpacity={0.8}>
-            <Ionicons name="trash-outline" size={19} color={COLORS.error} />
-            <Text style={styles.eliminarProgramaTxt}>Eliminar este programa</Text>
-          </TouchableOpacity>
+          {ehNovo ? (
+            <Text style={styles.dicaNovo}>Este programa só é guardado quando escrever ou adicionar um cântico. Se sair agora, não fica guardado.</Text>
+          ) : (
+            <TouchableOpacity style={styles.eliminarPrograma} onPress={() => eliminar(aberto)} activeOpacity={0.8}>
+              <Ionicons name="trash-outline" size={19} color={COLORS.error} />
+              <Text style={styles.eliminarProgramaTxt}>Eliminar este programa</Text>
+            </TouchableOpacity>
+          )}
         </ScrollView>
       <ConfirmarModal
         visivel={!!confirmar}
@@ -358,6 +377,7 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   campoInput: { flex: 1, paddingVertical: 11, fontSize: 15, color: COLORS.text, fontFamily: FONTS.sans },
   dica: { fontSize: 12, fontStyle: 'italic', color: COLORS.textSecondary, fontFamily: FONTS.sans, marginTop: 4 },
   ordem: { alignItems: 'center', gap: 2 },
+  dicaNovo: { textAlign: 'center', fontSize: 13, lineHeight: 19, fontStyle: 'italic', fontFamily: FONTS.sans, color: COLORS.textSecondary, marginTop: 8 },
   eliminarPrograma: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 8,
     paddingVertical: 14, borderRadius: RADIUS.pill, borderWidth: 1.5, borderColor: COLORS.error,
