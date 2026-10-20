@@ -55,7 +55,12 @@ function Raiz() {
            <ContaProvider>
             <NavigationContainer theme={navTheme}>
               <StatusBar style={isDark ? 'light' : 'dark'} />
-              <RootNavigator />
+              {/* Em tablets, dobráveis e telemóveis deitados, o conteúdo fica numa coluna central legível. */}
+              <View style={{ flex: 1, alignItems: 'center', backgroundColor: colors.background }}>
+                <View style={{ flex: 1, width: '100%', maxWidth: 760 }}>
+                  <RootNavigator />
+                </View>
+              </View>
               <AtualizarAppModal />
             </NavigationContainer>
            </ContaProvider>
