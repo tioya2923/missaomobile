@@ -63,18 +63,21 @@ export default function CanticosTopicosScreen({ navigation }: CanticosScreenProp
         <ScrollView style={styles.scroll} contentContainerStyle={styles.container}>
           <View style={styles.group}>
             {idioma === 'otc'
-              ? canticos.map((item, index) => (
-                  <ListItem
-                    key={String(item.id)}
-                    prefix={`${index + 1}.`}
-                    title={item.titulo}
-                    onPress={() => navigation.navigate('CanticoDetalhe', {
-                      idioma,
-                      slug: item.slug,
-                      titulo: `${index + 1}. ${item.titulo}`,
-                    })}
-                  />
-                ))
+              ? canticos.map((item, index) => {
+                  const numero = item.numero ?? index + 1;
+                  return (
+                    <ListItem
+                      key={String(item.id)}
+                      prefix={`${numero}.`}
+                      title={item.titulo}
+                      onPress={() => navigation.navigate('CanticoDetalhe', {
+                        idioma,
+                        slug: item.slug,
+                        titulo: `${numero}. ${item.titulo}`,
+                      })}
+                    />
+                  );
+                })
               : topicos.map(item => (
                   <ListItem
                     key={String(item.id)}

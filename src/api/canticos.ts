@@ -11,6 +11,8 @@ export interface CanticoResumo {
   id: number;
   titulo: string;
   slug: string;
+  /** número no livro de origem (Oshikwanhama); sem número, a lista usa a posição */
+  numero?: number | null;
 }
 
 export interface Cantico {
@@ -18,6 +20,7 @@ export interface Cantico {
   titulo: string;
   slug: string;
   letra: string;
+  numero?: number | null;
   autor?: string | null;
   pdfUrl?: string;
 }
@@ -60,7 +63,8 @@ export async function getCanticosPorTopico(idioma: Idioma, slug: string): Promis
     const { data } = await client.get<CanticoResumo[]>(`/api/canticos/topico/${encodeURIComponent(slug)}`, {
       params: { idioma: codigoBackend(idioma) },
     });
-    return data.sort((a, b) => a.titulo.localeCompare(b.titulo, 'pt'));
+    // Pela ordem do livro quando há número (Oshikwanhama); nos restantes, por título.
+    return data.sort((a, b) => (a.numero ?? Infinity) - (b.numero ?? Infinity) || a.titulo.localeCompare(b.titulo, 'pt'));
   });
 }
 
