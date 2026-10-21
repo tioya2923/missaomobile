@@ -47,8 +47,7 @@
         "expo-image-picker",
         {
           "photosPermission": "A aplicação precisa de acesso à galeria para escolher a sua foto de perfil.",
-          "cameraPermission": false,
-          "microphonePermission": false
+          "cameraPermission": false
         }
       ],
       [
