@@ -13,7 +13,7 @@ import { useThemedStyles } from '../../context/ThemeContext';
 
 export default function CatecismoTopicosScreen({ navigation }: CatecismoScreenProps<'CatecismoTopicos'>) {
   const styles = useThemedStyles(createStyles);
-  const { codigo: idioma } = useIdioma();
+  const { codigo: idioma } = useIdioma('catecismo');
   const [topicos, setTopicos] = useState<CatecismoTopico[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +54,7 @@ export default function CatecismoTopicosScreen({ navigation }: CatecismoScreenPr
   return (
     <View style={styles.root}>
       <View style={styles.selectWrap}>
-        <IdiomaSelect />
+        <IdiomaSelect secao="catecismo" />
       </View>
 
       {loading ? (

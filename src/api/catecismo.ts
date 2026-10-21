@@ -37,6 +37,7 @@ function codigoBackend(idioma: Idioma): string {
 }
 
 export async function getCatecismoTopicos(idioma: Idioma): Promise<CatecismoTopico[]> {
+  if (!idioma) return [];   // nenhum idioma tem conteúdo nesta secção
   return cachedFetch(`catecismo:topicos:${idioma}`, async () => {
     const { data } = await client.get<CatecismoTopico[]>('/api/CatecismoPtTopicos/topicos', {
       params: { idioma: codigoBackend(idioma) },

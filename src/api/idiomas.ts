@@ -22,10 +22,13 @@ export const IDIOMAS_BASE: IdiomaInfo[] = [
   { codigo: 'otc', nome: 'Oshikwanhama' },
 ];
 
+export type SecaoIdioma = 'canticos' | 'catecismo';
+
 // Os idiomas vêm do backend: o que o admin cria ou desactiva aparece aqui sem nova versão da app.
-export async function getIdiomas(): Promise<IdiomaInfo[]> {
-  return cachedFetch('idiomas', async () => {
-    const { data } = await client.get<IdiomaApi[]>('/api/idiomas');
+// O servidor só devolve os que têm conteúdo na secção pedida (Cânticos ou Catecismo/Orações).
+export async function getIdiomas(secao: SecaoIdioma): Promise<IdiomaInfo[]> {
+  return cachedFetch(`idiomas:${secao}`, async () => {
+    const { data } = await client.get<IdiomaApi[]>('/api/idiomas', { params: { secao } });
     return data
       .filter(i => i.ativo)
       .sort((a, b) => a.ordem - b.ordem)

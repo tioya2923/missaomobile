@@ -97,7 +97,7 @@ export const RECURSOS: RecursoConfig[] = [
     key: 'idiomas',
     titulo: 'Idiomas',
     grupo: 'Idiomas',
-    api: { base: '/api/idiomas', list: '/api/idiomas' },
+    api: { base: '/api/idiomas', list: '/api/idiomas/todos' },
     tituloCampo: 'nome',
     campos: [
       { nome: 'nome', label: 'Nome (ex: Suaíli)', tipo: 'text', obrigatorio: true },
@@ -137,7 +137,7 @@ export function gerarRecursosIdioma(idioma: IdiomaInfo): RecursoConfig[] {
     key: chaveCanticosTopicos(codigo),
     titulo: 'Tópicos',
     grupo: `Cânticos (${nome})`,
-    api: { base: `/api/topicos${q}`, list: `/api/topicos${q}` },
+    api: { base: `/api/topicos${q}`, list: `/api/topicos/todos${q}` },
     tituloCampo: 'nome',
     campos: [{ nome: 'nome', label: 'Nome', tipo: 'text', obrigatorio: true }],
     colunas: [{ campo: 'nome', label: 'Nome' }, { campo: 'slug', label: 'Slug' }],
@@ -151,7 +151,7 @@ export function gerarRecursosIdioma(idioma: IdiomaInfo): RecursoConfig[] {
     tituloCampo: 'titulo',
     campos: [
       { nome: 'titulo', label: 'Título', tipo: 'text', obrigatorio: true },
-      { nome: 'topicoId', label: 'Tópico', tipo: 'select', obrigatorio: true, opcoes: { endpoint: `/api/topicos${q}`, valor: 'id', label: 'nome' } },
+      { nome: 'topicoId', label: 'Tópico', tipo: 'select', obrigatorio: true, opcoes: { endpoint: `/api/topicos/todos${q}`, valor: 'id', label: 'nome' } },
       { nome: 'letra', label: 'Letra', tipo: 'textarea', obrigatorio: true, linhas: 10 },
       { nome: 'autor', label: 'Autor (opcional)', tipo: 'text' },
     ],

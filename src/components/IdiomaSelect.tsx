@@ -4,16 +4,17 @@ import { Modal, Pressable, ScrollView, StyleSheet, TouchableOpacity, View } from
 import Text from './AppText';
 import { FONTS, RADIUS, SHADOW, type Palette } from '../constants/theme';
 import { useColors, useThemedStyles } from '../context/ThemeContext';
+import type { SecaoIdioma } from '../api/idiomas';
 import { useIdioma } from '../context/IdiomaContext';
 
 interface Posicao { x: number; y: number; w: number; h: number }
 
 // Lista pendente ("dropdown"): campo com o idioma actual que, ao tocar, abre a lista
 // de idiomas logo por baixo, para escolher.
-export default function IdiomaSelect({ rotulo = 'Idioma' }: { rotulo?: string }) {
+export default function IdiomaSelect({ rotulo = 'Idioma', secao = 'canticos' }: { rotulo?: string; secao?: SecaoIdioma }) {
   const COLORS = useColors();
   const styles = useThemedStyles(createStyles);
-  const { idiomas, codigo, setCodigo } = useIdioma();
+  const { idiomas, codigo, setCodigo } = useIdioma(secao);
   const campo = useRef<View>(null);
   const [pos, setPos] = useState<Posicao | null>(null);
 

@@ -45,6 +45,7 @@ function codigoBackend(idioma: Idioma): string {
 }
 
 export async function getTopicos(idioma: Idioma): Promise<Topico[]> {
+  if (!idioma) return [];   // nenhum idioma tem conteúdo nesta secção
   return cachedFetch(`canticos:topicos:${idioma}`, async () => {
     const { data } = await client.get<Topico[]>('/api/topicos', { params: { idioma: codigoBackend(idioma) } });
     // Ordem litúrgica em todos os idiomas (os nomes dos tópicos são os mesmos). Qualquer tópico

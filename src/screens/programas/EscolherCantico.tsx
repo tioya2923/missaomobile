@@ -21,7 +21,7 @@ interface Props {
 export default function EscolherCantico({ momento, onEscolher, onCancelar }: Props) {
   const COLORS = useColors();
   const styles = useThemedStyles(createStyles);
-  const { codigo: idioma } = useIdioma();
+  const { codigo: idioma } = useIdioma('canticos');
 
   const [topicos, setTopicos] = useState<Topico[]>([]);
   const [topicoSlug, setTopicoSlug] = useState<string | null>(null);
@@ -81,7 +81,7 @@ export default function EscolherCantico({ momento, onEscolher, onCancelar }: Pro
       </View>
 
       <View style={styles.bloco}>
-        <IdiomaSelect />
+        <IdiomaSelect secao="canticos" />
       </View>
 
       {aCarregarTopicos ? (

@@ -74,7 +74,7 @@ export default function AdminArea({ onVoltar }: { onVoltar: () => void }) {
   const [idiomas, setIdiomas] = useState<IdiomaInfo[]>([]);
 
   useEffect(() => {
-    client.get<IdiomaInfo[]>('/api/idiomas').then((r) => setIdiomas(r.data)).catch(() => setIdiomas([]));
+    client.get<IdiomaInfo[]>('/api/idiomas/todos').then((r) => setIdiomas(r.data)).catch(() => setIdiomas([]));
   }, []);
 
   const sair = () => {
@@ -223,7 +223,7 @@ function AdminResourceCrud({ recursoKey, onVoltar }: { recursoKey: string; onVol
   // (Cânticos/Catecismo de um idioma) só resolvem depois de /api/idiomas carregar.
   const [idiomas, setIdiomas] = useState<IdiomaInfo[] | null>(null);
   useEffect(() => {
-    client.get<IdiomaInfo[]>('/api/idiomas').then((r) => setIdiomas(r.data)).catch(() => setIdiomas([]));
+    client.get<IdiomaInfo[]>('/api/idiomas/todos').then((r) => setIdiomas(r.data)).catch(() => setIdiomas([]));
   }, []);
 
   // Memoizado: gerarRecursosIdioma cria objetos novos a cada chamada, e sem

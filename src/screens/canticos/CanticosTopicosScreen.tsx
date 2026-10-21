@@ -13,7 +13,7 @@ import { useThemedStyles } from '../../context/ThemeContext';
 
 export default function CanticosTopicosScreen({ navigation }: CanticosScreenProps<'CanticosTopicos'>) {
   const styles = useThemedStyles(createStyles);
-  const { codigo: idioma } = useIdioma();
+  const { codigo: idioma } = useIdioma('canticos');
   const [topicos, setTopicos] = useState<Topico[]>([]);
   const [canticos, setCanticos] = useState<CanticoResumo[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +45,7 @@ export default function CanticosTopicosScreen({ navigation }: CanticosScreenProp
   return (
     <View style={styles.root}>
       <View style={styles.selectWrap}>
-        <IdiomaSelect />
+        <IdiomaSelect secao="canticos" />
       </View>
 
       {loading ? (
