@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Text from '../../components/AppText';
-import { getTopicos, type Topico } from '../../api/canticos';
+import { getCanticosPorTopico, getTopicos, type CanticoResumo, type Topico } from '../../api/canticos';
 import ErrorView from '../../components/ErrorView';
 import IdiomaSelect from '../../components/IdiomaSelect';
 import ListItem from '../../components/ListItem';
@@ -15,6 +15,7 @@ export default function CanticosTopicosScreen({ navigation }: CanticosScreenProp
   const styles = useThemedStyles(createStyles);
   const { codigo: idioma } = useIdioma();
   const [topicos, setTopicos] = useState<Topico[]>([]);
+  const [canticos, setCanticos] = useState<CanticoResumo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const pedido = useRef(0);
@@ -25,7 +26,13 @@ export default function CanticosTopicosScreen({ navigation }: CanticosScreenProp
       setLoading(true);
       setError(null);
       const dados = await getTopicos(idioma);
-      if (id === pedido.current) setTopicos(dados);
+      const canticosDiretos = idioma === 'otc' && dados[0]
+        ? await getCanticosPorTopico(idioma, dados[0].slug)
+        : [];
+      if (id === pedido.current) {
+        setTopicos(dados);
+        setCanticos(canticosDiretos);
+      }
     } catch {
       if (id === pedido.current) setError('Não foi possível carregar os tópicos.');
     } finally {
@@ -44,25 +51,41 @@ export default function CanticosTopicosScreen({ navigation }: CanticosScreenProp
       {loading ? (
         <LoadingView />
       ) : error ? (
-        <ErrorView message={error} onRetry={load} />
-      ) : !topicos.length ? (
+        <ErrorView
+          message={idioma === 'otc' ? 'Não foi possível carregar os cânticos.' : error}
+          onRetry={load}
+        />
+      ) : !topicos.length || (idioma === 'otc' && !canticos.length) ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.empty}>Ainda não há cânticos disponíveis neste idioma.</Text>
         </View>
       ) : (
         <ScrollView style={styles.scroll} contentContainerStyle={styles.container}>
           <View style={styles.group}>
-            {topicos.map(item => (
-              <ListItem
-                key={String(item.id)}
-                title={item.nome}
-                onPress={() => navigation.navigate('CanticosLista', {
-                  idioma,
-                  topicoSlug: item.slug,
-                  topicoNome: item.nome,
-                })}
-              />
-            ))}
+            {idioma === 'otc'
+              ? canticos.map((item, index) => (
+                  <ListItem
+                    key={String(item.id)}
+                    prefix={`${index + 1}.`}
+                    title={item.titulo}
+                    onPress={() => navigation.navigate('CanticoDetalhe', {
+                      idioma,
+                      slug: item.slug,
+                      titulo: `${index + 1}. ${item.titulo}`,
+                    })}
+                  />
+                ))
+              : topicos.map(item => (
+                  <ListItem
+                    key={String(item.id)}
+                    title={item.nome}
+                    onPress={() => navigation.navigate('CanticosLista', {
+                      idioma,
+                      topicoSlug: item.slug,
+                      topicoNome: item.nome,
+                    })}
+                  />
+                ))}
           </View>
         </ScrollView>
       )}
