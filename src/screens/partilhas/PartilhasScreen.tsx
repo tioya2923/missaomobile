@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import { useCallback, useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, Share, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, RefreshControl, ScrollView, Share, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 import {
   desbloquear, guardarDefinicoes, listarBloqueados, listarRecebidas, mensagemDeErro, obterDefinicoes, type Bloqueado, type Recebida,
 } from '../../api/conta';
@@ -99,10 +99,11 @@ export default function PartilhasScreen({ onVoltar }: { onVoltar: () => void }) 
   if (!autenticado) return <View style={styles.ecra}>{cabecalho}<ContaAuth /></View>;
 
   return (
-    <View style={styles.ecra}>
+    <KeyboardAvoidingView style={styles.ecra} behavior="padding">
       {cabecalho}
       <ScrollView
         contentContainerStyle={styles.corpo}
+        keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={aActualizar} onRefresh={recarregar} tintColor={COLORS.primary} />}
       >
         <Text style={styles.titulo}>Partilhas</Text>
@@ -236,7 +237,7 @@ export default function PartilhasScreen({ onVoltar }: { onVoltar: () => void }) 
           } catch (e) { setErro(mensagemDeErro(e)); }
         }}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

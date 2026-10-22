@@ -69,7 +69,7 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: COLORS.background }}
-      behavior={Platform.OS === 'ios' ? 'height' : undefined}
+      behavior="padding"
     >
       <View style={styles.buscaRow}>
         <Ionicons name="search-outline" size={18} color={COLORS.textSecondary} />

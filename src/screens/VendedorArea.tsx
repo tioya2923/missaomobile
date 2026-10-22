@@ -184,8 +184,7 @@ function Login({ onVoltar, onRegistar }: { onVoltar: () => void; onRegistar: () 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 24}
+      behavior="padding"
     >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <CabecalhoVoltar onVoltar={onVoltar} />
@@ -276,8 +275,7 @@ function Registar({ onVoltar, onEntrar }: { onVoltar: () => void; onEntrar: () =
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 24}
+      behavior="padding"
     >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <CabecalhoVoltar onVoltar={onVoltar} />
@@ -396,8 +394,7 @@ function Painel({ onVoltar }: { onVoltar: () => void }) {
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 24}
+        behavior="padding"
       >
         {aba === 'produtos' && <AbaProdutos moeda={moeda} />}
         {aba === 'encomendas' && <AbaEncomendas />}
@@ -663,7 +660,7 @@ function AbaEncomendas() {
   if (loading) return <ActivityIndicator color={COLORS.primary} style={{ marginTop: 20 }} />;
 
   return (
-    <ScrollView contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
+    <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
       {encomendas.length === 0 ? (
         <Text style={styles.vazio}>Ainda não tem encomendas.</Text>
       ) : (

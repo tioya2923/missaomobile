@@ -410,7 +410,7 @@ export default function EuScreen() {
 
   // 4. Hub
   if (vista === 'hub') return (
-    <ScrollView contentContainerStyle={styles.hubContainer} showsVerticalScrollIndicator={false}>
+    <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.hubContainer} showsVerticalScrollIndicator={false}>
       {/* Avatar */}
       <View style={styles.hubAvatarWrap}>
         <TouchableOpacity onPress={pickFoto} activeOpacity={0.85}>
@@ -549,8 +549,7 @@ export default function EuScreen() {
   return (
     <KeyboardAvoidingView
       style={{flex:1}}
-      behavior={Platform.OS==='ios'?'padding':'height'}
-      keyboardVerticalOffset={Platform.OS==='ios'?0:24}
+      behavior="padding"
     >
       <ScrollView
         ref={scrollRef}

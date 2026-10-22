@@ -40,7 +40,7 @@ export default function ContaAuth({ onFeito }: { onFeito?: () => void }) {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <ScrollView contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
         <View style={styles.icone}><Ionicons name="people-outline" size={34} color={COLORS.primary} /></View>
         <Text style={styles.titulo}>Partilhar cânticos</Text>

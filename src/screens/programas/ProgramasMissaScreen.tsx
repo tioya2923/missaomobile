@@ -171,7 +171,7 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
   if (aberto) {
     const total = todasAsEscolhas(aberto).length;
     return (
-      <KeyboardAvoidingView style={styles.ecra} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.ecra} behavior="padding">
         <View style={styles.barra}>
           <TouchableOpacity style={styles.voltar} onPress={fecharPrograma} activeOpacity={0.7}>
             <Ionicons name="arrow-back" size={22} color={COLORS.text} />
@@ -298,7 +298,7 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
         <Text style={styles.voltarTxt}>Voltar</Text>
       </TouchableOpacity>
 
-      <ScrollView contentContainerStyle={styles.corpo}>
+      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.corpo}>
         <Text style={styles.titulo}>Programas da Missa</Text>
         <Text style={styles.intro}>
           Monte os cânticos de cada momento da celebração, com cânticos da Ndatava ou os seus, e guarde quantos programas quiser. Ficam só neste telemóvel.

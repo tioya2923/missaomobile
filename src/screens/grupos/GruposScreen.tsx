@@ -94,7 +94,7 @@ export default function GruposScreen({ onVoltar }: { onVoltar: () => void }) {
 
   if (vista.t === 'criar') {
     return (
-      <KeyboardAvoidingView style={styles.ecra} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView style={styles.ecra} behavior="padding">
         <TouchableOpacity style={styles.voltar} onPress={voltarLista} activeOpacity={0.7}>
           <Ionicons name="arrow-back" size={22} color={COLORS.text} />
           <Text style={styles.voltarTxt}>Grupos</Text>

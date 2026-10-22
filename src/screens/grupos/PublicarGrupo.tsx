@@ -107,7 +107,7 @@ export default function PublicarGrupo({ grupoId, tipo, editar, onFechar }: Props
   const mostrarTexto = !(tipo === 'programa' && !editar);
 
   return (
-    <KeyboardAvoidingView style={styles.ecra} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={styles.ecra} behavior="padding">
       <View style={styles.topo}>
         <TouchableOpacity onPress={() => onFechar(false)} style={styles.fechar} activeOpacity={0.7} accessibilityLabel="Fechar">
           <Ionicons name="close" size={24} color={COLORS.text} />

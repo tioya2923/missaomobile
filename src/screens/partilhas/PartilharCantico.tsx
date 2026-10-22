@@ -104,7 +104,7 @@ export default function PartilharCantico({ titulo, letra, audioUri, momento, onF
   }
 
   return (
-    <KeyboardAvoidingView style={styles.ecra} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={styles.ecra} behavior="padding">
       {cabecalho}
       <ScrollView contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
         <View style={styles.cartao}>

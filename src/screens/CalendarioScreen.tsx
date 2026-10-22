@@ -165,7 +165,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      setEventos(await getEventosJanela(inicio));
+      setEventos(await getEventosJanela(inicio, true));
       setError(null);
     } catch {
       setError('Não foi possível carregar os eventos.');

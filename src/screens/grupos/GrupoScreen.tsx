@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { detalheGrupo, mensagemDeErro, TIPOS_GRUPO, type GrupoDetalhe } from '../../api/conta';
 import Text from '../../components/AppText';
 import ErrorView from '../../components/ErrorView';
@@ -40,7 +40,7 @@ export default function GrupoScreen({ id, onVoltar }: { id: number; onVoltar: ()
   ];
 
   return (
-    <View style={styles.ecra}>
+    <KeyboardAvoidingView style={styles.ecra} behavior="padding">
       <TouchableOpacity style={styles.voltar} onPress={sair} activeOpacity={0.7}>
         <Ionicons name="arrow-back" size={22} color={COLORS.text} />
         <Text style={styles.voltarTxt}>Grupos</Text>
@@ -76,7 +76,7 @@ export default function GrupoScreen({ id, onVoltar }: { id: number; onVoltar: ()
           </View>
         </>
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

@@ -71,8 +71,7 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 24}
+      behavior="padding"
     >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         {grupos.map(grupo => (

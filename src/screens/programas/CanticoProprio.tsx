@@ -246,7 +246,7 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
   const gravacaoSuportada = suportaGravacao();
 
   return (
-    <KeyboardAvoidingView style={styles.ecra} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={styles.ecra} behavior="padding">
       <View style={styles.topo}>
         <TouchableOpacity onPress={cancelar} style={styles.fechar} activeOpacity={0.7} accessibilityLabel="Cancelar">
           <Ionicons name="close" size={24} color={COLORS.text} />
