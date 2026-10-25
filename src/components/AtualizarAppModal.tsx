@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Linking, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Linking, Modal, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Text from './AppText';
 import Constants from 'expo-constants';
 import { getVersaoApp } from '../api/versaoApp';
@@ -19,6 +19,8 @@ export default function AtualizarAppModal() {
   const [urlDownload, setUrlDownload] = useState<string | null>(null);
 
   useEffect(() => {
+    // O endereço de descarga é o da Google Play: no iPhone, a App Store trata das actualizações.
+    if (Platform.OS !== 'android') return;
     const versaoAtual = Constants.expoConfig?.version ?? '0.0.0';
 
     getVersaoApp()
