@@ -21,7 +21,7 @@ export function useLocalizacao() {
         setCoords(null);
         return;
       }
-      const posicao = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+      const posicao = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Low });
       setCoords({ lat: posicao.coords.latitude, lng: posicao.coords.longitude });
       setEstado('concedida');
     } catch {
