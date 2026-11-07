@@ -84,7 +84,7 @@ export default function SplashAnimado({ pronta, onTermina }: Props) {
 
   useEffect(() => {
     if (!(fimDaAnimacao && pronta)) return;
-    Animated.timing(saida, { toValue: 0, duration: 280, easing: Easing.out(Easing.quad), useNativeDriver: true })
+    Animated.timing(saida, { toValue: 0, duration: 420, easing: Easing.in(Easing.quad), useNativeDriver: true })
       .start(() => onTermina());
   }, [fimDaAnimacao, pronta, saida, onTermina]);
 
@@ -96,6 +96,8 @@ export default function SplashAnimado({ pronta, onTermina }: Props) {
   const opacidadeDaFaisca = useMemo(
     () => faisca.interpolate({ inputRange: [0, 0.08, 0.92, 1], outputRange: [0, 1, 1, 0] }), [faisca]);
   const escalaDoDisco = disco.interpolate({ inputRange: [0, 1], outputRange: [0.82, 1] });
+  // Final ao estilo de abertura de streaming: o conjunto aproxima-se (zoom) enquanto desvanece para a app.
+  const zoomDaSaida = saida.interpolate({ inputRange: [0, 1], outputRange: [1.35, 1] });
 
   // Cada letra começa um pouco depois da anterior; o traço de cada uma "escreve-se" do início ao fim.
   const letras = useMemo(() => NOME.map((letra, i) => {
@@ -122,6 +124,7 @@ export default function SplashAnimado({ pronta, onTermina }: Props) {
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
+      <Animated.View style={{ alignItems: 'center', transform: [{ scale: zoomDaSaida }] }}>
       <Animated.View style={{ opacity: disco, transform: [{ scale: escalaDoDisco }] }}>
         <View style={{ width: lado, height: lado }}>
           <Svg width={lado} height={lado} viewBox="0 0 1000 1000">
@@ -189,6 +192,7 @@ export default function SplashAnimado({ pronta, onTermina }: Props) {
           ))}
         </Svg>
       </View>
+      </Animated.View>
     </Animated.View>
   );
 }
