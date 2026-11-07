@@ -8,7 +8,7 @@ import {
 } from '@expo-google-fonts/inter';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { CarrinhoProvider } from './src/context/CarrinhoContext';
@@ -18,6 +18,7 @@ import { IdiomaProvider } from './src/context/IdiomaContext';
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 import RootNavigator from './src/navigation/RootNavigator';
 import AtualizarAppModal from './src/components/AtualizarAppModal';
+import SplashAnimado from './src/components/SplashAnimado';
 
 function Raiz() {
   const { colors, isDark, pronto } = useTheme();
@@ -25,6 +26,9 @@ function Raiz() {
     Fraunces_400Regular, Fraunces_400Regular_Italic, Fraunces_600SemiBold, Fraunces_700Bold,
     Inter_400Regular, Inter_400Regular_Italic, Inter_500Medium, Inter_600SemiBold, Inter_700Bold,
   });
+
+  const [splashFeito, setSplashFeito] = useState(false);
+  const terminarSplash = useCallback(() => setSplashFeito(true), []);
 
   const navTheme = useMemo(() => {
     const base = isDark ? DarkTheme : DefaultTheme;
@@ -43,11 +47,12 @@ function Raiz() {
 
   // Espera pelas letras e pela preferência de tema guardada, para não piscar o tema errado.
   // Se as letras falharem a carregar, a app continua com a letra do sistema.
-  if (!pronto || (!fontsLoaded && !fontError)) {
-    return <View style={{ flex: 1, backgroundColor: colors.background }} />;
-  }
+  const appPronta = pronto && (fontsLoaded || !!fontError);
 
+  // A animação de abertura corre por cima da app (que vai carregando por baixo).
   return (
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      {appPronta && (
     <SafeAreaProvider>
       <LojaAuthProvider>
         <CarrinhoProvider>
@@ -68,6 +73,9 @@ function Raiz() {
         </CarrinhoProvider>
       </LojaAuthProvider>
     </SafeAreaProvider>
+      )}
+      {!splashFeito && <SplashAnimado pronta={appPronta} onTermina={terminarSplash} />}
+    </View>
   );
 }
 
