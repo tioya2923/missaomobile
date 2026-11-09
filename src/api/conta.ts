@@ -54,6 +54,17 @@ export async function entrarConta(email: string, password: string): Promise<Sess
   return data;
 }
 
+/** Pede o código de 6 dígitos por email; a resposta é sempre a mesma, exista ou não a conta. */
+export async function pedirCodigoRecuperacao(email: string): Promise<string> {
+  const { data } = await contaClient.post<{ mensagem: string }>('/api/utilizadores/esqueci-senha', { email });
+  return data.mensagem;
+}
+
+export async function redefinirSenhaConta(email: string, codigo: string, novaPassword: string): Promise<SessaoConta> {
+  const { data } = await contaClient.post<SessaoConta>('/api/utilizadores/redefinir-senha', { email, codigo, novaPassword });
+  return data;
+}
+
 export async function eliminarContaNoServidor(): Promise<void> {
   await contaClient.delete('/api/utilizadores/eu');
 }

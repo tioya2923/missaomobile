@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
   CONTA_TOKEN_KEY, contarPedidosRecebidos, resumoGrupos, definirAoExpirarConta, eliminarContaNoServidor, entrarConta, listarRecebidas,
-  obterMeuCodigo, registarConta, type SessaoConta,
+  obterMeuCodigo, redefinirSenhaConta, registarConta, type SessaoConta,
 } from '../api/conta';
 
 const DADOS_KEY = '@ndatava_conta_dados';
@@ -19,6 +19,7 @@ interface ContaValue {
   gruposNovidades: number;
   entrar: (email: string, password: string) => Promise<void>;
   registar: (nome: string, email: string, password: string) => Promise<void>;
+  redefinirSenha: (email: string, codigo: string, novaPassword: string) => Promise<void>;
   sair: () => Promise<void>;
   eliminar: () => Promise<void>;
   atualizarNaoLidas: () => Promise<void>;
@@ -64,6 +65,7 @@ export function ContaProvider({ children }: { children: ReactNode }) {
 
   const entrar = useCallback(async (e: string, p: string) => { await guardar(await entrarConta(e.trim(), p)); }, [guardar]);
   const registar = useCallback(async (n: string, e: string, p: string) => { await guardar(await registarConta(n.trim(), e.trim(), p)); }, [guardar]);
+  const redefinirSenha = useCallback(async (e: string, c: string, p: string) => { await guardar(await redefinirSenhaConta(e.trim(), c.trim(), p)); }, [guardar]);
   const sair = limpar;
   const eliminar = useCallback(async () => { await eliminarContaNoServidor(); await limpar(); }, [limpar]);
 
@@ -78,8 +80,8 @@ export function ContaProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<ContaValue>(() => ({
     carregado, autenticado: !!token, nome, email, codigo, naoLidas, gruposNovidades,
-    entrar, registar, sair, eliminar, atualizarNaoLidas,
-  }), [carregado, token, nome, email, codigo, naoLidas, gruposNovidades, entrar, registar, sair, eliminar, atualizarNaoLidas]);
+    entrar, registar, redefinirSenha, sair, eliminar, atualizarNaoLidas,
+  }), [carregado, token, nome, email, codigo, naoLidas, gruposNovidades, entrar, registar, redefinirSenha, sair, eliminar, atualizarNaoLidas]);
 
   return <ContaContext.Provider value={value}>{children}</ContaContext.Provider>;
 }
