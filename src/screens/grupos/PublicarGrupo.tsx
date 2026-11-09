@@ -116,7 +116,7 @@ export default function PublicarGrupo({ grupoId, tipo, editar, onFechar }: Props
         <Text style={styles.tituloEcra}>{nomeTela}</Text>
       </View>
 
-      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+      <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
         {!editar && tipo === 'cantico' && (
           <View style={styles.cartao}>
             <Text style={styles.rotulo}>USAR UM DOS MEUS CÂNTICOS</Text>

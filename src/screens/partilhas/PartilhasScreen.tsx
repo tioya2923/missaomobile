@@ -102,7 +102,7 @@ export default function PartilhasScreen({ onVoltar }: { onVoltar: () => void }) 
   return (
     <KeyboardAvoidingView style={styles.ecra} behavior={COMPORTAMENTO_TECLADO}>
       {cabecalho}
-      <ScrollView automaticallyAdjustKeyboardInsets
+      <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets
         contentContainerStyle={styles.corpo}
         keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={aActualizar} onRefresh={recarregar} tintColor={COLORS.primary} />}

@@ -74,7 +74,7 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
       style={{ flex: 1 }}
       behavior={COMPORTAMENTO_TECLADO}
     >
-      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         {grupos.map(grupo => (
           <View key={grupo.lojaId} style={styles.card}>
             <View style={styles.lojaHeader}>

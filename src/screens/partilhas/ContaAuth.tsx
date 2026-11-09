@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput as CampoNativo, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { mensagemDeErro } from '../../api/conta';
 import Text from '../../components/AppText';
@@ -22,6 +22,8 @@ export default function ContaAuth({ onFeito }: { onFeito?: () => void }) {
   const [ver, setVer] = useState(false);
   const [aEnviar, setAEnviar] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
+  const emailRef = useRef<CampoNativo>(null);
+  const passwordRef = useRef<CampoNativo>(null);
 
   const submeter = async () => {
     setErro(null);
@@ -42,7 +44,7 @@ export default function ContaAuth({ onFeito }: { onFeito?: () => void }) {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={COMPORTAMENTO_TECLADO}>
-      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+      <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
         <View style={styles.icone}><Ionicons name="people-outline" size={34} color={COLORS.primary} /></View>
         <Text style={styles.titulo}>Partilhar cânticos</Text>
         <Text style={styles.intro}>
@@ -62,16 +64,20 @@ export default function ContaAuth({ onFeito }: { onFeito?: () => void }) {
           {modo === 'criar' && (
             <>
               <Text style={styles.rotulo}>NOME</Text>
-              <TextInput style={styles.input} value={nome} onChangeText={setNome} placeholder="O seu nome" placeholderTextColor={COLORS.textSecondary} autoCapitalize="words" />
+              <TextInput style={styles.input} value={nome} onChangeText={setNome} placeholder="O seu nome" placeholderTextColor={COLORS.textSecondary} autoCapitalize="words"
+                autoComplete="name" textContentType="name" returnKeyType="next" blurOnSubmit={false} onSubmitEditing={() => emailRef.current?.focus()} />
             </>
           )}
           <Text style={styles.rotulo}>EMAIL</Text>
-          <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="nome@exemplo.com" placeholderTextColor={COLORS.textSecondary}
-            keyboardType="email-address" autoCapitalize="none" autoCorrect={false} />
+          <TextInput ref={emailRef} style={styles.input} value={email} onChangeText={setEmail} placeholder="nome@exemplo.com" placeholderTextColor={COLORS.textSecondary}
+            keyboardType="email-address" autoCapitalize="none" autoCorrect={false} autoComplete="email" textContentType="emailAddress"
+            returnKeyType="next" blurOnSubmit={false} onSubmitEditing={() => passwordRef.current?.focus()} />
           <Text style={styles.rotulo}>PALAVRA-PASSE</Text>
           <View style={styles.linhaSenha}>
-            <TextInput style={[styles.input, { flex: 1 }]} value={password} onChangeText={setPassword} placeholder="Pelo menos 8 caracteres"
-              placeholderTextColor={COLORS.textSecondary} secureTextEntry={!ver} autoCapitalize="none" autoCorrect={false} />
+            <TextInput ref={passwordRef} style={[styles.input, { flex: 1 }]} value={password} onChangeText={setPassword} placeholder="Pelo menos 8 caracteres"
+              placeholderTextColor={COLORS.textSecondary} secureTextEntry={!ver} autoCapitalize="none" autoCorrect={false}
+              autoComplete={modo === 'criar' ? 'new-password' : 'current-password'} textContentType={modo === 'criar' ? 'newPassword' : 'password'}
+              returnKeyType="done" onSubmitEditing={submeter} />
             <TouchableOpacity onPress={() => setVer(v => !v)} style={styles.olho} accessibilityLabel={ver ? 'Esconder palavra-passe' : 'Mostrar palavra-passe'}>
               <Ionicons name={ver ? 'eye-off-outline' : 'eye-outline'} size={22} color={COLORS.textSecondary} />
             </TouchableOpacity>

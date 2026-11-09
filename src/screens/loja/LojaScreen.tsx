@@ -116,7 +116,7 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
             </Text>
           </View>
         ) : (
-          <ScrollView automaticallyAdjustKeyboardInsets
+          <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets
             contentContainerStyle={styles.grid}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} colors={[COLORS.primary]} />}
             keyboardShouldPersistTaps="handled"
@@ -175,7 +175,7 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
             <Text style={styles.empty}>Ainda não há lojas parceiras registadas.</Text>
           </View>
         ) : (
-          <ScrollView automaticallyAdjustKeyboardInsets
+          <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets
             contentContainerStyle={styles.listaLojas}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} colors={[COLORS.primary]} />}
             keyboardShouldPersistTaps="handled"

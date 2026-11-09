@@ -100,7 +100,7 @@ export default function GruposScreen({ onVoltar }: { onVoltar: () => void }) {
           <Ionicons name="arrow-back" size={22} color={COLORS.text} />
           <Text style={styles.voltarTxt}>Grupos</Text>
         </TouchableOpacity>
-        <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+        <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
           <Text style={styles.titulo}>Novo grupo</Text>
           <View style={styles.cartao}>
             <Text style={styles.rotulo}>NOME DO GRUPO</Text>
@@ -135,7 +135,7 @@ export default function GruposScreen({ onVoltar }: { onVoltar: () => void }) {
   return (
     <View style={styles.ecra}>
       {cabecalho}
-      <ScrollView automaticallyAdjustKeyboardInsets
+      <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets
         contentContainerStyle={styles.corpo}
         keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={aActualizar} onRefresh={recarregar} tintColor={COLORS.primary} />}

@@ -261,7 +261,7 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
         </TouchableOpacity>
       </View>
 
-      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+      <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
         <Text style={styles.rotulo}>TÍTULO</Text>
         <TextInput
           style={styles.input}

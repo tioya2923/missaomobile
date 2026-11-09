@@ -62,7 +62,7 @@ export default function DefinicoesGrupoPanel({ grupo, onMudou, onApagado }: Prop
   };
 
   return (
-    <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+    <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
       <View style={styles.cartao}>
         <Text style={styles.rotulo}>CÓDIGO DO GRUPO</Text>
         <Text style={styles.codigo} selectable>{codigo}</Text>

@@ -107,7 +107,7 @@ export default function PartilharCantico({ titulo, letra, audioUri, momento, onF
   return (
     <KeyboardAvoidingView style={styles.ecra} behavior={COMPORTAMENTO_TECLADO}>
       {cabecalho}
-      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+      <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
         <View style={styles.cartao}>
           <Text style={styles.rotulo}>CÂNTICO</Text>
           <Text style={styles.cantico}>{titulo}</Text>

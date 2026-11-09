@@ -40,6 +40,7 @@ export default function RootNavigator() {
             onNavigate={(tab) => navigation.navigate(tab as keyof RootTabParamList)}
           />
         ),
+        tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.textSecondary,
         tabBarStyle: {

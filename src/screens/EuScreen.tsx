@@ -411,7 +411,7 @@ export default function EuScreen() {
 
   // 4. Hub
   if (vista === 'hub') return (
-    <ScrollView automaticallyAdjustKeyboardInsets keyboardShouldPersistTaps="handled" contentContainerStyle={styles.hubContainer} showsVerticalScrollIndicator={false}>
+    <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets keyboardShouldPersistTaps="handled" contentContainerStyle={styles.hubContainer} showsVerticalScrollIndicator={false}>
       {/* Avatar */}
       <View style={styles.hubAvatarWrap}>
         <TouchableOpacity onPress={pickFoto} activeOpacity={0.85}>
@@ -552,7 +552,7 @@ export default function EuScreen() {
       style={{flex:1}}
       behavior={COMPORTAMENTO_TECLADO}
     >
-      <ScrollView automaticallyAdjustKeyboardInsets
+      <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets
         ref={scrollRef}
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"

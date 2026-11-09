@@ -187,7 +187,7 @@ function Login({ onVoltar, onRegistar }: { onVoltar: () => void; onRegistar: () 
       style={{ flex: 1 }}
       behavior={COMPORTAMENTO_TECLADO}
     >
-      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <CabecalhoVoltar onVoltar={onVoltar} />
         <Text style={styles.titulo}>Entrar na minha loja</Text>
         <Text style={styles.subtitulo}>Área reservada às lojas parceiras.</Text>
@@ -278,7 +278,7 @@ function Registar({ onVoltar, onEntrar }: { onVoltar: () => void; onEntrar: () =
       style={{ flex: 1 }}
       behavior={COMPORTAMENTO_TECLADO}
     >
-      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <CabecalhoVoltar onVoltar={onVoltar} />
         <Text style={styles.titulo}>Registar a minha loja</Text>
         <Text style={styles.subtitulo}>
@@ -513,7 +513,7 @@ function AbaProdutos({ moeda }: { moeda: string }) {
   };
 
   return (
-    <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.abaContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+    <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.abaContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
       <View style={styles.linhaEntreTitulo}>
         <Text style={styles.secaoTitulo}>Os meus produtos</Text>
         <TouchableOpacity style={styles.btnPrimarioPequeno} onPress={iniciarNovo} activeOpacity={0.85}>
@@ -661,7 +661,7 @@ function AbaEncomendas() {
   if (loading) return <ActivityIndicator color={COLORS.primary} style={{ marginTop: 20 }} />;
 
   return (
-    <ScrollView automaticallyAdjustKeyboardInsets keyboardShouldPersistTaps="handled" contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
+    <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets keyboardShouldPersistTaps="handled" contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
       {encomendas.length === 0 ? (
         <Text style={styles.vazio}>Ainda não tem encomendas.</Text>
       ) : (
@@ -833,7 +833,7 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
   }
 
   return (
-    <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.abaContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+    <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.abaContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
       <View style={[styles.aviso, perfil.aprovada ? styles.avisoOk : styles.avisoPendente]}>
         <Text style={perfil.aprovada ? styles.avisoOkTxt : styles.avisoPendenteTxt}>
           {perfil.aprovada

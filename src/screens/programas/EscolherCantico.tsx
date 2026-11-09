@@ -123,7 +123,7 @@ export default function EscolherCantico({ momento, onEscolher, onCancelar }: Pro
           {aCarregarCanticos ? (
             <LoadingView />
           ) : (
-            <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.lista} keyboardShouldPersistTaps="handled">
+            <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.lista} keyboardShouldPersistTaps="handled">
               {visiveis.length === 0 ? (
                 <Text style={styles.vazio}>
                   {canticos.length ? 'Nenhum cântico com esse título.' : 'Ainda não há cânticos neste tópico e idioma.'}
