@@ -16,6 +16,7 @@ import ProgramasMissaScreen from './programas/ProgramasMissaScreen';
 import VendedorArea from './VendedorArea';
 import { useConta } from '../context/ContaContext';
 import { useColors, useThemedStyles } from '../context/ThemeContext';
+import { COMPORTAMENTO_TECLADO } from '../utils/teclado';
 
 const STORAGE_KEY  = '@ndatava_perfil';
 const SECURITY_KEY = '@ndatava_seguranca';
@@ -410,7 +411,7 @@ export default function EuScreen() {
 
   // 4. Hub
   if (vista === 'hub') return (
-    <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.hubContainer} showsVerticalScrollIndicator={false}>
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardShouldPersistTaps="handled" contentContainerStyle={styles.hubContainer} showsVerticalScrollIndicator={false}>
       {/* Avatar */}
       <View style={styles.hubAvatarWrap}>
         <TouchableOpacity onPress={pickFoto} activeOpacity={0.85}>
@@ -549,9 +550,9 @@ export default function EuScreen() {
   return (
     <KeyboardAvoidingView
       style={{flex:1}}
-      behavior="padding"
+      behavior={COMPORTAMENTO_TECLADO}
     >
-      <ScrollView
+      <ScrollView automaticallyAdjustKeyboardInsets
         ref={scrollRef}
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"

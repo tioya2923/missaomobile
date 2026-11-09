@@ -8,6 +8,7 @@ import { FONTS, RADIUS, SHADOW, type Palette } from '../../constants/theme';
 import { useConta } from '../../context/ContaContext';
 import { useColors, useThemedStyles } from '../../context/ThemeContext';
 import ContaAuth from './ContaAuth';
+import { COMPORTAMENTO_TECLADO } from '../../utils/teclado';
 
 interface Props {
   titulo: string;
@@ -104,9 +105,9 @@ export default function PartilharCantico({ titulo, letra, audioUri, momento, onF
   }
 
   return (
-    <KeyboardAvoidingView style={styles.ecra} behavior="padding">
+    <KeyboardAvoidingView style={styles.ecra} behavior={COMPORTAMENTO_TECLADO}>
       {cabecalho}
-      <ScrollView contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
         <View style={styles.cartao}>
           <Text style={styles.rotulo}>CÂNTICO</Text>
           <Text style={styles.cantico}>{titulo}</Text>

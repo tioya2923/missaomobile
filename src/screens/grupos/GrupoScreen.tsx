@@ -11,6 +11,7 @@ import { useColors, useThemedStyles } from '../../context/ThemeContext';
 import DefinicoesGrupoPanel from './DefinicoesGrupoPanel';
 import MembrosGrupoPanel from './MembrosGrupoPanel';
 import MuralGrupo from './MuralGrupo';
+import { COMPORTAMENTO_TECLADO } from '../../utils/teclado';
 
 type Separador = 'mural' | 'membros' | 'definicoes';
 
@@ -40,7 +41,7 @@ export default function GrupoScreen({ id, onVoltar }: { id: number; onVoltar: ()
   ];
 
   return (
-    <KeyboardAvoidingView style={styles.ecra} behavior="padding">
+    <KeyboardAvoidingView style={styles.ecra} behavior={COMPORTAMENTO_TECLADO}>
       <TouchableOpacity style={styles.voltar} onPress={sair} activeOpacity={0.7}>
         <Ionicons name="arrow-back" size={22} color={COLORS.text} />
         <Text style={styles.voltarTxt}>Grupos</Text>

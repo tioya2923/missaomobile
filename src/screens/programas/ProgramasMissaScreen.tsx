@@ -14,6 +14,7 @@ import CanticoProprio from './CanticoProprio';
 import EscolherCantico from './EscolherCantico';
 import LeitorCantico from './LeitorCantico';
 import PartilharCantico from '../partilhas/PartilharCantico';
+import { COMPORTAMENTO_TECLADO } from '../../utils/teclado';
 
 type Sub =
   | null
@@ -171,7 +172,7 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
   if (aberto) {
     const total = todasAsEscolhas(aberto).length;
     return (
-      <KeyboardAvoidingView style={styles.ecra} behavior="padding">
+      <KeyboardAvoidingView style={styles.ecra} behavior={COMPORTAMENTO_TECLADO}>
         <View style={styles.barra}>
           <TouchableOpacity style={styles.voltar} onPress={fecharPrograma} activeOpacity={0.7}>
             <Ionicons name="arrow-back" size={22} color={COLORS.text} />
@@ -182,7 +183,7 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
           </TouchableOpacity>
         </View>
 
-        <ScrollView contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+        <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
           <View style={styles.dados}>
             <Text style={styles.rotulo}>TÍTULO DO PROGRAMA</Text>
             <View style={styles.campo}>
@@ -298,7 +299,7 @@ export default function ProgramasMissaScreen({ onVoltar }: { onVoltar: () => voi
         <Text style={styles.voltarTxt}>Voltar</Text>
       </TouchableOpacity>
 
-      <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.corpo}>
+      <ScrollView automaticallyAdjustKeyboardInsets keyboardShouldPersistTaps="handled" contentContainerStyle={styles.corpo}>
         <Text style={styles.titulo}>Programas da Missa</Text>
         <Text style={styles.intro}>
           Monte os cânticos de cada momento da celebração, com cânticos da Ndatava ou os seus, e guarde quantos programas quiser. Ficam só neste telemóvel.

@@ -6,6 +6,7 @@ import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
 import { FONTS, type Palette } from '../constants/theme';
 import { useColors, useThemedStyles } from '../context/ThemeContext';
+import { COMPORTAMENTO_TECLADO } from '../utils/teclado';
 
 const ACT_KEY = '@ndatava_actividades';
 
@@ -443,9 +444,9 @@ export default function MinhasActividadesScreen({ onVoltar }: { onVoltar: () => 
 
       <KeyboardAvoidingView
         style={{flex:1}}
-        behavior="padding"
+        behavior={COMPORTAMENTO_TECLADO}
       >
-        <ScrollView
+        <ScrollView automaticallyAdjustKeyboardInsets
           ref={scrollRef}
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"

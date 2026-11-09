@@ -9,6 +9,7 @@ import TextInput from '../../components/AppTextInput';
 import { FONTS, RADIUS, SHADOW, type Palette } from '../../constants/theme';
 import { useColors, useThemedStyles } from '../../context/ThemeContext';
 import { carregarProgramas, MOMENTOS, type Escolha, type Programa } from '../../utils/programasMissa';
+import { COMPORTAMENTO_TECLADO } from '../../utils/teclado';
 
 interface Props {
   grupoId: number;
@@ -107,7 +108,7 @@ export default function PublicarGrupo({ grupoId, tipo, editar, onFechar }: Props
   const mostrarTexto = !(tipo === 'programa' && !editar);
 
   return (
-    <KeyboardAvoidingView style={styles.ecra} behavior="padding">
+    <KeyboardAvoidingView style={styles.ecra} behavior={COMPORTAMENTO_TECLADO}>
       <View style={styles.topo}>
         <TouchableOpacity onPress={() => onFechar(false)} style={styles.fechar} activeOpacity={0.7} accessibilityLabel="Fechar">
           <Ionicons name="close" size={24} color={COLORS.text} />
@@ -115,7 +116,7 @@ export default function PublicarGrupo({ grupoId, tipo, editar, onFechar }: Props
         <Text style={styles.tituloEcra}>{nomeTela}</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
         {!editar && tipo === 'cantico' && (
           <View style={styles.cartao}>
             <Text style={styles.rotulo}>USAR UM DOS MEUS CÂNTICOS</Text>

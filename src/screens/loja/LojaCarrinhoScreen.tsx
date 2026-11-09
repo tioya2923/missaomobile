@@ -9,6 +9,7 @@ import { formatarPreco } from '../../constants/moeda';
 import { FONTS, type Palette } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
 import { useColors, useThemedStyles } from '../../context/ThemeContext';
+import { COMPORTAMENTO_TECLADO } from '../../utils/teclado';
 
 // Nota: usa-se um aviso inline (erro) em vez de Alert.alert porque o React
 // Native não tem uma implementação fiável do Alert na Web.
@@ -71,9 +72,9 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior="padding"
+      behavior={COMPORTAMENTO_TECLADO}
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         {grupos.map(grupo => (
           <View key={grupo.lojaId} style={styles.card}>
             <View style={styles.lojaHeader}>

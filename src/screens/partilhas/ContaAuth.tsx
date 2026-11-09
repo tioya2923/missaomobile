@@ -7,6 +7,7 @@ import TextInput from '../../components/AppTextInput';
 import { FONTS, RADIUS, SHADOW, type Palette } from '../../constants/theme';
 import { useConta } from '../../context/ContaContext';
 import { useColors, useThemedStyles } from '../../context/ThemeContext';
+import { COMPORTAMENTO_TECLADO } from '../../utils/teclado';
 
 // Entrar ou criar a conta que permite enviar e receber cânticos dentro da app.
 export default function ContaAuth({ onFeito }: { onFeito?: () => void }) {
@@ -40,8 +41,8 @@ export default function ContaAuth({ onFeito }: { onFeito?: () => void }) {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <ScrollView contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={COMPORTAMENTO_TECLADO}>
+      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
         <View style={styles.icone}><Ionicons name="people-outline" size={34} color={COLORS.primary} /></View>
         <Text style={styles.titulo}>Partilhar cânticos</Text>
         <Text style={styles.intro}>

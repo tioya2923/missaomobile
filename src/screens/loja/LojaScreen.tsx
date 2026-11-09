@@ -12,6 +12,7 @@ import LoadingView from '../../components/LoadingView';
 import { FONTS, type Palette } from '../../constants/theme';
 import type { MaisScreenProps } from '../../navigation/types';
 import { useColors, useThemedStyles } from '../../context/ThemeContext';
+import { COMPORTAMENTO_TECLADO } from '../../utils/teclado';
 
 type Aba = 'artigos' | 'lojas';
 
@@ -69,7 +70,7 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: COLORS.background }}
-      behavior="padding"
+      behavior={COMPORTAMENTO_TECLADO}
     >
       <View style={styles.buscaRow}>
         <Ionicons name="search-outline" size={18} color={COLORS.textSecondary} />
@@ -115,7 +116,7 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
             </Text>
           </View>
         ) : (
-          <ScrollView
+          <ScrollView automaticallyAdjustKeyboardInsets
             contentContainerStyle={styles.grid}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} colors={[COLORS.primary]} />}
             keyboardShouldPersistTaps="handled"
@@ -174,7 +175,7 @@ export default function LojaScreen({ navigation }: MaisScreenProps<'Loja'>) {
             <Text style={styles.empty}>Ainda não há lojas parceiras registadas.</Text>
           </View>
         ) : (
-          <ScrollView
+          <ScrollView automaticallyAdjustKeyboardInsets
             contentContainerStyle={styles.listaLojas}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} colors={[COLORS.primary]} />}
             keyboardShouldPersistTaps="handled"

@@ -12,6 +12,7 @@ import { useConta } from '../../context/ContaContext';
 import { useColors, useThemedStyles } from '../../context/ThemeContext';
 import ContaAuth from '../partilhas/ContaAuth';
 import GrupoScreen from './GrupoScreen';
+import { COMPORTAMENTO_TECLADO } from '../../utils/teclado';
 
 type Vista = { t: 'lista' } | { t: 'criar' } | { t: 'grupo'; id: number };
 
@@ -94,12 +95,12 @@ export default function GruposScreen({ onVoltar }: { onVoltar: () => void }) {
 
   if (vista.t === 'criar') {
     return (
-      <KeyboardAvoidingView style={styles.ecra} behavior="padding">
+      <KeyboardAvoidingView style={styles.ecra} behavior={COMPORTAMENTO_TECLADO}>
         <TouchableOpacity style={styles.voltar} onPress={voltarLista} activeOpacity={0.7}>
           <Ionicons name="arrow-back" size={22} color={COLORS.text} />
           <Text style={styles.voltarTxt}>Grupos</Text>
         </TouchableOpacity>
-        <ScrollView contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+        <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
           <Text style={styles.titulo}>Novo grupo</Text>
           <View style={styles.cartao}>
             <Text style={styles.rotulo}>NOME DO GRUPO</Text>
@@ -134,7 +135,7 @@ export default function GruposScreen({ onVoltar }: { onVoltar: () => void }) {
   return (
     <View style={styles.ecra}>
       {cabecalho}
-      <ScrollView
+      <ScrollView automaticallyAdjustKeyboardInsets
         contentContainerStyle={styles.corpo}
         keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={aActualizar} onRefresh={recarregar} tintColor={COLORS.primary} />}

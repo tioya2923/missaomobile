@@ -14,6 +14,7 @@ import { useColors, useThemedStyles } from '../../context/ThemeContext';
 import ContaAuth from './ContaAuth';
 import ContactosPanel from './ContactosPanel';
 import RecebidoDetalheScreen from './RecebidoDetalhe';
+import { COMPORTAMENTO_TECLADO } from '../../utils/teclado';
 
 // "Eu › Partilhas": o código pessoal, os cânticos recebidos e a gestão da conta.
 export default function PartilhasScreen({ onVoltar }: { onVoltar: () => void }) {
@@ -99,9 +100,9 @@ export default function PartilhasScreen({ onVoltar }: { onVoltar: () => void }) 
   if (!autenticado) return <View style={styles.ecra}>{cabecalho}<ContaAuth /></View>;
 
   return (
-    <KeyboardAvoidingView style={styles.ecra} behavior="padding">
+    <KeyboardAvoidingView style={styles.ecra} behavior={COMPORTAMENTO_TECLADO}>
       {cabecalho}
-      <ScrollView
+      <ScrollView automaticallyAdjustKeyboardInsets
         contentContainerStyle={styles.corpo}
         keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={aActualizar} onRefresh={recarregar} tintColor={COLORS.primary} />}

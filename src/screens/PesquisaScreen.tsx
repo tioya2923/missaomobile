@@ -124,7 +124,7 @@ export default function PesquisaScreen() {
       )}
 
       {hasResults && (
-        <ScrollView contentContainerStyle={styles.results} keyboardShouldPersistTaps="handled">
+        <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.results} keyboardShouldPersistTaps="handled">
 
           <Section title="Cânticos (Português)">
             {results!.canticos.map(item => (

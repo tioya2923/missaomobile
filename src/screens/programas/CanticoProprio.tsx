@@ -11,6 +11,7 @@ import TextInput from '../../components/AppTextInput';
 import { FONTS, RADIUS, SHADOW, type Palette } from '../../constants/theme';
 import { useColors, useThemedStyles } from '../../context/ThemeContext';
 import { apagarAudio, guardarAudio, novoId, type Escolha } from '../../utils/programasMissa';
+import { COMPORTAMENTO_TECLADO } from '../../utils/teclado';
 
 type Proprio = Extract<Escolha, { tipo: 'proprio' }>;
 
@@ -246,7 +247,7 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
   const gravacaoSuportada = suportaGravacao();
 
   return (
-    <KeyboardAvoidingView style={styles.ecra} behavior="padding">
+    <KeyboardAvoidingView style={styles.ecra} behavior={COMPORTAMENTO_TECLADO}>
       <View style={styles.topo}>
         <TouchableOpacity onPress={cancelar} style={styles.fechar} activeOpacity={0.7} accessibilityLabel="Cancelar">
           <Ionicons name="close" size={24} color={COLORS.text} />
@@ -260,7 +261,7 @@ export default function CanticoProprio({ momento, inicial, onGuardar, onCancelar
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
+      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.corpo} keyboardShouldPersistTaps="handled">
         <Text style={styles.rotulo}>TÍTULO</Text>
         <TextInput
           style={styles.input}

@@ -17,6 +17,7 @@ import {
   type PerfilLoja, type ProdutoLoja, type ProdutoLojaPayload, type EncomendaLoja,
 } from '../api/vendedor';
 import { useColors, useThemedStyles } from '../context/ThemeContext';
+import { COMPORTAMENTO_TECLADO } from '../utils/teclado';
 
 type AbaPainel = 'produtos' | 'encomendas' | 'perfil';
 
@@ -184,9 +185,9 @@ function Login({ onVoltar, onRegistar }: { onVoltar: () => void; onRegistar: () 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior="padding"
+      behavior={COMPORTAMENTO_TECLADO}
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <CabecalhoVoltar onVoltar={onVoltar} />
         <Text style={styles.titulo}>Entrar na minha loja</Text>
         <Text style={styles.subtitulo}>Área reservada às lojas parceiras.</Text>
@@ -275,9 +276,9 @@ function Registar({ onVoltar, onEntrar }: { onVoltar: () => void; onEntrar: () =
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior="padding"
+      behavior={COMPORTAMENTO_TECLADO}
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <CabecalhoVoltar onVoltar={onVoltar} />
         <Text style={styles.titulo}>Registar a minha loja</Text>
         <Text style={styles.subtitulo}>
@@ -394,7 +395,7 @@ function Painel({ onVoltar }: { onVoltar: () => void }) {
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior="padding"
+        behavior={COMPORTAMENTO_TECLADO}
       >
         {aba === 'produtos' && <AbaProdutos moeda={moeda} />}
         {aba === 'encomendas' && <AbaEncomendas />}
@@ -512,7 +513,7 @@ function AbaProdutos({ moeda }: { moeda: string }) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.abaContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+    <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.abaContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
       <View style={styles.linhaEntreTitulo}>
         <Text style={styles.secaoTitulo}>Os meus produtos</Text>
         <TouchableOpacity style={styles.btnPrimarioPequeno} onPress={iniciarNovo} activeOpacity={0.85}>
@@ -660,7 +661,7 @@ function AbaEncomendas() {
   if (loading) return <ActivityIndicator color={COLORS.primary} style={{ marginTop: 20 }} />;
 
   return (
-    <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardShouldPersistTaps="handled" contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
       {encomendas.length === 0 ? (
         <Text style={styles.vazio}>Ainda não tem encomendas.</Text>
       ) : (
@@ -832,7 +833,7 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.abaContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+    <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.abaContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
       <View style={[styles.aviso, perfil.aprovada ? styles.avisoOk : styles.avisoPendente]}>
         <Text style={perfil.aprovada ? styles.avisoOkTxt : styles.avisoPendenteTxt}>
           {perfil.aprovada

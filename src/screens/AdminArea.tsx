@@ -18,6 +18,7 @@ import {
   getResumoVendas, enviarLembreteApoioAgora, type ResumoVendas,
 } from '../api/adminMarketplace';
 import { useColors, useThemedStyles } from '../context/ThemeContext';
+import { COMPORTAMENTO_TECLADO } from '../utils/teclado';
 
 type Vista = 'hub' | 'recurso' | 'lojas' | 'encomendas' | 'vendas';
 
@@ -93,7 +94,7 @@ export default function AdminArea({ onVoltar }: { onVoltar: () => void }) {
   if (vista === 'recurso' && recursoKey) return <AdminResourceCrud recursoKey={recursoKey} onVoltar={voltarAoHub} />;
 
   return (
-    <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: COLORS.background }} contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: COLORS.background }} contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
       <CabecalhoAdmin
         onVoltar={onVoltar}
         acao={<TouchableOpacity onPress={sair} activeOpacity={0.7}><Text style={styles.linkTxtForte}>Sair</Text></TouchableOpacity>}
@@ -361,8 +362,8 @@ function AdminResourceCrud({ recursoKey, onVoltar }: { recursoKey: string; onVol
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-      <ScrollView contentContainerStyle={styles.abaContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={COMPORTAMENTO_TECLADO}>
+      <ScrollView automaticallyAdjustKeyboardInsets contentContainerStyle={styles.abaContainer} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <CabecalhoAdmin
           onVoltar={onVoltar}
           acao={<TouchableOpacity style={styles.btnPrimarioPequeno} onPress={iniciarNova} activeOpacity={0.85}><Text style={styles.btnPrimarioPequenoTxt}>+ Novo</Text></TouchableOpacity>}
@@ -468,7 +469,7 @@ function AdminLojasScreen({ onVoltar }: { onVoltar: () => void }) {
   };
 
   return (
-    <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: COLORS.background }} contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: COLORS.background }} contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
       <CabecalhoAdmin onVoltar={onVoltar} />
       <Text style={styles.titulo}>Lojas parceiras</Text>
 
@@ -561,7 +562,7 @@ function AdminEncomendasScreen({ onVoltar }: { onVoltar: () => void }) {
   };
 
   return (
-    <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: COLORS.background }} contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: COLORS.background }} contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
       <CabecalhoAdmin onVoltar={onVoltar} />
       <Text style={styles.titulo}>Todas as encomendas</Text>
 
@@ -669,7 +670,7 @@ function AdminVendasScreen({ onVoltar }: { onVoltar: () => void }) {
   }, [resumo]);
 
   return (
-    <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: COLORS.background }} contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
+    <ScrollView automaticallyAdjustKeyboardInsets keyboardShouldPersistTaps="handled" style={{ flex: 1, backgroundColor: COLORS.background }} contentContainerStyle={styles.abaContainer} showsVerticalScrollIndicator={false}>
       <CabecalhoAdmin onVoltar={onVoltar} />
       <Text style={styles.titulo}>Vendas das lojas</Text>
 
