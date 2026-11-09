@@ -16,6 +16,17 @@ export async function loginLoja(email: string, password: string): Promise<Sessao
   return data;
 }
 
+/** Pede o código de 6 dígitos por email; a resposta é sempre a mesma, exista ou não a loja. */
+export async function pedirCodigoRecuperacaoLoja(email: string): Promise<string> {
+  const { data } = await client.post<{ mensagem: string }>('/api/lojas/esqueci-senha', { email });
+  return data.mensagem;
+}
+
+export async function redefinirSenhaLoja(email: string, codigo: string, novaPassword: string): Promise<SessaoLoja> {
+  const { data } = await client.post<SessaoLoja>('/api/lojas/redefinir-senha', { email, codigo, novaPassword });
+  return data;
+}
+
 export interface RegistoLojaPayload {
   nome: string;
   email: string;

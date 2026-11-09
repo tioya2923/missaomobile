@@ -4,6 +4,8 @@ import TextInput from '../components/AppTextInput';
 import Text from '../components/AppText';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
+import { isAxiosError } from 'axios';
+import { pedirCodigoRecuperacaoLoja } from '../api/vendedor';
 import { FONTS, type Palette } from '../constants/theme';
 import { MOEDAS_LISTA, formatarPreco, labelMoeda } from '../constants/moeda';
 import { METODOS_PAGAMENTO, metodosPorMoeda } from '../constants/metodosPagamento';
@@ -133,7 +135,7 @@ export default function VendedorArea({ onVoltar }: { onVoltar: () => void }) {
   const COLORS = useColors();
   const styles = useThemedStyles(createStyles);
   const { isLoja, isGestor, carregado } = useLojaAuth();
-  const [modo, setModo] = useState<'login' | 'registar'>('login');
+  const [modo, setModo] = useState<'login' | 'registar' | 'recuperar'>('login');
 
   if (!carregado) {
     return (
@@ -146,14 +148,14 @@ export default function VendedorArea({ onVoltar }: { onVoltar: () => void }) {
   if (isGestor) return <AdminArea onVoltar={onVoltar} />;
   if (isLoja) return <Painel onVoltar={onVoltar} />;
 
-  return modo === 'registar'
-    ? <Registar onVoltar={onVoltar} onEntrar={() => setModo('login')} />
-    : <Login onVoltar={onVoltar} onRegistar={() => setModo('registar')} />;
+  if (modo === 'registar') return <Registar onVoltar={onVoltar} onEntrar={() => setModo('login')} />;
+  if (modo === 'recuperar') return <RecuperarSenha onVoltar={() => setModo('login')} />;
+  return <Login onVoltar={onVoltar} onRegistar={() => setModo('registar')} onRecuperar={() => setModo('recuperar')} />;
 }
 
 // ── Login ─────────────────────────────────────────────────────────────────
 
-function Login({ onVoltar, onRegistar }: { onVoltar: () => void; onRegistar: () => void }) {
+function Login({ onVoltar, onRegistar, onRecuperar }: { onVoltar: () => void; onRegistar: () => void; onRecuperar: () => void }) {
   const styles = useThemedStyles(createStyles);
   const { login, loginAdmin } = useLojaAuth();
   const [email, setEmail] = useState('');
@@ -210,9 +212,107 @@ function Login({ onVoltar, onRegistar }: { onVoltar: () => void; onRegistar: () 
           {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnPrimarioTxt}>Entrar</Text>}
         </TouchableOpacity>
 
+        <TouchableOpacity onPress={onRecuperar} style={styles.linkWrap} activeOpacity={0.7}>
+          <Text style={styles.linkTxtForte}>Esqueci-me da palavra-passe</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={onRegistar} style={styles.linkWrap} activeOpacity={0.7}>
           <Text style={styles.linkTxt}>Ainda não tem loja? <Text style={styles.linkTxtForte}>Registar agora</Text></Text>
         </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
+
+// ── Recuperar a palavra-passe ────────────────────────────────────────────
+
+// Primeiro pede-se o código por email; depois escreve-se o código e a palavra-passe nova e a loja entra logo.
+function RecuperarSenha({ onVoltar }: { onVoltar: () => void }) {
+  const styles = useThemedStyles(createStyles);
+  const { redefinirSenha } = useLojaAuth();
+  const [passo, setPasso] = useState<'pedir' | 'codigo'>('pedir');
+  const [email, setEmail] = useState('');
+  const [codigo, setCodigo] = useState('');
+  const [nova, setNova] = useState('');
+  const [aviso, setAviso] = useState<string | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const refNova = useRef<TextInput>(null);
+
+  const mensagem = (e: unknown, porOmissao: string) => {
+    const d = isAxiosError(e) ? e.response?.data : null;
+    return typeof d === 'string' && d.trim() && d.length < 200 ? d : porOmissao;
+  };
+
+  const pedir = async () => {
+    setErro(null);
+    if (!email.trim()) { setErro('Escreva o email da loja.'); return; }
+    setLoading(true);
+    try {
+      setAviso(await pedirCodigoRecuperacaoLoja(email.trim()));
+      setPasso('codigo');
+    } catch (e) {
+      setErro(mensagem(e, 'Não foi possível enviar o código. Verifique a ligação e tente de novo.'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const redefinir = async () => {
+    setErro(null);
+    if (codigo.length !== 6) { setErro('Escreva o código de 6 dígitos que recebeu por email.'); return; }
+    if (nova.length < 6) { setErro('A palavra-passe deve ter pelo menos 6 caracteres.'); return; }
+    setLoading(true);
+    try {
+      await redefinirSenha(email, codigo, nova);   // a sessão fica iniciada e o ecrã passa para o painel da loja
+    } catch (e) {
+      setErro(mensagem(e, 'Não foi possível redefinir a palavra-passe.'));
+      setLoading(false);
+    }
+  };
+
+  return (
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={COMPORTAMENTO_TECLADO}>
+      <ScrollView keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+        <CabecalhoVoltar onVoltar={onVoltar} />
+        <Text style={styles.titulo}>Recuperar a palavra-passe</Text>
+        {passo === 'pedir' ? (
+          <>
+            <Text style={styles.subtitulo}>Escreva o email da sua loja. Enviamos-lhe um código de 6 dígitos, válido durante 15 minutos.</Text>
+            {erro && <Text style={styles.erro}>{erro}</Text>}
+            <View style={styles.card}>
+              <Campo
+                label="Email" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" autoCorrect={false}
+                placeholder="loja@exemplo.com" returnKeyType="send" onSubmitEditing={pedir}
+              />
+            </View>
+            <TouchableOpacity style={styles.btnPrimario} onPress={pedir} disabled={loading} activeOpacity={0.85}>
+              {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnPrimarioTxt}>Enviar código</Text>}
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            {!!aviso && <Text style={styles.subtitulo}>{aviso}</Text>}
+            {erro && <Text style={styles.erro}>{erro}</Text>}
+            <View style={styles.card}>
+              <Campo
+                label="Código de 6 dígitos" value={codigo} onChangeText={t => setCodigo(t.replace(/\D/g, '').slice(0, 6))}
+                keyboardType="number-pad" maxLength={6} placeholder="000000" returnKeyType="next"
+                onSubmitEditing={() => refNova.current?.focus()} blurOnSubmit={false}
+              />
+              <CampoSenha
+                ref={refNova} label="Palavra-passe nova" value={nova} onChangeText={setNova}
+                placeholder="Pelo menos 6 caracteres" returnKeyType="done" onSubmitEditing={redefinir}
+              />
+            </View>
+            <TouchableOpacity style={styles.btnPrimario} onPress={redefinir} disabled={loading} activeOpacity={0.85}>
+              {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnPrimarioTxt}>Redefinir palavra-passe</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { setErro(null); setPasso('pedir'); }} style={styles.linkWrap} activeOpacity={0.7}>
+              <Text style={styles.linkTxtForte}>Enviar outro código</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );

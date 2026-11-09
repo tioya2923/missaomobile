@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { loginLoja, registarLoja, type RegistoLojaPayload } from '../api/vendedor';
+import { loginLoja, redefinirSenhaLoja, registarLoja, type RegistoLojaPayload } from '../api/vendedor';
 import { loginGestor } from '../api/admin';
 import { definirAoExpirarSessao } from '../api/client';
 
@@ -28,6 +28,7 @@ interface LojaAuthContextType {
   login: (email: string, password: string) => Promise<void>;
   loginAdmin: (email: string, password: string) => Promise<void>;
   registar: (payload: RegistoLojaPayload) => Promise<void>;
+  redefinirSenha: (email: string, codigo: string, novaPassword: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -77,6 +78,11 @@ export function LojaAuthProvider({ children }: { children: ReactNode }) {
     await guardarSessao({ token: data.token, nome: data.nome, lojaId: null, tipo: 'gestor' });
   }, []);
 
+  const redefinirSenha = useCallback(async (email: string, codigo: string, novaPassword: string) => {
+    const data = await redefinirSenhaLoja(email.trim(), codigo.trim(), novaPassword);
+    await guardarSessao({ token: data.token, nome: data.nome, lojaId: data.lojaId, tipo: 'loja' });
+  }, []);
+
   const registar = useCallback(async (payload: RegistoLojaPayload) => {
     const data = await registarLoja(payload);
     await guardarSessao({ token: data.token, nome: data.nome, lojaId: data.lojaId, tipo: 'loja' });
@@ -100,8 +106,8 @@ export function LojaAuthProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<LojaAuthContextType>(() => ({
     token, nome, lojaId, tipo, isAuthenticated: !!token, isLoja: !!token && tipo === 'loja', isGestor: !!token && tipo === 'gestor',
-    carregado, login, loginAdmin, registar, logout,
-  }), [token, nome, lojaId, tipo, carregado, login, loginAdmin, registar, logout]);
+    carregado, login, loginAdmin, registar, redefinirSenha, logout,
+  }), [token, nome, lojaId, tipo, carregado, login, loginAdmin, registar, redefinirSenha, logout]);
 
   return <LojaAuthContext.Provider value={value}>{children}</LojaAuthContext.Provider>;
 }
