@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import ListItem from '../components/ListItem';
 import { RADIUS, SHADOW, type Palette } from '../constants/theme';
 import type { MaisScreenProps } from '../navigation/types';
@@ -10,7 +10,7 @@ export default function MaisMenuScreen({ navigation }: MaisScreenProps<'MaisMenu
     <View style={styles.container}>
       <View style={styles.group}>
         <ListItem title="Loja" onPress={() => navigation.navigate('Loja')} />
-        <ListItem title="Apoiar" onPress={() => navigation.navigate('Apoiar')} />
+        {Platform.OS !== 'ios' && <ListItem title="Apoiar" onPress={() => navigation.navigate('Apoiar')} />}
         <ListItem title="Aparência" onPress={() => navigation.navigate('Aparencia')} />
         <ListItem title="Sobre" onPress={() => navigation.navigate('Sobre')} />
         <ListItem title="Política de Privacidade" onPress={() => navigation.navigate('Privacidade')} />
