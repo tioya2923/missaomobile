@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import NavBar from '../components/NavBar';
 import AparenciaScreen from '../screens/AparenciaScreen';
-import ApoiarScreen from '../screens/ApoiarScreen';
 import ContactoScreen from '../screens/ContactoScreen';
 import MaisMenuScreen from '../screens/MaisMenuScreen';
 import PrivacidadeScreen from '../screens/PrivacidadeScreen';
@@ -33,7 +32,6 @@ export default function MaisNavigator() {
       <Stack.Screen name="Privacidade"     component={PrivacidadeScreen}     options={{ title: 'Política de Privacidade' }} />
       <Stack.Screen name="Contacto"        component={ContactoScreen}        />
       <Stack.Screen name="Aparencia"       component={AparenciaScreen}       />
-      <Stack.Screen name="Apoiar"          component={ApoiarScreen}          options={{ title: 'Apoiar' }} />
       <Stack.Screen name="Loja"            component={LojaScreen}            options={{ title: 'Loja' }} />
       <Stack.Screen name="LojaProduto"     component={LojaProdutoScreen}     options={{ title: 'Produto' }} />
       <Stack.Screen name="LojaDetalhe"     component={LojaDetalheScreen}     options={{ title: 'Loja' }} />

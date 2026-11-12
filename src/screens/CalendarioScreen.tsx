@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
-  ActivityIndicator, AppState, FlatList, Modal, Platform, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View,
+  ActivityIndicator, AppState, FlatList, Modal, RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View,
 } from 'react-native';
 import Text from '../components/AppText';
 import { Ionicons } from '@expo/vector-icons';
@@ -270,17 +270,6 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
           <Ionicons name="cart-outline" size={18} color="#fff" />
           <Text style={styles.acessoTxt}>Loja</Text>
         </TouchableOpacity>
-        {/* No iOS não há donativos (regra 3.1.1 da Apple): só aparece fora do iOS */}
-        {Platform.OS !== 'ios' && (
-          <TouchableOpacity
-            style={[styles.acessoBtn, styles.acessoBtnApoiar]}
-            activeOpacity={0.85}
-            onPress={() => navigation.navigate('Mais', { screen: 'Apoiar' })}
-          >
-            <Ionicons name="heart-outline" size={18} color={COLORS.primary} />
-            <Text style={[styles.acessoTxt, styles.acessoTxtApoiar]}>Apoiar</Text>
-          </TouchableOpacity>
-        )}
       </View>
 
       {/* Modais */}

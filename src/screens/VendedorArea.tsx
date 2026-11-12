@@ -987,7 +987,7 @@ function AbaPerfil({ onMoedaChange }: { onMoedaChange: (m: string) => void }) {
       <View style={[styles.aviso, styles.avisoInfo]}>
         <Text style={styles.avisoInfoTxt}>
           A Ndatava não cobra nenhuma comissão sobre as suas vendas — o valor de cada encomenda é
-          inteiramente seu.{Platform.OS === 'ios' ? '' : ' Se um dia quiser apoiar a manutenção do serviço, pode fazê-lo voluntariamente, segundo as suas possibilidades, na página de Apoio. Nunca é uma cobrança nem uma condição para vender.'}
+          inteiramente seu.
         </Text>
       </View>
 

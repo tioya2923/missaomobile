@@ -38,7 +38,6 @@ export type MaisStackParamList = {
   Privacidade: undefined;
   Contacto: undefined;
   Aparencia: undefined;
-  Apoiar: undefined;
   Loja: undefined;
   LojaProduto: { produto: import('../api/loja').Produto };
   LojaDetalhe: { lojaId: number; lojaNome: string };
