@@ -51,6 +51,58 @@ const MESES = [
   'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
   'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro',
 ];
+const SEPARADOR_LEITURAS = '\n\nLEITURAS NA ÍNTEGRA\n';
+const SEPARADOR_LEITURAS_TOLERANTE = /\n{2}LEITURAS NA [^\r\n]{0,2}NTEGRA\r?\n/i;
+
+function separarLeituras(leituras: string) {
+  const encontrado = leituras.includes(SEPARADOR_LEITURAS)
+    ? { index: leituras.indexOf(SEPARADOR_LEITURAS), texto: SEPARADOR_LEITURAS }
+    : (() => {
+      const correspondencia = SEPARADOR_LEITURAS_TOLERANTE.exec(leituras);
+      return correspondencia && { index: correspondencia.index, texto: correspondencia[0] };
+    })();
+  if (!encontrado) return { resumo: leituras.trim(), integra: '' };
+  return {
+    resumo: leituras.slice(0, encontrado.index).trim(),
+    integra: leituras.slice(encontrado.index + encontrado.texto.length).trim(),
+  };
+}
+
+function formatarTextoLeitura(texto: string) {
+  const linhas = texto.split('\n');
+  const segmentos: { texto: string; citacao: boolean }[] = [];
+  let inicioSegmento = 0;
+  let inicioLinha = 0;
+  let linhaAnterior = '';
+
+  for (let i = 0; i < linhas.length; i += 1) {
+    const linha = linhas[i];
+    const inicioCitacao = /^[«“"]/.test(linha.trim())
+      && /^(LEITURA(?:\s|$)|SALMO(?:\s|$)|EVANGELHO(?:\s|$)|ACLAMAÇÃO(?:\s|$)|ACLAMACAO(?:\s|$))/i.test(linhaAnterior);
+
+    if (inicioCitacao) {
+      let fimCitacao = i;
+      while (fimCitacao < linhas.length && !/[»”"]/.test(linhas[fimCitacao])) fimCitacao += 1;
+      if (fimCitacao < linhas.length) {
+        const inicio = inicioLinha;
+        const fim = inicio + linhas.slice(i, fimCitacao + 1).reduce((total, parte) => total + parte.length, 0)
+          + (fimCitacao - i);
+        if (inicio > inicioSegmento) segmentos.push({ texto: texto.slice(inicioSegmento, inicio), citacao: false });
+        segmentos.push({ texto: texto.slice(inicio, fim).trim(), citacao: true });
+        inicioSegmento = fim;
+        for (; i < fimCitacao; i += 1) inicioLinha += linhas[i].length + 1;
+        linhaAnterior = linhas[i];
+      }
+    } else if (linha.trim()) {
+      linhaAnterior = linha.trim();
+    }
+
+    inicioLinha += linha.length + 1;
+  }
+
+  if (inicioSegmento < texto.length) segmentos.push({ texto: texto.slice(inicioSegmento), citacao: false });
+  return segmentos.length ? segmentos : [{ texto, citacao: false }];
+}
 
 // O calendário só mostra de hoje em diante, por isso os anos começam no ano atual.
 const ANO_MAX = 2035;
@@ -147,6 +199,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
   const [selAno, setSelAno] = useState<number>(today.getFullYear());
   const [showMes, setShowMes] = useState(false);
   const [showAno, setShowAno] = useState(false);
+  const [diaSelecionado, setDiaSelecionado] = useState<{ dia: Date; eventos: Evento[] } | null>(null);
 
   const load = useCallback(async (de: Date) => {
     try {
@@ -254,6 +307,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
                 dia={dia}
                 eventos={evs}
                 isToday={isSameDay(dia, today)}
+                onSelect={() => setDiaSelecionado({ dia, eventos: evs })}
               />
             );
           })}
@@ -289,12 +343,82 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
         onSelect={v => setSelAno(v as number)}
         onClose={() => setShowAno(false)}
       />
+
+      <Modal
+        visible={diaSelecionado !== null}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setDiaSelecionado(null)}
+      >
+        <View style={styles.readingModalOverlay}>
+          <TouchableOpacity
+            style={StyleSheet.absoluteFill}
+            activeOpacity={1}
+            onPress={() => setDiaSelecionado(null)}
+            accessibilityRole="button"
+            accessibilityLabel="Fechar leituras"
+          />
+          <View style={styles.readingModal}>
+            <View style={styles.readingModalHeader}>
+              <View style={styles.readingModalHeading}>
+                <Text style={styles.readingModalDate}>
+                  {diaSelecionado?.dia.toLocaleDateString('pt-PT', {
+                    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+                  })}
+                </Text>
+                <Text style={styles.readingModalTitle}>Leituras litúrgicas</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setDiaSelecionado(null)}
+                accessibilityRole="button"
+                accessibilityLabel="Fechar leituras"
+                style={styles.readingModalClose}
+              >
+                <Ionicons name="close" size={24} color={COLORS.text} />
+              </TouchableOpacity>
+            </View>
+            <ScrollView contentContainerStyle={styles.readingModalContent}>
+              {diaSelecionado?.eventos.map(evento => {
+                const { integra, resumo } = separarLeituras(evento.leituras ?? '');
+                return (
+                  <View key={evento.id} style={styles.readingEvent}>
+                    <Text style={styles.readingEventTitle}>{evento.titulo}</Text>
+                    {!!evento.descricao && <Text style={styles.readingEventDescription}>{evento.descricao}</Text>}
+                    {integra
+                      ? formatarTextoLeitura(integra).map((segmento, indice) => (
+                        <Text
+                          key={indice}
+                          style={[
+                            styles.readingBody,
+                            indice > 0 && styles.readingBodyFollowing,
+                            segmento.citacao && styles.readingQuote,
+                          ]}
+                        >
+                          {segmento.texto}
+                        </Text>
+                      ))
+                      : <Text style={styles.readingBody}>
+                        {resumo ? 'O texto integral desta leitura ainda não está disponível.' : 'Não há leituras registadas para este dia.'}
+                      </Text>}
+                    {!!evento.observacoes && <Text style={styles.readingEventDescription}>{evento.observacoes}</Text>}
+                  </View>
+                );
+              })}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 // ── Card de evento ────────────────────────────────────────────────────────────
-function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isToday: boolean }) {
+function DiaCard({ dia, eventos, isToday, onSelect }: {
+  dia: Date;
+  eventos: Evento[];
+  isToday: boolean;
+  onSelect: () => void;
+}) {
   const COLORS = useColors();
   const styles = useThemedStyles(createStyles);
   const nomeDia = DIAS_SEMANA[dia.getDay()];
@@ -319,7 +443,14 @@ function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isTo
         const cor1 = cores[0];
 
         return (
-          <View key={evento.id} style={[styles.card, isToday ? styles.cardToday : { borderColor: cor1.border }, { borderLeftColor: cor1.border }]}>
+          <TouchableOpacity
+            key={evento.id}
+            style={[styles.card, isToday ? styles.cardToday : { borderColor: cor1.border }, { borderLeftColor: cor1.border }]}
+            onPress={onSelect}
+            activeOpacity={0.85}
+            accessibilityRole="button"
+            accessibilityLabel={`Ver as leituras de ${evento.titulo}`}
+          >
             <View style={styles.cardTop}>
               <Text style={styles.cardTitulo}>{evento.titulo}</Text>
 
@@ -343,9 +474,11 @@ function DiaCard({ dia, eventos, isToday }: { dia: Date; eventos: Evento[]; isTo
             </View>
 
             {!!evento.descricao && <Text style={styles.cardDescricao}>{evento.descricao}</Text>}
-            {!!evento.leituras && <Text style={styles.cardMeta}>{evento.leituras}</Text>}
+            {!!evento.leituras && (
+              <Text style={styles.cardMeta}>{separarLeituras(evento.leituras).resumo}</Text>
+            )}
             {!!evento.observacoes && <Text style={styles.cardMeta}>{evento.observacoes}</Text>}
-          </View>
+          </TouchableOpacity>
         );
       })}
     </>
@@ -450,7 +583,6 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   cardMeta: {
     fontSize: 13, fontFamily: FONTS.sans, color: COLORS.textSecondary, lineHeight: 19, marginTop: 3,
   },
-
   /* Modal */
   modalOverlay: {
     flex: 1, backgroundColor: 'rgba(0,0,0,0.45)',
@@ -467,6 +599,39 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   modalItemActive: { backgroundColor: COLORS.navbar },
   modalItemText: { fontFamily: FONTS.sans, fontSize: 15, color: COLORS.text },
   modalItemTextActive: { color: '#fff', fontWeight: '700' },
+
+  readingModalOverlay: {
+    flex: 1, backgroundColor: 'rgba(0,0,0,0.55)', justifyContent: 'flex-end',
+  },
+  readingModal: {
+    maxHeight: '88%', backgroundColor: COLORS.surface,
+    borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: 'hidden',
+  },
+  readingModalHeader: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    paddingHorizontal: 18, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: COLORS.border,
+  },
+  readingModalHeading: { flex: 1, gap: 3 },
+  readingModalDate: {
+    color: COLORS.textSecondary, fontFamily: FONTS.sans, fontSize: 13, textTransform: 'capitalize',
+  },
+  readingModalTitle: { color: COLORS.text, fontFamily: FONTS.sans, fontSize: 18, fontWeight: '700' },
+  readingModalClose: { padding: 6, marginLeft: 8 },
+  readingModalContent: { padding: 18, paddingBottom: 32 },
+  readingEvent: { marginBottom: 22 },
+  readingEventTitle: {
+    color: COLORS.text, fontFamily: FONTS.sans, fontSize: 16, fontWeight: '700', lineHeight: 23,
+  },
+  readingEventDescription: {
+    color: COLORS.textSecondary, fontFamily: FONTS.sans, fontSize: 14, lineHeight: 21, marginTop: 8,
+  },
+  readingBody: {
+    color: COLORS.text, fontFamily: FONTS.display, fontSize: 16, lineHeight: 24, marginTop: 12,
+  },
+  readingBodyFollowing: { marginTop: 0 },
+  readingQuote: {
+    color: '#c0392b', fontStyle: 'italic', textAlign: 'center', marginVertical: 10,
+  },
 
   semDados: { textAlign: 'center', fontStyle: 'italic', color: COLORS.textSecondary, fontFamily: FONTS.sans, fontSize: 14, lineHeight: 20, paddingHorizontal: 12 },
 
