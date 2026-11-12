@@ -71,8 +71,14 @@ function separarLeituras(leituras: string) {
 function formatarTextoLeitura(texto: string) {
   const linhas = texto.split('\n');
   const segmentos: { texto: string; citacao: boolean }[] = [];
-  let inicioSegmento = 0;
-  let inicioLinha = 0;
+  const iniciosLinha: number[] = [];
+  let offset = 0;
+  for (const linha of linhas) {
+    iniciosLinha.push(offset);
+    offset += linha.length + 1;
+  }
+
+  let fimSegmento = 0;
   let linhaAnterior = '';
 
   for (let i = 0; i < linhas.length; i += 1) {
@@ -84,23 +90,21 @@ function formatarTextoLeitura(texto: string) {
       let fimCitacao = i;
       while (fimCitacao < linhas.length && !/[»”"]/.test(linhas[fimCitacao])) fimCitacao += 1;
       if (fimCitacao < linhas.length) {
-        const inicio = inicioLinha;
-        const fim = inicio + linhas.slice(i, fimCitacao + 1).reduce((total, parte) => total + parte.length, 0)
-          + (fimCitacao - i);
-        if (inicio > inicioSegmento) segmentos.push({ texto: texto.slice(inicioSegmento, inicio), citacao: false });
+        const inicio = iniciosLinha[i];
+        const fim = iniciosLinha[fimCitacao] + linhas[fimCitacao].length;
+        if (inicio > fimSegmento) segmentos.push({ texto: texto.slice(fimSegmento, inicio), citacao: false });
         segmentos.push({ texto: texto.slice(inicio, fim).trim(), citacao: true });
-        inicioSegmento = fim;
-        for (; i < fimCitacao; i += 1) inicioLinha += linhas[i].length + 1;
-        linhaAnterior = linhas[i];
+        fimSegmento = fim;
+        i = fimCitacao;
+        linhaAnterior = linhas[fimCitacao].trim();
+        continue;
       }
     } else if (linha.trim()) {
       linhaAnterior = linha.trim();
     }
-
-    inicioLinha += linha.length + 1;
   }
 
-  if (inicioSegmento < texto.length) segmentos.push({ texto: texto.slice(inicioSegmento), citacao: false });
+  if (fimSegmento < texto.length) segmentos.push({ texto: texto.slice(fimSegmento), citacao: false });
   return segmentos.length ? segmentos : [{ texto, citacao: false }];
 }
 
