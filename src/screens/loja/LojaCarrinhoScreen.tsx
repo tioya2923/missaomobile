@@ -50,8 +50,11 @@ export default function LojaCarrinhoScreen({ navigation }: MaisScreenProps<'Loja
       limpar();
       navigation.replace('LojaConfirmacao', { encomendas });
     } catch (e) {
-      const dados = (e as { response?: { data?: unknown } })?.response?.data;
-      setErro(typeof dados === 'string' ? dados : 'Não foi possível enviar a encomenda. Verifique a ligação e tente novamente.');
+      const resp = (e as { response?: { data?: unknown; headers?: Record<string, unknown> } })?.response;
+      // Se o servidor diz que um artigo já não está disponível, tira-o do carrinho: assim o comprador não fica preso ao mesmo erro.
+      const indisponivel = Number(resp?.headers?.['x-produto-indisponivel']);
+      if (Number.isInteger(indisponivel) && indisponivel > 0) removerItem(indisponivel);
+      setErro(typeof resp?.data === 'string' ? resp.data : 'Não foi possível enviar a encomenda. Verifique a ligação e tente novamente.');
     } finally {
       setAEnviar(false);
     }

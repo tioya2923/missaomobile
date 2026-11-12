@@ -261,7 +261,7 @@ function RecuperarSenha({ onVoltar }: { onVoltar: () => void }) {
   const redefinir = async () => {
     setErro(null);
     if (codigo.length !== 6) { setErro('Escreva o código de 6 dígitos que recebeu por email.'); return; }
-    if (nova.length < 6) { setErro('A palavra-passe deve ter pelo menos 6 caracteres.'); return; }
+    if (nova.length < 8) { setErro('A palavra-passe deve ter pelo menos 8 caracteres.'); return; }
     setLoading(true);
     try {
       await redefinirSenha(email, codigo, nova);   // a sessão fica iniciada e o ecrã passa para o painel da loja
@@ -302,7 +302,7 @@ function RecuperarSenha({ onVoltar }: { onVoltar: () => void }) {
               />
               <CampoSenha
                 ref={refNova} label="Palavra-passe nova" value={nova} onChangeText={setNova}
-                placeholder="Pelo menos 6 caracteres" returnKeyType="done" onSubmitEditing={redefinir}
+                placeholder="Pelo menos 8 caracteres" returnKeyType="done" onSubmitEditing={redefinir}
               />
             </View>
             <TouchableOpacity style={styles.btnPrimario} onPress={redefinir} disabled={loading} activeOpacity={0.85}>
@@ -349,7 +349,7 @@ function Registar({ onVoltar, onEntrar }: { onVoltar: () => void; onEntrar: () =
     setErro(null);
     if (!coords) { setErro('Indique a localização da loja — toque em "Usar a minha localização atual".'); return; }
     if (!form.nome.trim() || !form.email.trim() || !form.password.trim()) { setErro('Nome, email e palavra-passe são obrigatórios.'); return; }
-    if (form.password.length < 6) { setErro('A palavra-passe tem de ter pelo menos 6 caracteres.'); return; }
+    if (form.password.length < 8) { setErro('A palavra-passe tem de ter pelo menos 8 caracteres.'); return; }
     if (form.password !== form.confirmarPassword) { setErro('As palavras-passe não coincidem.'); return; }
 
     setLoading(true);

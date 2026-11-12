@@ -72,7 +72,7 @@ export function CarrinhoProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (carregado) AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(itens));
+    if (carregado) AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(itens)).catch(() => {});
   }, [itens, carregado]);
 
   const adicionar = useCallback((produto: Produto, quantidade = 1) => {

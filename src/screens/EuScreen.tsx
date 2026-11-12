@@ -17,6 +17,7 @@ import VendedorArea from './VendedorArea';
 import { useConta } from '../context/ContaContext';
 import { useColors, useThemedStyles } from '../context/ThemeContext';
 import { COMPORTAMENTO_TECLADO } from '../utils/teclado';
+import { criarVerificadorPin, ehVerificadorPin, pinCorresponde } from '../utils/pin';
 
 const STORAGE_KEY  = '@ndatava_perfil';
 const SECURITY_KEY = '@ndatava_seguranca';
@@ -165,6 +166,12 @@ export default function EuScreen() {
         try { const s = JSON.parse(rS); tipo = s.tipo ?? 'nenhuma'; pin = s.pin ?? ''; } catch {}
       }
 
+      // Quem ainda tem o PIN em texto simples (versões antigas) passa a ter só o verificador com sal e hash.
+      if (pin && !ehVerificadorPin(pin)) {
+        pin = criarVerificadorPin(pin);
+        AsyncStorage.setItem(SECURITY_KEY, JSON.stringify({ tipo, pin })).catch(() => {});
+      }
+
       setTipoSeg(tipo);    tipoRef.current      = tipo;
       setPinGuardado(pin); pinRef.current        = pin;
       setCarregado(true);  carregadoRef.current  = true;
@@ -208,7 +215,7 @@ export default function EuScreen() {
 
   /* ── PIN de entrada ── */
   const verificarPin = (valor: string) => {
-    if (valor === pinRef.current) {
+    if (pinCorresponde(valor, pinRef.current)) {
       setDesbloqueado(true); desblRef.current = true;
       setPinInput(''); setPinErro('');
     } else {
@@ -228,10 +235,10 @@ export default function EuScreen() {
   /* ── guardar segurança ── */
   const salvarSeguranca = async (tipo: TipoSeguranca, pin?: string) => {
     const obj: Record<string,string> = { tipo };
-    if (pin) obj.pin = pin;
+    if (pin) obj.pin = criarVerificadorPin(pin); // nunca o PIN em texto simples
     await AsyncStorage.setItem(SECURITY_KEY, JSON.stringify(obj));
     setTipoSeg(tipo);         tipoRef.current = tipo;
-    setPinGuardado(pin ?? ''); pinRef.current  = pin ?? '';
+    setPinGuardado(obj.pin ?? ''); pinRef.current  = obj.pin ?? '';
   };
 
   const escolherNenhuma = () =>

@@ -51,6 +51,11 @@ const MESES = [
   'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
   'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro',
 ];
+// "domingo, 15 de novembro de 2026" → só a primeira letra em maiúscula (em português "de" fica minúsculo).
+function dataPorExtenso(dia: Date): string {
+  const texto = dia.toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  return texto.charAt(0).toUpperCase() + texto.slice(1);
+}
 const SEPARADOR_LEITURAS = '\n\nLEITURAS NA ÍNTEGRA\n';
 const SEPARADOR_LEITURAS_TOLERANTE = /\n{2}LEITURAS NA [^\r\n]{0,2}NTEGRA\r?\n/i;
 
@@ -399,7 +404,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
         </ScrollView>
       )}
 
-      {/* ── Acessos rápidos: Loja e Apoiar — fixos, acima do rodapé ── */}
+      {/* ── Acesso rápido à Loja — fixo, acima do rodapé ── */}
       <View style={styles.acessosRow}>
         <TouchableOpacity
           style={styles.acessoBtn}
@@ -447,9 +452,7 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
             <View style={styles.readingModalHeader}>
               <View style={styles.readingModalHeading}>
                 <Text style={styles.readingModalDate}>
-                  {diaSelecionado?.dia.toLocaleDateString('pt-PT', {
-                    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-                  })}
+                  {diaSelecionado ? dataPorExtenso(diaSelecionado.dia) : ''}
                 </Text>
                 <Text style={styles.readingModalTitle}>Leituras litúrgicas</Text>
               </View>
@@ -631,7 +634,7 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
     color: COLORS.textSecondary, textAlign: 'center',
   },
 
-  /* Acessos rápidos: Loja / Apoiar — barra fixa acima do rodapé */
+  /* Acesso rápido à Loja — barra fixa acima do rodapé */
   acessosRow: {
     flexDirection: 'row', gap: 10,
     paddingHorizontal: 12, paddingVertical: 10,
@@ -642,11 +645,7 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7,
     backgroundColor: COLORS.navbar, borderRadius: 999, paddingVertical: 12,
   },
-  acessoBtnApoiar: {
-    backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.primary,
-  },
   acessoTxt: { color: '#fff', fontWeight: '700', fontFamily: FONTS.sans, fontSize: 14 },
-  acessoTxtApoiar: { color: COLORS.primary },
 
   /* Lista */
   list: { padding: 12, gap: 12 },
@@ -707,7 +706,7 @@ const createStyles = (COLORS: Palette) => StyleSheet.create({
   },
   readingModalHeading: { flex: 1, gap: 3 },
   readingModalDate: {
-    color: COLORS.textSecondary, fontFamily: FONTS.sans, fontSize: 13, textTransform: 'capitalize',
+    color: COLORS.textSecondary, fontFamily: FONTS.sans, fontSize: 13,
   },
   readingModalTitle: { color: COLORS.text, fontFamily: FONTS.sans, fontSize: 18, fontWeight: '700' },
   readingModalClose: { padding: 6, marginLeft: 8 },
