@@ -11,10 +11,10 @@ export default function SobreScreen() {
         <Text style={styles.titulo}>NDATAVA — Ide e Anunciai</Text>
         <View style={styles.separator} />
         <Text style={styles.texto}>
-          Bem-vindo ao <Text style={styles.bold}>NDATAVA</Text>{'\n\n'}
-          O Ndatava nasceu para pôr a vida da Igreja ao alcance de um toque: o calendário litúrgico do dia, cânticos completos e catequese para que cada comunidade encontre a liturgia na sua própria língua.{'\n\n'}
-          <Text style={styles.bold}>O que encontra aqui:</Text> o calendário litúrgico diário, com leituras e cor do ofício; cânticos organizados por momento da celebração; catecismo e orações fundamentais e uma loja onde pequenas lojas vendem artigos religiosos diretamente na app.{'\n\n'}
-          <Text style={styles.bold}>Para quem é:</Text> para o Santo Povo de Deus e para todos os que querem trazer a liturgia consigo, mesmo longe da sua Paróquia ou sem ligação constante à internet.{'\n\n'}
+          Bem-vindo à <Text style={styles.bold}>NDATAVA</Text>{'\n\n'}
+          A Ndatava nasceu para pôr a vida da Igreja ao alcance de um toque: o calendário litúrgico do dia, cânticos completos e catequese para que cada comunidade encontre a liturgia na sua própria língua.{'\n\n'}
+          <Text style={styles.bold}>O que encontra aqui:</Text> o calendário litúrgico diário, com leituras e cor do ofício; cânticos organizados por momento da celebração; catecismo e orações fundamentais; e uma loja onde pequenas lojas vendem artigos religiosos diretamente na app.{'\n\n'}
+          <Text style={styles.bold}>Para quem é:</Text> para o Santo Povo de Deus e para todos os que querem trazer a liturgia consigo, mesmo longe da sua paróquia ou sem ligação constante à internet.{'\n\n'}
           <Text style={styles.bold}>NDATAVA: Unidos na fé, guiados pelo amor e fortalecidos pela esperança!</Text>
         </Text>
       </View>

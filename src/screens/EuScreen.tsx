@@ -482,7 +482,7 @@ export default function EuScreen() {
           <View style={styles.hubIcone}>
             <Ionicons name="storefront-outline" size={26} color={COLORS.primary}/>
           </View>
-          <Text style={styles.hubCardTxt}>Vender no Ndatava</Text>
+          <Text style={styles.hubCardTxt}>Vender na Ndatava</Text>
           <Ionicons name="chevron-forward" size={18} color={COLORS.textSecondary}/>
         </TouchableOpacity>
       </View>
@@ -541,7 +541,7 @@ export default function EuScreen() {
     <GruposScreen onVoltar={() => setVista('hub')}/>
   );
 
-  // 5b. Vender no Ndatava (área nativa das lojas parceiras)
+  // 5b. Vender na Ndatava (área nativa das lojas parceiras)
   if (vista === 'vendedor') return (
     <VendedorArea onVoltar={() => setVista('hub')}/>
   );

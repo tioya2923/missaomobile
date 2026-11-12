@@ -1,7 +1,7 @@
 import client from './client';
 
 // Login do administrador (Gestor) — usado como segunda tentativa quando o
-// formulário de "Vender no Ndatava" recebe credenciais que não são de uma
+// formulário de "Vender na Ndatava" recebe credenciais que não são de uma
 // loja, para permitir abrir a página de administração no navegador.
 export interface SessaoGestor {
   token: string;
