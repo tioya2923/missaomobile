@@ -194,7 +194,9 @@ function formatarTextoLeitura(texto: string) {
   return segmentos;
 }
 
-// O calendário só mostra de hoje em diante, por isso os anos começam no ano atual.
+// O calendário pode ir a dias passados: o primeiro dia com dados é 1 de janeiro de 2026.
+const ANO_MIN = 2026;
+const DATA_MIN = new Date(ANO_MIN, 0, 1);
 const ANO_MAX = 2035;
 
 function startOfDay(d: Date): Date {
@@ -271,13 +273,13 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
   }, []);
 
   const today = startOfDay(new Date());
-  const ANOS = Array.from({ length: ANO_MAX - today.getFullYear() + 1 }, (_, i) => today.getFullYear() + i);
+  const ANOS = Array.from({ length: ANO_MAX - ANO_MIN + 1 }, (_, i) => ANO_MIN + i);
 
-  // Primeiro dia mostrado: nunca antes de hoje.
+  // Primeiro dia mostrado: começa em hoje, mas dá para recuar até ao início dos dados (DATA_MIN).
   const [inicioEscolhido, setInicioEscolhido] = useState<Date>(today);
-  const inicio = inicioEscolhido < today ? today : inicioEscolhido;
+  const inicio = inicioEscolhido < DATA_MIN ? DATA_MIN : inicioEscolhido;
   const inicioChave = fmtLocal(inicio);
-  const naoHaAnterior = inicioChave === fmtLocal(today);
+  const naoHaAnterior = inicio <= DATA_MIN;
 
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);
@@ -319,7 +321,14 @@ export default function CalendarioScreen({ navigation }: RootScreenProps<'Calend
   }, [inicioChave]);
 
   const irParaData = () => setInicioEscolhido(startOfDay(new Date(selAno, selMes, 1)));
-  const navegar = (n: number) => setInicioEscolhido(addDays(inicio, n));
+  const navegar = (n: number) => {
+    // Recuar nunca passa do início dos dados; os seletores de mês e ano acompanham a janela mostrada.
+    const novo = addDays(inicio, n);
+    const limitado = novo < DATA_MIN ? DATA_MIN : novo;
+    setInicioEscolhido(limitado);
+    setSelMes(limitado.getMonth());
+    setSelAno(limitado.getFullYear());
+  };
   const hoje = () => {
     setInicioEscolhido(today);
     setSelMes(today.getMonth());
