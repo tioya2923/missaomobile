@@ -7,6 +7,7 @@ import { useThemedStyles, useTheme } from '../context/ThemeContext';
 const WHATSAPP_TEXTO = '+351 920 012 727';
 const WHATSAPP_URL = 'https://wa.me/351920012727';
 const EMAIL = 'ndatava3@gmail.com';
+const INSTAGRAM_URL = 'https://www.instagram.com/amendatava/';
 
 export default function ContactoScreen() {
   const styles = useThemedStyles(createStyles);
@@ -34,6 +35,15 @@ export default function ContactoScreen() {
           <View style={styles.linhaTextos}>
             <Text style={styles.etiqueta}>E-mail</Text>
             <Text style={styles.valor}>{EMAIL}</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.linha} activeOpacity={0.7} onPress={() => abrir(INSTAGRAM_URL)}
+          accessibilityRole="link" accessibilityLabel="Instagram @amendatava">
+          <Ionicons name="logo-instagram" size={22} color={colors.primary} />
+          <View style={styles.linhaTextos}>
+            <Text style={styles.etiqueta}>Instagram</Text>
+            <Text style={styles.valor}>@amendatava</Text>
           </View>
         </TouchableOpacity>
       </View>
